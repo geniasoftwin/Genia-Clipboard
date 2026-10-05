@@ -1,14 +1,16 @@
-# Участие в разработке GeniaClipboard
+# Contributing to GeniaClipboard
 
-Спасибо за интерес к проекту.
+**English** · [Русский](CONTRIBUTING_RU.md)
 
-## Требования
+Thank you for your interest in the project.
+
+## Requirements
 
 - Windows 10/11 x64;
-- .NET 8 SDK или Visual Studio с workload для классических .NET-приложений;
+- .NET 8 SDK or Visual Studio with the .NET desktop development workload;
 - Git.
 
-## Локальная сборка
+## Local build
 
 ```powershell
 dotnet restore GeniaClipboard.csproj
@@ -16,33 +18,22 @@ dotnet build GeniaClipboard.csproj -c Release
 dotnet publish GeniaClipboard.csproj -c Release
 ```
 
-Либо используйте `build-portable.cmd`.
+You can also use `build-portable.cmd`.
 
-## Перед pull request
+## Before opening a pull request
 
-Пожалуйста, проверьте минимум следующие сценарии:
+Please test normal clipboard capture, exact duplicates, self-copy protection, multi-selection, batch copy/paste, search, pinning, deletion, TXT export, auto journal, `Ctrl+Shift+V`, and tray behavior.
 
-- обычное копирование текста в историю;
-- повторное копирование точного дубля;
-- копирование из самой GeniaClipboard без появления новой записи;
-- `Ctrl`/`Shift` multi-select и `Ctrl+A`;
-- пакетное копирование и вставка;
-- поиск;
-- закрепление и удаление;
-- TXT-экспорт;
-- автожурнал;
-- `Ctrl+Shift+V` и работа из трея.
+Do not include real passwords, tokens, personal information, or private clipboard contents in issues, logs, screenshots, or test files.
 
-Не добавляйте в issue, логи, скриншоты или тестовые файлы реальные пароли, токены, персональные данные и содержимое чужого буфера обмена.
+## Change guidelines
 
-## Стиль изменений
+- keep the existing C# style and nullable annotations;
+- avoid new dependencies unless they are clearly justified;
+- accompany clipboard behavior changes with an explicit test scenario;
+- account for WinAPI limitations, including possible `SetForegroundWindow` failure;
+- call out security-relevant changes separately in the pull request.
 
-- сохраняйте существующий стиль C# и nullable-аннотации;
-- не добавляйте зависимости без реальной необходимости;
-- избегайте изменения поведения буфера обмена без явного тестового сценария;
-- для WinAPI-поведения учитывайте отказ `SetForegroundWindow` и другие ограничения Windows;
-- изменения безопасности описывайте отдельно в PR.
+## Bug reports
 
-## Сообщения об ошибках
-
-Для воспроизводимого bug report укажите версию GeniaClipboard, версию Windows, шаги воспроизведения, ожидаемое и фактическое поведение. Никогда не публикуйте секретные данные из буфера обмена.
+Include the GeniaClipboard version, Windows version, reproduction steps, expected behavior, and actual behavior. Never publish secrets from your clipboard.
