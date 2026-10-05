@@ -1,3 +1,5 @@
+<p align="right"><a href="README_RU.md">Русский</a> · <strong>English</strong></p>
+
 <p align="center">
   <img src="Assets/GeniaClipboard.svg" alt="GeniaClipboard" width="96" height="96">
 </p>
@@ -5,7 +7,7 @@
 <h1 align="center">GeniaClipboard</h1>
 
 <p align="center">
-  Лёгкий портативный менеджер истории буфера обмена для Windows 10/11.
+  A lightweight, portable clipboard history manager for Windows 10/11.
 </p>
 
 <p align="center">
@@ -15,111 +17,98 @@
   <img alt=".NET" src="https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white">
 </p>
 
-GeniaClipboard работает в системном трее, накапливает скопированный текст и ссылки, позволяет быстро искать историю, выделять сразу несколько записей и вставлять их одним блоком. Данные хранятся локально рядом с программой.
+GeniaClipboard runs in the system tray, collects copied text and links, lets you search clipboard history quickly, select multiple entries, and copy or paste them as a single block. All application data stays local next to the executable.
 
 > [!WARNING]
-> Менеджер буфера может сохранять пароли, токены, персональные данные и другой чувствительный текст. История и TXT-журнал хранятся локально **без шифрования**. Перед копированием секретов приостанавливайте сбор через меню в трее.
+> Clipboard managers can capture passwords, tokens, personal information, and other sensitive text. History and TXT journals are stored locally **without encryption**. Pause capture from the tray menu before copying secrets.
 
-## Возможности
+## Features
 
-- история текста и ссылок из системного буфера обмена;
-- до 500 обычных записей плюс закреплённые записи;
-- поиск по всей истории;
-- глобальная горячая клавиша `Ctrl+Shift+V`;
-- работа в системном трее;
-- защита от самокопирования GeniaClipboard и точных дублей;
-- множественное выделение через `Ctrl`, `Shift` и `Ctrl+A`;
-- пакетное копирование и вставка нескольких записей;
-- удаление нескольких выбранных записей;
-- ручной экспорт в UTF-8 TXT;
-- опциональный ежедневный TXT-журнал;
-- локальное хранение в папке `Data`;
-- портативная self-contained сборка в один EXE для Windows x64.
+- clipboard history for text and URLs;
+- up to 500 regular entries plus pinned items;
+- instant history search;
+- global `Ctrl+Shift+V` shortcut;
+- system tray operation;
+- protection against GeniaClipboard copying its own data back into history;
+- exact duplicate handling;
+- multi-selection with `Ctrl`, `Shift`, and `Ctrl+A`;
+- batch copy and paste for multiple entries;
+- delete multiple selected entries;
+- manual UTF-8 TXT export;
+- optional daily TXT journal;
+- local storage in the `Data` directory;
+- portable self-contained single-EXE build for Windows x64.
 
-## Быстрый старт
+## Quick start
 
-### Сборка одним скриптом
-
-Требуется Visual Studio с компонентом **Разработка классических приложений .NET** или установленный .NET 8 SDK.
+Install the .NET 8 SDK or Visual Studio with the **.NET desktop development** workload, then run:
 
 ```bat
 build-portable.cmd
 ```
 
-После успешной сборки архив появится здесь:
+After a successful build, the portable archive is created at:
 
 ```text
 dist\GeniaClipboard-win-x64.zip
 ```
 
-Внутри находится самодостаточный `GeniaClipboard.exe`; устанавливать .NET на целевой компьютер не требуется.
+The archive contains a self-contained `GeniaClipboard.exe`; .NET does not need to be installed on the target PC.
 
-### Через командную строку
+You can also build from the command line:
 
 ```powershell
 dotnet restore GeniaClipboard.csproj
 dotnet publish GeniaClipboard.csproj -c Release
 ```
 
-## Как пользоваться
+## Usage
 
-1. Запустите GeniaClipboard — приложение останется доступно из системного трея.
-2. Копируйте текст и ссылки обычным `Ctrl+C`.
-3. Откройте историю через `Ctrl+Shift+V`.
-4. Используйте поиск или выберите несколько записей через `Ctrl`/`Shift`.
-5. Нажмите **Копировать** или `Ctrl+C`, чтобы получить выбранные записи одним блоком.
-6. Вставьте результат обычным `Ctrl+V` в Блокнот, редактор или другое приложение.
+1. Start GeniaClipboard. It remains available from the system tray.
+2. Copy text or links normally with `Ctrl+C`.
+3. Open clipboard history with `Ctrl+Shift+V`.
+4. Search the history or select several entries with `Ctrl`/`Shift`.
+5. Click **Copy** or press `Ctrl+C` to place the selected entries on the clipboard as one block.
+6. Paste them into Notepad, an editor, or another application with the normal `Ctrl+V`.
 
-При пакетном копировании записи объединяются в порядке отображения — по одной записи на строку.
+For batch copy, entries are joined in their displayed order, one entry per line.
 
-## TXT-экспорт и автожурнал
+## TXT export and auto journal
 
-Кнопка **Экспорт TXT** сохраняет несколько выделенных записей или всю историю. Экспорт выполняется потоково и записывается в UTF-8.
+**Export TXT** saves either multiple selected entries or the complete history. Export is streamed and written as UTF-8.
 
-В меню значка в трее можно включить **Автожурнал TXT**. Новые уникальные внешние записи будут добавляться в файл вида:
+The tray menu also provides **Auto journal TXT**. When enabled, new unique external clipboard entries are appended to a daily file:
 
 ```text
 Data\Journal\GeniaClipboard_YYYY-MM-DD.txt
 ```
 
-Данные, скопированные самой GeniaClipboard, в журнал повторно не попадают.
+Data copied by GeniaClipboard itself is not added to the journal again.
 
-## Конфиденциальность
+## Privacy
 
-GeniaClipboard не использует облако, реестр Windows или внешнюю базу данных. История, настройки и журнал хранятся локально в каталоге приложения.
+GeniaClipboard does not use a cloud service, the Windows registry, or an external database. History, settings, and journal files are stored locally in the application directory.
 
-Для удаления накопленных данных используйте кнопку **Очистить** и при необходимости удалите папку `Data\Journal`.
+To remove stored data, use **Clear** and, when necessary, delete the `Data\Journal` directory.
 
-## Ограничения текущей версии
+## Current limitations
 
-- сохраняется только текст — изображения и списки файлов пока не поддерживаются;
-- горячая клавиша фиксирована: `Ctrl+Shift+V`;
-- автозапуск специально не включён, чтобы приложение оставалось портативным;
-- целевая платформа — Windows x64;
-- локальные файлы истории и журнала не шифруются.
+- text only; images and copied file lists are not supported yet;
+- the global shortcut is currently fixed to `Ctrl+Shift+V`;
+- startup registration is intentionally not enabled so the application stays portable;
+- current target platform is Windows x64;
+- local history and journal files are not encrypted.
 
-## Разработка
+## Development
 
-Проект написан на C# / WinForms и не использует сторонние NuGet-пакеты.
+GeniaClipboard is written in C# / WinForms and currently has no third-party NuGet package dependencies.
 
-```text
-GeniaClipboard.csproj                проект .NET
-MainForm.cs                          основной интерфейс
-ClipboardMonitorWindow.cs           монитор буфера и hotkey
-HistoryStore.cs                      хранение истории
-TextJournalService.cs                TXT-журнал
-AppSettingsStore.cs                  локальные настройки
-GeniaClipboardApplicationContext.cs  трей и жизненный цикл
-NativeMethods.cs                     WinAPI
-Assets/                              иконки приложения
-```
+GitHub Actions verifies the Windows build on pushes and pull requests. Third-party GitHub Actions are pinned to exact commit SHAs.
 
-GitHub Actions автоматически проверяет сборку на Windows при push и pull request. Используемые actions зафиксированы на конкретных commit SHA.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines, [CHANGELOG.md](CHANGELOG.md) for release history, and [SECURITY.md](SECURITY.md) for the security model.
 
-Подробности по участию в разработке: [CONTRIBUTING.md](CONTRIBUTING.md). История изменений: [CHANGELOG.md](CHANGELOG.md). Модель безопасности: [SECURITY.md](SECURITY.md).
+## Version
 
-## Версия
+Current stable release for this development stage: **0.4.4**.
 
-Текущая стабильная версия текущего этапа разработки: **0.4.4**.
-
-> Лицензия проекта пока не выбрана. До отдельного решения файл `LICENSE` намеренно не добавлен.
+> A project license has not been selected yet, so a `LICENSE` file is intentionally not included.
