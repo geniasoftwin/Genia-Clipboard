@@ -1,39 +1,30 @@
 # Security Policy
 
-## Поддерживаемая версия
+**English** · [Русский](SECURITY_RU.md)
 
-На текущем этапе поддерживается последняя опубликованная ветка `0.4.x`, сейчас — `0.4.4`.
+## Supported version
 
-## Модель безопасности
+At this stage, the latest published `0.4.x` release is supported. The current stable version is `0.4.4`.
 
-GeniaClipboard — локальный менеджер буфера обмена. По своей природе он работает с потенциально чувствительными данными.
+## Security model
 
-Важно понимать:
+GeniaClipboard is a local clipboard manager and therefore handles potentially sensitive data by design.
 
-- `Data/history.json`, `Data/settings.json` и TXT-журнал хранятся локально **без шифрования**;
-- любой процесс в той же пользовательской сессии Windows в принципе может читать или изменять системный буфер;
-- приватный clipboard-format GeniaClipboard предназначен для предотвращения самодублирования, а не для изоляции данных;
-- приложение не может надёжно определить, является ли текст паролем, токеном или другой тайной.
+- `Data/history.json`, `Data/settings.json`, and TXT journal files are stored locally **without encryption**;
+- processes running in the same Windows user session may in principle read or modify the system clipboard;
+- GeniaClipboard's private clipboard format prevents self-duplication but is not a security boundary;
+- the application cannot reliably determine whether copied text is a password, token, API key, or other secret.
 
-Перед копированием чувствительных данных рекомендуется временно приостановить сбор и отключить автожурнал.
+Pause capture and disable the auto journal before copying sensitive information.
 
-## Защитные меры
+## Defensive measures
 
-В текущей версии применяются:
+The current version includes limits for clipboard entry and history sizes, streamed TXT export, safer local JSON replacement, foreground-window verification before automatic paste, no third-party `PackageReference` dependencies, and GitHub Actions pinned to exact commit SHAs.
 
-- ограничение размера одной сохраняемой записи;
-- ограничение размера загружаемой истории;
-- лимиты пакетного копирования и предпросмотра;
-- потоковый TXT-экспорт;
-- запись локальных JSON-файлов через временный файл с последующей заменой;
-- проверка целевого foreground-window перед автоматической вставкой;
-- отсутствие сторонних `PackageReference`;
-- GitHub Actions с actions, зафиксированными на конкретных commit SHA.
+Additional technical details are documented in `SECURITY_NOTES.md`.
 
-Дополнительные технические заметки находятся в `SECURITY_NOTES.md`.
+## Reporting a vulnerability
 
-## Сообщение об уязвимости
+Do not post real passwords, tokens, personal information, or clipboard contents in a public issue.
 
-Не публикуйте в открытом issue реальные пароли, токены, персональные данные или содержимое буфера обмена.
-
-Для несекретной информации можно открыть issue с минимальным воспроизводимым примером. Если отчёт содержит чувствительные технические детали, сначала свяжитесь с владельцем репозитория через GitHub и не прикладывайте реальные секреты.
+Non-sensitive reports may be submitted as an issue with a minimal reproducible example. If a report contains sensitive technical details, contact the repository owner through GitHub first and do not attach real secrets.
