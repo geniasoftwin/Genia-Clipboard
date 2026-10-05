@@ -23,4 +23,8 @@
     <DebugType>embedded</DebugType>
   </PropertyGroup>
 
+  <Target Name="DecodeApplicationIcon" BeforeTargets="PrepareForBuild" Condition="!Exists('Assets\GeniaClipboard.ico')">
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\build\DecodeIcon.ps1&quot;" />
+  </Target>
+
 </Project>
