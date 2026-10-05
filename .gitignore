@@ -2,4 +2,5 @@ bin/
 obj/
 dist/
 Data/
+Assets/GeniaClipboard.ico
 *.user
