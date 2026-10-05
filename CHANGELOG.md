@@ -1,53 +1,46 @@
 # Changelog
 
-Все заметные изменения GeniaClipboard фиксируются в этом файле.
+All notable GeniaClipboard changes are documented in this file.
 
 ## [0.4.4] - 2026-08
 
 ### Fixed
-
-- сборочный скрипт больше не передаёт MSBuild publish/output-путь через `-o`;
-- сборка из каталогов с пробелами в полном пути стала устойчивее;
-- готовые файлы после стандартного `dotnet publish` копируются в `dist` средствами `cmd`.
+- the build script no longer passes the MSBuild publish/output path through `-o`;
+- builds from directories containing spaces are more robust;
+- files produced by the standard `dotnet publish` output are copied to `dist` by the batch script.
 
 ## [0.4.3] - 2026-08
 
 ### Fixed
-
-- первая попытка исправить обработку путей с пробелами через `pushd` и относительные пути.
+- first attempt to improve paths containing spaces by using `pushd` and relative paths.
 
 ## [0.4.2] - 2026-08
 
 ### Fixed
-
-- `build-portable.cmd` переключает консоль в UTF-8 через `chcp 65001`;
-- русские сообщения сборочного скрипта отображаются корректно;
-- batch-файл сохранён в UTF-8 без BOM с CRLF.
+- `build-portable.cmd` switches the console to UTF-8 with `chcp 65001`;
+- Russian build messages render correctly;
+- the batch file uses UTF-8 without BOM and CRLF line endings.
 
 ## [0.4.1] - 2026-08
 
 ### Changed
-
-- увеличена верхняя область интерфейса;
-- строка поиска получила более удобную высоту и внутренние отступы.
+- increased the height of the top header area;
+- improved search field height and internal padding.
 
 ### Fixed
-
-- двойной клик по служебным подписям интерфейса больше не перезаписывает системный буфер и не создаёт записи истории.
+- double-clicking passive UI labels no longer overwrites the system clipboard or creates history entries.
 
 ## [0.4.0] - 2026-08
 
 ### Added
-
-- множественное выделение записей;
-- пакетное копирование и вставка;
-- экспорт истории и выбранных записей в TXT;
-- автоматический ежедневный TXT-журнал;
-- внутренняя метка буфера для защиты от самокопирования.
+- multi-selection;
+- batch copy and paste;
+- TXT export for selected entries or complete history;
+- automatic daily TXT journal;
+- private clipboard marker for self-copy protection.
 
 ### Security
-
-- лимиты на размер записи, истории, пакетного копирования и предпросмотра;
-- потоковый TXT-экспорт;
-- более безопасная запись локальных JSON-файлов через временный файл;
-- проверка foreground-window перед автоматической отправкой `Ctrl+V`.
+- limits for entry size, history size, batch copy, and preview;
+- streamed TXT export;
+- safer local JSON writes through a temporary file;
+- foreground-window verification before sending `Ctrl+V`.
