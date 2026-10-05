@@ -1,0 +1,22 @@
+name: Feature request / Предложить улучшение
+description: Suggest a GeniaClipboard improvement / Предложить улучшение GeniaClipboard
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case / Задача или сценарий
+      description: Describe the workflow you want to improve, not only a desired button or setting. / Опишите сценарий использования, а не только желаемую кнопку или настройку.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution / Предлагаемое решение
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives or extra details / Альтернативы или дополнительные детали

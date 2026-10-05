@@ -1,0 +1,51 @@
+name: Bug report / Сообщить об ошибке
+description: Report a GeniaClipboard bug / Сообщить об ошибке GeniaClipboard
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for the report. Please do not include real passwords, tokens, personal data, or sensitive clipboard contents.
+        Спасибо за отчёт. Не прикладывайте реальные пароли, токены, персональные данные или чувствимое содержимое буфера обмена.
+  - type: input
+    id: version
+    attributes:
+      label: GeniaClipboard version / Версия
+      placeholder: "0.4.4"
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version / Версия Windows
+      placeholder: "Windows 11 24H2 x64"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps / Шаги воспроизведения
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior / Ожидаемое поведение
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior / Фактическое поведение
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional information / Дополнительная информация
+      description: Remove sensitive data from screenshots and logs before attaching them. / Удалите чувствительные данные из скриншотов и логов.

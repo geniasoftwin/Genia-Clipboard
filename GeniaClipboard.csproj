@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>GeniaClipboard</AssemblyName>
+    <RootNamespace>GeniaClipboard</RootNamespace>
+    <Version>0.4.4</Version>
+    <Authors>GeniaClipboard</Authors>
+    <Description>Portable clipboard history manager for Windows.</Description>
+    <ApplicationIcon>Assets\GeniaClipboard.ico</ApplicationIcon>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <RuntimeFrameworkVersion>8.0.30</RuntimeFrameworkVersion>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <PublishTrimmed>false</PublishTrimmed>
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <Target Name="DecodeApplicationIcon" BeforeTargets="PrepareForBuild" Condition="!Exists('Assets\GeniaClipboard.ico')">
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\build\DecodeIcon.ps1&quot;" />
+  </Target>
+
+</Project>
