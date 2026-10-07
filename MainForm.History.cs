@@ -17,6 +17,19 @@ internal sealed partial class MainForm
             return;
         }
 
+        var source = ClipboardSourceInfo.Capture();
+        if (source.IsOwnProcess)
+        {
+            _lastClipboardSequenceNumber = sequenceNumber;
+            return;
+        }
+
+        if (source.IsExcluded(_settings))
+        {
+            _lastClipboardSequenceNumber = sequenceNumber;
+            return;
+        }
+
         _captureInProgress = true;
         try
         {
@@ -37,6 +50,14 @@ internal sealed partial class MainForm
                         return;
                     }
 
+                    if (ClipboardPrivacyPolicy.ShouldIgnore(
+                            dataObject,
+                            _settings.RespectWindowsPrivacyMarkers))
+                    {
+                        _lastClipboardSequenceNumber = sequenceNumber;
+                        return;
+                    }
+
                     if (!dataObject.GetDataPresent(DataFormats.UnicodeText, autoConvert: true) &&
                         !dataObject.GetDataPresent(DataFormats.Text, autoConvert: true))
                     {
@@ -47,14 +68,29 @@ internal sealed partial class MainForm
                     var text = dataObject.GetData(DataFormats.UnicodeText, autoConvert: true) as string
                                ?? dataObject.GetData(DataFormats.Text, autoConvert: true) as string
                                ?? string.Empty;
+
                     _lastClipboardSequenceNumber = sequenceNumber;
-                    if (_store.AddOrPromote(text, out var newEntry))
+
+                    var isSensitive =
+                        _settings.DetectSensitiveText &&
+                        SensitiveDataDetector.LooksSensitive(text);
+
+                    if (_store.AddOrPromote(
+                            text,
+                            source.ProcessName,
+                            source.WindowTitle,
+                            isSensitive,
+                            _settings.SensitiveExpireSeconds,
+                            out var newEntry))
                     {
-                        if (newEntry is not null)
+                        if (newEntry is not null &&
+                            !newEntry.IsSensitive &&
+                            !_store.IsPrivateSession)
                         {
                             _journal.Append(newEntry);
                         }
 
+                        ScheduleClipboardClear(sequenceNumber);
                         RefreshHistoryList();
                     }
 
@@ -77,7 +113,11 @@ internal sealed partial class MainForm
         var selectedIds = SelectedEntries.Select(entry => entry.Id).ToHashSet();
         var query = _searchBox.Text.Trim();
         var items = _store.Items
-            .Where(item => query.Length == 0 || item.Text.Contains(query, StringComparison.CurrentCultureIgnoreCase))
+            .Where(item =>
+                query.Length == 0 ||
+                item.Text.Contains(query, StringComparison.CurrentCultureIgnoreCase) ||
+                (!string.IsNullOrWhiteSpace(item.SourceProcess) &&
+                 item.SourceProcess.Contains(query, StringComparison.CurrentCultureIgnoreCase)))
             .OrderByDescending(item => item.IsPinned)
             .ThenByDescending(item => item.CopiedAt)
             .ToList();
@@ -87,22 +127,40 @@ internal sealed partial class MainForm
 
         foreach (var entry in items)
         {
-            var listItem = new ListViewItem(entry.IsPinned ? "●" : string.Empty)
+            var marker = entry switch
+            {
+                { IsPinned: true, IsSensitive: true } => "● !",
+                { IsPinned: true } => "●",
+                { IsSensitive: true } => "!",
+                _ => string.Empty
+            };
+
+            var listItem = new ListViewItem(marker)
             {
                 Tag = entry,
                 UseItemStyleForSubItems = false
             };
             listItem.SubItems.Add(CreatePreview(entry.Text));
+            listItem.SubItems.Add(string.IsNullOrWhiteSpace(entry.SourceProcess) ? "—" : entry.SourceProcess);
             listItem.SubItems.Add(FormatTimestamp(entry.CopiedAt));
-            var rowColor = entry.IsPinned ? Color.FromArgb(239, 246, 255) : Color.White;
+
+            var rowColor = entry.IsSensitive
+                ? Color.FromArgb(255, 247, 237)
+                : entry.IsPinned
+                    ? Color.FromArgb(239, 246, 255)
+                    : Color.White;
+
             foreach (ListViewItem.ListViewSubItem subItem in listItem.SubItems)
             {
                 subItem.BackColor = rowColor;
             }
 
-            listItem.SubItems[0].ForeColor = Color.FromArgb(37, 99, 235);
+            listItem.SubItems[0].ForeColor = entry.IsSensitive
+                ? Color.FromArgb(194, 65, 12)
+                : Color.FromArgb(37, 99, 235);
             listItem.SubItems[1].ForeColor = Color.FromArgb(31, 41, 55);
-            listItem.SubItems[2].ForeColor = Color.FromArgb(100, 116, 139);
+            listItem.SubItems[2].ForeColor = Color.FromArgb(71, 85, 105);
+            listItem.SubItems[3].ForeColor = Color.FromArgb(100, 116, 139);
             _historyList.Items.Add(listItem);
 
             if (selectedIds.Contains(entry.Id))
@@ -203,6 +261,7 @@ internal sealed partial class MainForm
         var hasSelection = selected.Count > 0;
         _pasteButton.Enabled = hasSelection;
         _copyButton.Enabled = hasSelection;
+        _editButton.Enabled = selected.Count == 1;
         _pinButton.Enabled = selected.Count == 1;
         _deleteButton.Enabled = hasSelection;
         _pinButton.Text = entry?.IsPinned == true ? "Открепить" : "Закрепить";
