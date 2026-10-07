@@ -39,11 +39,27 @@ internal sealed class HistoryStore : IDisposable
         }
     }
 
+    private HistoryStore(AppSettings settings, VaultMode underlyingMode, bool lockedPrivateSession)
+    {
+        _dataDirectory = Path.Combine(AppContext.BaseDirectory, "Data");
+        _vaultPath = Path.Combine(_dataDirectory, "history.gch");
+        _keyPath = Path.Combine(_dataDirectory, "history.key");
+        _legacyHistoryPath = Path.Combine(_dataDirectory, "history.json");
+
+        _historyLimit = settings.HistoryLimit;
+        _retentionDays = settings.RetentionDays;
+        Items = [];
+        VaultMode = underlyingMode;
+        IsPrivateSession = lockedPrivateSession;
+    }
+
     public List<ClipboardEntry> Items { get; }
 
     public VaultMode VaultMode { get; private set; } = VaultMode.Windows;
 
     public bool IsPrivateSession { get; private set; }
+
+    public bool CanAccessPersistentVault => _key is not null;
 
     public string? LastError { get; private set; }
 
@@ -55,6 +71,13 @@ internal sealed class HistoryStore : IDisposable
         return File.Exists(vaultPath)
             ? EncryptedHistoryCodec.ProbeMode(vaultPath)
             : VaultMode.Windows;
+    }
+
+    public static HistoryStore CreateLockedPrivateSession(
+        AppSettings settings,
+        VaultMode underlyingMode)
+    {
+        return new HistoryStore(settings, underlyingMode, lockedPrivateSession: true);
     }
 
     public static bool TryOpen(
@@ -365,6 +388,12 @@ internal sealed class HistoryStore : IDisposable
         if (!IsPrivateSession)
         {
             return true;
+        }
+
+        if (_key is null)
+        {
+            LastError = "Постоянный vault не разблокирован. Перезапустите GeniaClipboard и разблокируйте vault мастер-паролем.";
+            return false;
         }
 
         try
