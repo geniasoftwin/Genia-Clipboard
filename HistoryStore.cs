@@ -31,11 +31,27 @@ internal sealed class HistoryStore : IDisposable
         _retentionDays = settings.RetentionDays;
 
         Items = [];
-        Initialize(settings, portablePassword);
 
-        if (settings.PrivateSessionOnStart)
+        try
         {
-            BeginPrivateSession();
+            Initialize(settings, portablePassword);
+
+            if (settings.PrivateSessionOnStart)
+            {
+                BeginPrivateSession();
+            }
+        }
+        catch
+        {
+            if (_key is not null)
+            {
+                CryptographicOperations.ZeroMemory(_key);
+                _key = null;
+            }
+
+            CryptographicOperations.ZeroMemory(_portableSalt);
+            _portableSalt = [];
+            throw;
         }
     }
 
