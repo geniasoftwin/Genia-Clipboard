@@ -6,8 +6,10 @@ internal static class NativeMethods
 {
     internal const int WmClipboardUpdate = 0x031D;
     internal const int WmHotKey = 0x0312;
+    internal const uint ModAlt = 0x0001;
     internal const uint ModControl = 0x0002;
     internal const uint ModShift = 0x0004;
+    internal const uint ModWin = 0x0008;
     internal const uint ModNoRepeat = 0x4000;
     internal static readonly IntPtr HwndMessage = new(-3);
 
@@ -36,6 +38,9 @@ internal static class NativeMethods
 
     [DllImport("user32.dll")]
     internal static extern IntPtr GetForegroundWindow();
+
+    [DllImport("user32.dll")]
+    internal static extern uint GetWindowThreadProcessId(IntPtr hwnd, out uint processId);
 
     [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
