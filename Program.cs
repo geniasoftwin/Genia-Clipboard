@@ -36,12 +36,24 @@ internal static class Program
         HistoryStore? store = null;
         string? error = null;
 
-        if (startupMode == VaultMode.Portable)
+        if (settings.PrivateSessionOnStart)
+        {
+            store = HistoryStore.CreateLockedPrivateSession(settings, startupMode);
+        }
+        else if (startupMode == VaultMode.Portable)
         {
             while (store is null)
             {
                 using var unlock = new MasterPasswordForm();
-                if (unlock.ShowDialog() != DialogResult.OK)
+                var result = unlock.ShowDialog();
+
+                if (result == DialogResult.Ignore)
+                {
+                    store = HistoryStore.CreateLockedPrivateSession(settings, startupMode);
+                    break;
+                }
+
+                if (result != DialogResult.OK)
                 {
                     return;
                 }
