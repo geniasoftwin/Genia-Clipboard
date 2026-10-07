@@ -37,6 +37,9 @@ internal static class NativeMethods
     internal static extern uint GetClipboardSequenceNumber();
 
     [DllImport("user32.dll")]
+    internal static extern IntPtr GetClipboardOwner();
+
+    [DllImport("user32.dll")]
     internal static extern IntPtr GetForegroundWindow();
 
     [DllImport("user32.dll")]
