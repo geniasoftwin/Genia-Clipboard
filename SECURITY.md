@@ -4,27 +4,48 @@
 
 ## Supported version
 
-At this stage, the latest published `0.4.x` release is supported. The current stable version is `0.4.4`.
+The current supported release line is `0.5.x`.
 
 ## Security model
 
-GeniaClipboard is a local clipboard manager and therefore handles potentially sensitive data by design.
+GeniaClipboard is a local clipboard manager. Clipboard contents are inherently sensitive and are visible to software running in the same Windows user session.
 
-- `Data/history.json`, `Data/settings.json`, and TXT journal files are stored locally **without encryption**;
-- processes running in the same Windows user session may in principle read or modify the system clipboard;
-- GeniaClipboard's private clipboard format prevents self-duplication but is not a security boundary;
-- the application cannot reliably determine whether copied text is a password, token, API key, or other secret.
+0.5.0 protects persisted history with authenticated encryption:
 
-Pause capture and disable the auto journal before copying sensitive information.
+- history payloads use AES-256-GCM;
+- Windows Vault uses a random 256-bit key protected with Windows DPAPI for the current user;
+- Portable Vault derives a 256-bit key from a master password using PBKDF2-HMAC-SHA256;
+- the Portable Vault master password is not written to disk;
+- encrypted history is authenticated and corrupted/tampered ciphertext fails closed.
 
-## Defensive measures
+Encryption protects data **at rest**. It is not a defense against malware already running with sufficient access to the same Windows user session, process memory, or system clipboard.
 
-The current version includes limits for clipboard entry and history sizes, streamed TXT export, safer local JSON replacement, foreground-window verification before automatic paste, no third-party `PackageReference` dependencies, and GitHub Actions pinned to exact commit SHAs.
+## Clipboard Firewall
 
-Additional technical details are documented in `SECURITY_NOTES.md`.
+GeniaClipboard can:
+
+- respect Windows clipboard privacy markers;
+- exclude configured source processes;
+- keep its own clipboard writes out of its history;
+- heuristically detect several high-confidence secret patterns;
+- auto-expire sensitive entries;
+- auto-clear the system clipboard after a configured delay;
+- run in a memory-only Private Session.
+
+Sensitive detection is best-effort and must not be treated as a guarantee.
+
+## Plaintext outputs
+
+These are intentionally not encrypted:
+
+- `Data/settings.json` — preferences only; no vault key or master password;
+- optional TXT journal files;
+- manual TXT exports.
+
+Sensitive entries and Private Session are not written to the automatic TXT journal. Manual export requires explicit user confirmation.
 
 ## Reporting a vulnerability
 
 Do not post real passwords, tokens, personal information, or clipboard contents in a public issue.
 
-Non-sensitive reports may be submitted as an issue with a minimal reproducible example. If a report contains sensitive technical details, contact the repository owner through GitHub first and do not attach real secrets.
+For non-sensitive reports, open an issue with a minimal reproducible example. For reports containing sensitive technical details, contact the repository owner through GitHub first and do not attach real secrets.
