@@ -47,15 +47,23 @@ internal sealed class MasterPasswordForm : Form
             Width = 134
         };
 
+        var privateButton = new Button
+        {
+            Text = "Private Session",
+            DialogResult = DialogResult.Ignore,
+            Location = new Point(140, 126),
+            Width = 128
+        };
+
         var cancelButton = new Button
         {
             Text = "Выход",
             DialogResult = DialogResult.Cancel,
-            Location = new Point(176, 126),
+            Location = new Point(40, 126),
             Width = 92
         };
 
-        Controls.AddRange([title, hint, _passwordBox, cancelButton, unlockButton]);
+        Controls.AddRange([title, hint, _passwordBox, cancelButton, privateButton, unlockButton]);
         AcceptButton = unlockButton;
         CancelButton = cancelButton;
         Shown += (_, _) => _passwordBox.Focus();
