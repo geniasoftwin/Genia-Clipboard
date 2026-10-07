@@ -8,9 +8,9 @@
     <Nullable>enable</Nullable>
     <AssemblyName>GeniaClipboard</AssemblyName>
     <RootNamespace>GeniaClipboard</RootNamespace>
-    <Version>0.4.4</Version>
-    <Authors>GeniaClipboard</Authors>
-    <Description>Portable clipboard history manager for Windows.</Description>
+    <Version>0.5.0</Version>
+    <Authors>GeniaSoftWin</Authors>
+    <Description>Privacy-first portable clipboard manager for Windows.</Description>
     <ApplicationIcon>Assets\GeniaClipboard.ico</ApplicationIcon>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
