@@ -19,13 +19,17 @@ internal sealed partial class MainForm
 
         if (await TrySetClipboardTextAsync(text))
         {
-            _statusLabel.Text = selected.Count == 1 ? "Скопировано" : $"Скопировано элементов: {selected.Count}";
+            _statusLabel.Text = selected.Count == 1
+                ? "Скопировано"
+                : $"Скопировано элементов: {selected.Count}";
         }
     }
 
     private async Task PasteSelectedAsync()
     {
-        if (SelectedEntries.Count == 0 || !TryBuildSelectedText(out var text) || !await TrySetClipboardTextAsync(text))
+        if (SelectedEntries.Count == 0 ||
+            !TryBuildSelectedText(out var text) ||
+            !await TrySetClipboardTextAsync(text))
         {
             return;
         }
@@ -61,8 +65,15 @@ internal sealed partial class MainForm
                 var data = new DataObject();
                 data.SetData(DataFormats.UnicodeText, true, text);
                 data.SetData(InternalClipboardFormat, false, "1");
+
+                using var excludeStream = new MemoryStream(BitConverter.GetBytes(1));
+                using var historyStream = new MemoryStream(BitConverter.GetBytes(0));
+                data.SetData("ExcludeClipboardContentFromMonitorProcessing", false, excludeStream);
+                data.SetData("CanIncludeInClipboardHistory", false, historyStream);
+
                 Clipboard.SetDataObject(data, copy: true);
                 _lastClipboardSequenceNumber = NativeMethods.GetClipboardSequenceNumber();
+                ScheduleClipboardClear(_lastClipboardSequenceNumber);
                 return true;
             }
             catch (ExternalException)
@@ -77,6 +88,49 @@ internal sealed partial class MainForm
             MessageBoxButtons.OK,
             MessageBoxIcon.Information);
         return false;
+    }
+
+    private void EditSelectedEntry()
+    {
+        var entry = SelectedEntry;
+        if (entry is null)
+        {
+            return;
+        }
+
+        using var dialog = new EditEntryForm(entry.Text);
+        if (dialog.ShowDialog(this) != DialogResult.OK)
+        {
+            return;
+        }
+
+        var edited = dialog.EditedText;
+        if (string.Equals(edited, entry.Text, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        if (_settings.DetectSensitiveText && SensitiveDataDetector.LooksSensitive(edited))
+        {
+            entry.IsSensitive = true;
+            if (!entry.IsPinned && _settings.SensitiveExpireSeconds > 0)
+            {
+                entry.ExpiresAt = DateTimeOffset.Now.AddSeconds(_settings.SensitiveExpireSeconds);
+            }
+        }
+
+        if (!_store.UpdateText(entry, edited))
+        {
+            MessageBox.Show(
+                this,
+                "Не удалось сохранить изменённую запись.",
+                "GeniaClipboard",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+            return;
+        }
+
+        RefreshHistoryList();
     }
 
     private void TogglePinned()
@@ -136,6 +190,19 @@ internal sealed partial class MainForm
             return;
         }
 
+        var warning = MessageBox.Show(
+            this,
+            "TXT-файл будет незашифрованным. Продолжить экспорт?",
+            "GeniaClipboard",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Warning,
+            MessageBoxDefaultButton.Button2);
+
+        if (warning != DialogResult.Yes)
+        {
+            return;
+        }
+
         try
         {
             using var writer = new StreamWriter(
@@ -188,11 +255,17 @@ internal sealed partial class MainForm
             {
                 item.Selected = true;
             }
+
             e.SuppressKeyPress = true;
         }
         else if (e.Control && e.KeyCode == Keys.C)
         {
             _ = CopySelectedAsync();
+            e.SuppressKeyPress = true;
+        }
+        else if (e.KeyCode == Keys.F2)
+        {
+            EditSelectedEntry();
             e.SuppressKeyPress = true;
         }
         else if (e.KeyCode == Keys.Enter)
@@ -224,14 +297,17 @@ internal sealed partial class MainForm
 
     private void ResizeHistoryColumns()
     {
-        if (_historyList.Columns.Count < 3)
+        if (_historyList.Columns.Count < 4)
         {
             return;
         }
 
-        _historyList.Columns[0].Width = 30;
-        _historyList.Columns[2].Width = 128;
-        _historyList.Columns[1].Width = Math.Max(190, _historyList.ClientSize.Width - 162);
+        _historyList.Columns[0].Width = 44;
+        _historyList.Columns[2].Width = 140;
+        _historyList.Columns[3].Width = 128;
+        _historyList.Columns[1].Width = Math.Max(
+            220,
+            _historyList.ClientSize.Width - 318);
     }
 
     private void UpdateStatus(int? visibleCount = null)
@@ -253,17 +329,23 @@ internal sealed partial class MainForm
 
         if (!_hotKeyRegistered)
         {
-            _statusLabel.Text = "Ctrl+Shift+V уже занято";
+            _statusLabel.Text = "Глобальный хоткей уже занят";
             return;
         }
 
         var count = visibleCount ?? _store.Items.Count;
         var selectedCount = _historyList.SelectedItems.Count;
-        var selectionSuffix = selectedCount > 1 ? $"  ·  Выбрано: {selectedCount}" : string.Empty;
-        var journalSuffix = _journal.Enabled ? "  ·  TXT ●" : string.Empty;
+        var selectionSuffix = selectedCount > 1 ? $" · Выбрано: {selectedCount}" : string.Empty;
+        var journalSuffix = _journal.Enabled && !_store.IsPrivateSession ? " · TXT" : string.Empty;
+        var vault = _store.IsPrivateSession
+            ? "Private Session"
+            : _store.VaultMode == VaultMode.Portable
+                ? "Portable Vault"
+                : "Windows Vault";
+
         _statusLabel.Text = CaptureEnabled
-            ? $"Записей: {count}{selectionSuffix}{journalSuffix}"
-            : $"Сбор приостановлен  ·  Записей: {count}{selectionSuffix}{journalSuffix}";
+            ? $"{vault} · Записей: {count}{selectionSuffix}{journalSuffix}"
+            : $"{vault} · Сбор приостановлен · {count}{selectionSuffix}";
     }
 
     private static void DrawSearchBorder(object? sender, PaintEventArgs e)
