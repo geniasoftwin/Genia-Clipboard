@@ -16,11 +16,20 @@ internal sealed partial class MainForm
         UpdateStatus();
     }
 
-    public void SetMonitorStatus(bool clipboardListenerRegistered, bool hotKeyRegistered)
+    public void SetMonitorStatus(
+        bool clipboardListenerRegistered,
+        bool hotKeyRegistered,
+        HotKeyDefinition currentHotKey)
     {
         _clipboardListenerRegistered = clipboardListenerRegistered;
         _hotKeyRegistered = hotKeyRegistered;
+        SetHotKeyDisplay(currentHotKey);
         UpdateStatus();
+    }
+
+    public void SetHotKeyDisplay(HotKeyDefinition hotKey)
+    {
+        _hotKeyLabel.Text = $"Firewall ON · {hotKey.ToDisplayString()}";
     }
 
     public void HandleClipboardUpdate()
@@ -30,7 +39,17 @@ internal sealed partial class MainForm
 
     public void PollClipboard()
     {
+        if (_store.RemoveExpired() > 0)
+        {
+            RefreshHistoryList();
+        }
+
         CaptureClipboardTextAsync();
+    }
+
+    public void RefreshFromStore()
+    {
+        RefreshHistoryList();
     }
 
     public void ShowWindow(bool rememberForegroundWindow)
@@ -74,8 +93,12 @@ internal sealed partial class MainForm
             return;
         }
 
+        var message = _store.IsPrivateSession
+            ? "Удалить всю временную историю Private Session?"
+            : "Удалить всю зашифрованную историю, включая закреплённые записи?";
+
         var result = MessageBox.Show(
-            "Удалить всю историю, включая закреплённые записи?",
+            message,
             "GeniaClipboard",
             MessageBoxButtons.YesNo,
             MessageBoxIcon.Warning,
@@ -100,6 +123,53 @@ internal sealed partial class MainForm
         }
 
         base.OnFormClosing(e);
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _clipboardClearTimer.Dispose();
+            _toolTip.Dispose();
+        }
+
+        base.Dispose(disposing);
+    }
+
+    private void ScheduleClipboardClear(uint sequenceNumber)
+    {
+        _clipboardClearTimer.Stop();
+
+        if (_settings.ClipboardAutoClearSeconds <= 0 || sequenceNumber == 0)
+        {
+            return;
+        }
+
+        _clipboardSequenceToClear = sequenceNumber;
+        var milliseconds = (long)_settings.ClipboardAutoClearSeconds * 1000L;
+        _clipboardClearTimer.Interval = (int)Math.Clamp(milliseconds, 1000L, int.MaxValue);
+        _clipboardClearTimer.Start();
+    }
+
+    private void ClipboardClearTimerOnTick(object? sender, EventArgs e)
+    {
+        _clipboardClearTimer.Stop();
+
+        try
+        {
+            var currentSequence = NativeMethods.GetClipboardSequenceNumber();
+            if (currentSequence == 0 || currentSequence != _clipboardSequenceToClear)
+            {
+                return;
+            }
+
+            Clipboard.Clear();
+            _lastClipboardSequenceNumber = NativeMethods.GetClipboardSequenceNumber();
+        }
+        catch
+        {
+            // Clipboard ownership is transient. A failed cleanup is not fatal.
+        }
     }
 
     private static Button CreateButton(string text, bool classic = false)

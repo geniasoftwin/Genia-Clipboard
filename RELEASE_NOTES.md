@@ -1,33 +1,49 @@
-# GeniaClipboard 0.4.4
+# GeniaClipboard 0.5.0 — Privacy Core
 
 [Русский ниже](#русский)
 
 ## English
 
-GeniaClipboard 0.4.4 is the stable release for the current development stage.
+0.5.0 turns GeniaClipboard into a privacy-first clipboard vault rather than a plaintext clipboard archive.
 
 Highlights:
-- clipboard history for text and URLs;
-- global Ctrl+Shift+V history window;
-- multi-selection and batch copy/paste;
-- TXT export and optional daily TXT journal;
-- protection against self-copy duplication;
-- safer clipboard, file, and foreground-window handling;
-- portable self-contained Windows x64 build.
+- MIT licensed;
+- AES-256-GCM encrypted history;
+- Windows Vault protected by Windows DPAPI;
+- Portable Vault protected by a master-password-derived key;
+- safe verified migration from 0.4.x plaintext history;
+- memory-only Private Session;
+- configurable hotkey, history limit, retention, and Windows autostart;
+- application exclusions and Windows clipboard privacy markers;
+- source-process metadata;
+- sensitive-data detection and auto-expiry;
+- optional system-clipboard auto-clear;
+- F2 entry editing;
+- release ZIP accompanied by SHA-256 checksums.
 
-Important privacy note: clipboard history and TXT journals are stored locally without encryption. Pause capture before copying passwords, tokens, or other sensitive data.
+Security boundary: encryption protects persisted history at rest. It does not protect clipboard contents or process memory from malware already running with sufficient access in the same Windows session.
+
+TXT exports and the optional TXT journal remain plaintext by design. Sensitive entries and Private Session are never written to the automatic journal.
 
 ## Русский
 
-GeniaClipboard 0.4.4 — стабильный релиз текущего этапа разработки.
+0.5.0 превращает GeniaClipboard из plaintext-архива буфера в privacy-first clipboard vault.
 
 Главное:
-- история текста и ссылок;
-- глобальное окно истории по Ctrl+Shift+V;
-- множественное выделение и пакетное копирование/вставка;
-- экспорт TXT и опциональный ежедневный TXT-журнал;
-- защита от самокопирования и дублей;
-- усиленная обработка буфера, файлов и целевого окна вставки;
-- портативная self-contained сборка Windows x64.
+- лицензия MIT;
+- история зашифрована AES-256-GCM;
+- Windows Vault с ключом под защитой Windows DPAPI;
+- Portable Vault с ключом из мастер-пароля;
+- проверяемая миграция старого `history.json`;
+- Private Session только в оперативной памяти;
+- настраиваемый хоткей, лимит/срок истории и автозапуск Windows;
+- исключения приложений и privacy-маркеры Windows clipboard;
+- сохранение приложения-источника;
+- sensitive detector и автоудаление sensitive-записей;
+- опциональная автоочистка системного clipboard;
+- редактор записей по F2;
+- отдельный SHA-256 checksum релизного ZIP.
 
-Важно: история и TXT-журналы хранятся локально без шифрования. Перед копированием паролей, токенов и других секретов приостанавливайте сбор.
+Граница защиты: шифрование защищает сохранённую историю на диске, но не clipboard и память процесса от вредоносной программы, уже работающей с достаточными правами в той же Windows-сессии.
+
+TXT-экспорт и опциональный TXT-журнал остаются plaintext. Sensitive-записи и Private Session в автоматический журнал не записываются.

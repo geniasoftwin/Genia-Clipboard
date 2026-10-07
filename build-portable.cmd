@@ -17,9 +17,11 @@ set "PROJECT=GeniaClipboard.csproj"
 set "PUBLISH=bin\Release\net8.0-windows\win-x64\publish"
 set "OUTPUT=dist\GeniaClipboard-win-x64"
 set "ARCHIVE=dist\GeniaClipboard-win-x64.zip"
+set "CHECKSUM=dist\SHA256SUMS.txt"
 
 if exist "%OUTPUT%" rmdir /s /q "%OUTPUT%"
 if exist "%ARCHIVE%" del /q "%ARCHIVE%"
+if exist "%CHECKSUM%" del /q "%CHECKSUM%"
 
 rem IMPORTANT: do not use dotnet publish -o/--output here.
 rem dotnet can normalize -o to an absolute MSBuild property, which is fragile when the
@@ -35,12 +37,20 @@ if errorlevel 1 goto :copy_failed
 
 copy /y "README.md" "%OUTPUT%\README.md" >nul
 if errorlevel 1 goto :copy_failed
+copy /y "README_RU.md" "%OUTPUT%\README_RU.md" >nul
+if errorlevel 1 goto :copy_failed
+copy /y "LICENSE" "%OUTPUT%\LICENSE" >nul
+if errorlevel 1 goto :copy_failed
 
 powershell -NoProfile -ExecutionPolicy Bypass -Command "Compress-Archive -Path '%OUTPUT%\*' -DestinationPath '%ARCHIVE%' -Force"
 if errorlevel 1 goto :zip_failed
 
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$h=(Get-FileHash '%ARCHIVE%' -Algorithm SHA256).Hash.ToLowerInvariant(); Set-Content -Path '%CHECKSUM%' -Value ($h + '  GeniaClipboard-win-x64.zip') -Encoding Ascii"
+if errorlevel 1 goto :checksum_failed
+
 echo.
 echo Готово: %CD%\%ARCHIVE%
+echo SHA-256: %CD%\%CHECKSUM%
 set "EXITCODE=0"
 goto :finish
 
@@ -72,6 +82,12 @@ goto :finish
 :zip_failed
 echo.
 echo EXE собран, но ZIP создать не удалось: %CD%\%OUTPUT%
+set "EXITCODE=1"
+goto :finish
+
+:checksum_failed
+echo.
+echo ZIP создан, но SHA-256 checksum создать не удалось.
 set "EXITCODE=1"
 
 :finish

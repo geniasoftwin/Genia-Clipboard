@@ -6,6 +6,7 @@ internal sealed partial class MainForm : Form
 {
     private readonly HistoryStore _store;
     private readonly TextJournalService _journal;
+    private readonly AppSettings _settings;
     private const string InternalClipboardFormat = "GeniaClipboard.Internal.v1";
     private const int MaxBatchClipboardLength = 16_000_000;
     private const int MaxMultiPreviewLength = 200_000;
@@ -14,27 +15,32 @@ internal sealed partial class MainForm : Form
     private readonly TextBox _previewBox;
     private readonly Button _pasteButton;
     private readonly Button _copyButton;
+    private readonly Button _editButton;
     private readonly Button _pinButton;
     private readonly Button _deleteButton;
     private readonly Label _statusLabel;
+    private readonly NoCopyLabel _hotKeyLabel;
     private readonly ToolTip _toolTip;
+    private readonly System.Windows.Forms.Timer _clipboardClearTimer;
 
     private bool _allowClose;
     private bool _hotKeyRegistered;
     private bool _clipboardListenerRegistered;
     private bool _captureInProgress;
     private uint _lastClipboardSequenceNumber;
+    private uint _clipboardSequenceToClear;
     private IntPtr _previousForegroundWindow;
 
-    public MainForm(HistoryStore store, TextJournalService journal)
+    public MainForm(HistoryStore store, TextJournalService journal, AppSettings settings)
     {
         _store = store;
         _journal = journal;
+        _settings = settings;
 
         Text = "GeniaClipboard";
         StartPosition = FormStartPosition.CenterScreen;
-        ClientSize = new Size(860, 520);
-        MinimumSize = new Size(760, 420);
+        ClientSize = new Size(980, 560);
+        MinimumSize = new Size(820, 440);
         KeyPreview = true;
         ShowInTaskbar = false;
         AutoScaleMode = AutoScaleMode.Dpi;
@@ -66,19 +72,19 @@ internal sealed partial class MainForm : Form
         {
             AutoSize = true,
             Location = new Point(41, 22),
-            Text = "История буфера обмена",
+            Text = "Privacy-first история буфера обмена",
             Font = new Font("Segoe UI", 8.25F),
             ForeColor = Color.FromArgb(107, 114, 128)
         };
 
-        var hotKeyLabel = new NoCopyLabel
+        _hotKeyLabel = new NoCopyLabel
         {
             Dock = DockStyle.Right,
-            Width = 120,
-            Text = "Ctrl + Shift + V",
+            Width = 280,
+            Text = $"Firewall ON · {HotKeyDefinition.FromSettings(settings).ToDisplayString()}",
             TextAlign = ContentAlignment.MiddleRight,
             Font = new Font("Segoe UI", 8.25F),
-            ForeColor = Color.FromArgb(100, 116, 139)
+            ForeColor = Color.FromArgb(16, 120, 80)
         };
 
         var identityPanel = new Panel
@@ -90,7 +96,7 @@ internal sealed partial class MainForm : Form
         identityPanel.Controls.Add(appIcon);
         identityPanel.Controls.Add(titleLabel);
         identityPanel.Controls.Add(subtitleLabel);
-        identityPanel.Controls.Add(hotKeyLabel);
+        identityPanel.Controls.Add(_hotKeyLabel);
 
         _searchBox = new TextBox
         {
@@ -141,8 +147,9 @@ internal sealed partial class MainForm : Form
             HeaderStyle = ColumnHeaderStyle.Nonclickable,
             UseCompatibleStateImageBehavior = false
         };
-        _historyList.Columns.Add("", 30);
-        _historyList.Columns.Add("Содержимое", 480);
+        _historyList.Columns.Add("", 44);
+        _historyList.Columns.Add("Содержимое", 500);
+        _historyList.Columns.Add("Источник", 150);
         _historyList.Columns.Add("Время", 128);
         _historyList.SelectedIndexChanged += (_, _) => UpdateSelection();
         _historyList.DoubleClick += async (_, _) => await PasteSelectedAsync();
@@ -195,7 +202,7 @@ internal sealed partial class MainForm : Form
         {
             Dock = DockStyle.Fill,
             Orientation = Orientation.Horizontal,
-            SplitterDistance = 245,
+            SplitterDistance = 270,
             SplitterWidth = 4,
             Panel1MinSize = 130,
             Panel2MinSize = 82,
@@ -226,6 +233,9 @@ internal sealed partial class MainForm : Form
         _copyButton = CreateButton("Копировать");
         _copyButton.Click += async (_, _) => await CopySelectedAsync();
 
+        _editButton = CreateButton("Изменить");
+        _editButton.Click += (_, _) => EditSelectedEntry();
+
         _pinButton = CreateButton("Закрепить");
         _pinButton.Click += (_, _) => TogglePinned();
 
@@ -234,6 +244,9 @@ internal sealed partial class MainForm : Form
 
         var exportButton = CreateButton("Экспорт TXT");
         exportButton.Click += (_, _) => ExportToTxt();
+
+        var settingsButton = CreateButton("Настройки");
+        settingsButton.Click += (_, _) => SettingsRequested?.Invoke(this, EventArgs.Empty);
 
         var clearButton = CreateButton("Очистить");
         clearButton.Click += (_, _) => ClearHistoryWithConfirmation();
@@ -247,13 +260,22 @@ internal sealed partial class MainForm : Form
             Padding = new Padding(10, 7, 0, 6),
             BackColor = Color.White
         };
-        buttonPanel.Controls.AddRange([_pasteButton, _copyButton, _pinButton, _deleteButton, exportButton, clearButton]);
+        buttonPanel.Controls.AddRange([
+            _pasteButton,
+            _copyButton,
+            _editButton,
+            _pinButton,
+            _deleteButton,
+            exportButton,
+            settingsButton,
+            clearButton
+        ]);
 
         _statusLabel = new NoCopyLabel
         {
             Dock = DockStyle.Right,
             AutoSize = false,
-            Width = 200,
+            Width = 270,
             TextAlign = ContentAlignment.MiddleRight,
             Padding = new Padding(0, 0, 10, 0),
             ForeColor = Color.FromArgb(75, 85, 99),
@@ -274,6 +296,9 @@ internal sealed partial class MainForm : Form
         Controls.Add(footerPanel);
         Controls.Add(headerPanel);
 
+        _clipboardClearTimer = new System.Windows.Forms.Timer();
+        _clipboardClearTimer.Tick += ClipboardClearTimerOnTick;
+
         _toolTip = new ToolTip
         {
             InitialDelay = 350,
@@ -282,12 +307,16 @@ internal sealed partial class MainForm : Form
         };
         _toolTip.SetToolTip(_pasteButton, "Вставить выбранный фрагмент — Enter");
         _toolTip.SetToolTip(_copyButton, "Скопировать выбранные записи, по одной на строку");
+        _toolTip.SetToolTip(_editButton, "Изменить одну выбранную запись — F2");
         _toolTip.SetToolTip(_pinButton, "Закрепить одну выбранную запись вверху списка");
         _toolTip.SetToolTip(_deleteButton, "Удалить выбранные записи — Delete");
         _toolTip.SetToolTip(exportButton, "Экспорт: несколько выделенных записей или вся история");
-        _toolTip.SetToolTip(clearButton, "Удалить всю историю");
+        _toolTip.SetToolTip(settingsButton, "Privacy, vault, hotkey и автозапуск");
+        _toolTip.SetToolTip(clearButton, "Удалить всю текущую историю");
 
         KeyDown += OnWindowKeyDown;
         RefreshHistoryList();
     }
+
+    public event EventHandler? SettingsRequested;
 }
