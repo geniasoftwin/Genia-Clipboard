@@ -10,6 +10,8 @@ internal sealed class ClipboardMonitorWindow : NativeWindow, IDisposable
     private bool _clipboardListenerRegistered;
     private bool _hotKeyRegistered;
     private bool _disposed;
+    private HotKeyDefinition _currentHotKey =
+        new(NativeMethods.ModControl | NativeMethods.ModShift, Keys.V);
 
     public ClipboardMonitorWindow()
     {
@@ -28,7 +30,9 @@ internal sealed class ClipboardMonitorWindow : NativeWindow, IDisposable
 
     public bool HotKeyRegistered => _hotKeyRegistered;
 
-    public void Start()
+    public HotKeyDefinition CurrentHotKey => _currentHotKey;
+
+    public void Start(HotKeyDefinition hotKey)
     {
         if (_disposed)
         {
@@ -40,14 +44,41 @@ internal sealed class ClipboardMonitorWindow : NativeWindow, IDisposable
             _clipboardListenerRegistered = NativeMethods.AddClipboardFormatListener(Handle);
         }
 
-        if (!_hotKeyRegistered)
+        _currentHotKey = hotKey;
+        _hotKeyRegistered = Register(hotKey);
+    }
+
+    public bool TrySetHotKey(HotKeyDefinition hotKey)
+    {
+        if (_disposed)
         {
-            _hotKeyRegistered = NativeMethods.RegisterHotKey(
-                Handle,
-                HotKeyId,
-                NativeMethods.ModControl | NativeMethods.ModShift | NativeMethods.ModNoRepeat,
-                (int)Keys.V);
+            throw new ObjectDisposedException(nameof(ClipboardMonitorWindow));
         }
+
+        if (hotKey == _currentHotKey && _hotKeyRegistered)
+        {
+            return true;
+        }
+
+        var previous = _currentHotKey;
+        var previousWasRegistered = _hotKeyRegistered;
+
+        if (_hotKeyRegistered)
+        {
+            NativeMethods.UnregisterHotKey(Handle, HotKeyId);
+            _hotKeyRegistered = false;
+        }
+
+        if (Register(hotKey))
+        {
+            _currentHotKey = hotKey;
+            _hotKeyRegistered = true;
+            return true;
+        }
+
+        _currentHotKey = previous;
+        _hotKeyRegistered = previousWasRegistered && Register(previous);
+        return false;
     }
 
     protected override void WndProc(ref Message message)
@@ -87,5 +118,19 @@ internal sealed class ClipboardMonitorWindow : NativeWindow, IDisposable
 
         DestroyHandle();
         GC.SuppressFinalize(this);
+    }
+
+    private bool Register(HotKeyDefinition hotKey)
+    {
+        if (hotKey.Key == Keys.None)
+        {
+            return false;
+        }
+
+        return NativeMethods.RegisterHotKey(
+            Handle,
+            HotKeyId,
+            hotKey.Modifiers | NativeMethods.ModNoRepeat,
+            (int)hotKey.Key);
     }
 }
