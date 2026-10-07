@@ -68,8 +68,10 @@ internal sealed partial class MainForm
 
                 using var excludeStream = new MemoryStream(BitConverter.GetBytes(1));
                 using var historyStream = new MemoryStream(BitConverter.GetBytes(0));
+                using var cloudStream = new MemoryStream(BitConverter.GetBytes(0));
                 data.SetData("ExcludeClipboardContentFromMonitorProcessing", false, excludeStream);
                 data.SetData("CanIncludeInClipboardHistory", false, historyStream);
+                data.SetData("CanUploadToCloudClipboard", false, cloudStream);
 
                 Clipboard.SetDataObject(data, copy: true);
                 _lastClipboardSequenceNumber = NativeMethods.GetClipboardSequenceNumber();
