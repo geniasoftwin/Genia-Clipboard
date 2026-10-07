@@ -11,7 +11,12 @@ internal sealed record ClipboardSourceInfo(
     {
         try
         {
-            var window = NativeMethods.GetForegroundWindow();
+            var window = NativeMethods.GetClipboardOwner();
+            if (window == IntPtr.Zero)
+            {
+                window = NativeMethods.GetForegroundWindow();
+            }
+
             if (window == IntPtr.Zero)
             {
                 return new ClipboardSourceInfo(null, null, false);
