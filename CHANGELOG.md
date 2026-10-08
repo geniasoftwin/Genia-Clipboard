@@ -2,7 +2,7 @@
 
 All notable GeniaClipboard changes are documented in this file.
 
-## [0.5.6] - beta candidate, 2026-10-08
+## [0.5.6] - public beta, 2026-10-08
 
 ### Changed
 
