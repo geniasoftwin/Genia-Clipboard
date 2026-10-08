@@ -7,6 +7,7 @@ internal sealed partial class MainForm : Form
     private readonly HistoryStore _store;
     private readonly TextJournalService _journal;
     private readonly AppSettings _settings;
+    private readonly ForegroundWindowTracker _foregroundTracker;
     private const string InternalClipboardFormat = "GeniaClipboard.Internal.v1";
     private const int MaxBatchClipboardLength = 16_000_000;
     private const int MaxMultiPreviewLength = 200_000;
@@ -30,15 +31,13 @@ internal sealed partial class MainForm : Form
     private bool _captureInProgress;
     private uint _lastClipboardSequenceNumber;
     private uint _clipboardSequenceToClear;
-    private IntPtr _previousForegroundWindow;
-    private uint _pasteTargetProcessId;
-    private bool _openingFromShortcut;
 
     public MainForm(HistoryStore store, TextJournalService journal, AppSettings settings)
     {
         _store = store;
         _journal = journal;
         _settings = settings;
+        _foregroundTracker = new ForegroundWindowTracker();
 
         Text = "GeniaClipboard";
         StartPosition = FormStartPosition.CenterScreen;
