@@ -12,7 +12,7 @@
 
 <p align="center">
   <a href="https://github.com/geniasoftwin/Genia-Clipboard/actions/workflows/build.yml"><img alt="Build" src="https://github.com/geniasoftwin/Genia-Clipboard/actions/workflows/build.yml/badge.svg"></a>
-  <img alt="Version" src="https://img.shields.io/badge/version-0.5.3-blue">
+  <img alt="Version" src="https://img.shields.io/badge/version-0.5.4-blue">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-green">
   <img alt="Platform" src="https://img.shields.io/badge/platform-Windows%2010%2F11-0078D6?logo=windows11&logoColor=white">
   <img alt=".NET" src="https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white">
@@ -147,6 +147,10 @@ Private Session временно скрывает постоянный vault и 
 
 Чтобы автоматически вставить текст, сначала поставьте курсор в нужной программе и откройте GeniaClipboard **глобальной горячей клавишей** (обычно `Ctrl+Shift+V`). Выберите запись и нажмите **«Вставить»**. При ручном открытии GeniaClipboard из трея или панели задач прежняя цель вставки сбрасывается, чтобы текст не попал в случайное старое окно. В этом случае используйте **«Копировать»**, а затем обычное `Ctrl+V`.
 
+## Выравнивание поиска в 0.5.4
+
+Строка поиска снова имеет удобную полную высоту, а текст и подсказка выровнены по вертикали внутри поля. Рамка рисуется стандартным механизмом Windows, без самодельного обработчика Paint. Логика Vault, вставки горячими клавишами и структура настроек не менялись.
+
 ## Ограничения
 
 - пока только текст: изображения, файлы, HTML и RTF запланированы на этап Rich Clipboard;
@@ -168,4 +172,4 @@ GeniaClipboard распространяется под [MIT License](LICENSE).
 
 ## Версия
 
-Текущий релиз: **0.5.3 — Paste & UI fixes**. Основа Privacy Core появилась в 0.5.0.
+Текущий релиз: **0.5.4 — Search Alignment**. Основа Privacy Core появилась в 0.5.0.
