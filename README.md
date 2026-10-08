@@ -12,7 +12,7 @@
 
 <p align="center">
   <a href="https://github.com/geniasoftwin/Genia-Clipboard/actions/workflows/build.yml"><img alt="Build" src="https://github.com/geniasoftwin/Genia-Clipboard/actions/workflows/build.yml/badge.svg"></a>
-  <img alt="Version" src="https://img.shields.io/badge/version-0.5.3-blue">
+  <img alt="Version" src="https://img.shields.io/badge/version-0.5.4-blue">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-green">
   <img alt="Platform" src="https://img.shields.io/badge/platform-Windows%2010%2F11-0078D6?logo=windows11&logoColor=white">
   <img alt=".NET" src="https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white">
@@ -171,6 +171,10 @@ Version 0.5.3 also reduces the pinned/sensitive marker column from 44 to 22 pixe
 
 To auto-paste into another app, place the cursor in that app and open GeniaClipboard using the global hotkey (by default `Ctrl+Shift+V`). Then select a clip and choose **Paste**. If you open GeniaClipboard manually (taskbar/tray), the previous paste target is discarded: use **Copy** and paste manually instead. This prevents paste into an unrelated old foreground window.
 
+## Search-field refinement in 0.5.4
+
+The search row now keeps its full height, with the text and placeholder centered vertically inside a borderless edit control. A native Windows panel border replaces custom border painting. The Clipboard Firewall, vault format, hotkey paste behavior and settings schema are unchanged.
+
 ## Current limitations
 
 - text only; images, copied file lists, HTML, and RTF are planned for the Rich Clipboard stage;
@@ -192,4 +196,4 @@ GeniaClipboard is released under the [MIT License](LICENSE).
 
 ## Version
 
-Current release: **0.5.3 — Paste & UI fixes**. The Privacy Core was introduced in 0.5.0.
+Current release: **0.5.4 — Search Alignment**. The Privacy Core was introduced in 0.5.0.
