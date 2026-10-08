@@ -83,7 +83,7 @@ dotnet restore GeniaClipboard.csproj
 dotnet publish GeniaClipboard.csproj -c Release
 ```
 
-Release ZIPs include a `SHA256SUMS.txt` checksum. The EXE is self-contained, so an additional .NET runtime installation isn't required on the target PC.
+Release assets include a portable ZIP, the standalone `GeniaClipboard.exe`, and `SHA256SUMS.txt` with SHA-256 values for **both** files. On Windows, you can verify the downloaded file using `Get-FileHash .\GeniaClipboard.exe -Algorithm SHA256` (or substitute the ZIP name) and compare it with the matching checksum line. The EXE is self-contained, so an additional .NET runtime installation isn't required on the target PC.
 
 ## Participate
 
