@@ -12,7 +12,7 @@
 
 <p align="center">
   <a href="https://github.com/geniasoftwin/Genia-Clipboard/actions/workflows/build.yml"><img alt="Build" src="https://github.com/geniasoftwin/Genia-Clipboard/actions/workflows/build.yml/badge.svg"></a>
-  <img alt="Version" src="https://img.shields.io/badge/version-0.5.0-blue">
+  <img alt="Version" src="https://img.shields.io/badge/version-0.5.1-blue">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-green">
   <img alt="Platform" src="https://img.shields.io/badge/platform-Windows%2010%2F11-0078D6?logo=windows11&logoColor=white">
   <img alt=".NET" src="https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white">
@@ -157,6 +157,10 @@ The following remain intentionally unencrypted when enabled or explicitly create
 
 GeniaClipboard warns before manual TXT export. Sensitive entries and Private Session are never written to the automatic TXT journal.
 
+## Settings UI in 0.5.1
+
+Settings now have four focused tabs: **Security**, **History**, **Hotkeys**, and **System** (tab names in the current UI are Russian). Save and Cancel remain visible in a fixed footer while each tab scrolls independently. Vault-mode descriptions, process exclusions, and plaintext journal warnings have more room, including at increased Windows display scaling.
+
 ## Current limitations
 
 - text only; images, copied file lists, HTML, and RTF are planned for the Rich Clipboard stage;
@@ -178,4 +182,4 @@ GeniaClipboard is released under the [MIT License](LICENSE).
 
 ## Version
 
-Current release line: **0.5.0 — Privacy Core**.
+Current release: **0.5.1 — UI & Usability**. The Privacy Core was introduced in 0.5.0.
