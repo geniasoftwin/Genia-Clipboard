@@ -219,7 +219,7 @@ internal sealed partial class MainForm : Form
         };
         contentPanel.Controls.Add(bodyCard);
 
-        _pasteButton = CreateButton("Вставить", classic: true);
+        _pasteButton = CreateButton("Вставить", ButtonTone.Primary);
         _pasteButton.Click += async (_, _) => await PasteSelectedAsync();
 
         _copyButton = CreateButton("Копировать");
@@ -240,7 +240,7 @@ internal sealed partial class MainForm : Form
         var settingsButton = CreateButton("Настройки");
         settingsButton.Click += (_, _) => SettingsRequested?.Invoke(this, EventArgs.Empty);
 
-        var clearButton = CreateButton("Очистить");
+        var clearButton = CreateButton("Очистить", ButtonTone.Danger);
         clearButton.Click += (_, _) => ClearHistoryWithConfirmation();
 
         // A fixed two-row footer keeps the vault/status text visible even when
