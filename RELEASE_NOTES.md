@@ -1,35 +1,47 @@
-# GeniaClipboard 0.5.5 — Selection Safety
+# GeniaClipboard 0.5.6 — Unified Paste (Public Beta)
 
 [Русский ниже](#русский)
 
 ## English
 
-This patch responds to a real Windows test of GeniaClipboard v0.5.4: after pasting multiple clips, the window returned to the tray but reselected the same clips when opened again. Pressing Enter without choosing anything repeated the last paste.
+This update focuses on one important real-world behavior: **Paste must work consistently whether clipboard history is opened with the global shortcut, from the tray, or manually**.
 
-### Fixed
+- Tracks the most recently focused external application using Windows foreground notifications.
+- Excludes GeniaClipboard windows and the Windows taskbar/shell as destinations.
+- Validates the destination window, owning process and current foreground focus immediately before Ctrl+V.
+- If a trustworthy destination is unavailable, does not send keystrokes into an unrelated program; offers Copy + manual Ctrl+V.
+- Keeps the 0.5.5 fix: opening the history does not restore a previous single/multiple selection. Select a clip for each new paste.
 
-- Selection (including Ctrl/Shift multi-selection) is cleared when hiding the window and upon every new opening.
-- List refresh no longer selects the first row automatically.
-- Pressing Enter in an empty-selection search field does not paste or implicitly choose the first clip.
-- To paste: open the app with the global hotkey, press **Down** to select a clip (or click a row), then **Enter** or **Paste**.
-- After a successful paste, the app still hides to the tray.
+### Tested on Windows
 
-### Unchanged
+The project owner confirmed that a real Windows beta build can **Copy** a selected clip, switch focus to Notepad, return to GeniaClipboard and use **Paste** to insert the text into Notepad. This is a manual workflow check, not an automated guarantee for all applications and focus combinations.
 
-The authenticated encrypted vault, history persistence, settings schema, keyboard shortcut, and safe destination-window validation are unchanged.
+### Community preview
+
+GeniaClipboard is a free, open-source Windows clipboard manager, MIT-licensed, with an encrypted local history (Windows DPAPI or a portable master-password vault), a memory-only Private Session, optional per-process exclusions, search and entry editing.
+
+This is **text-only** software. Sensitive-text recognition is heuristic, not a security guarantee. Optional TXT journals and exports are **not encrypted**. The app cannot protect against malware with access to your Windows session or clipboard.
+
+**Help test this beta:** Please report reproducible issues via GitHub Issues and include the version, Windows build, steps and expected vs actual behavior. Never upload real secrets, passwords, vault files or private clipboard captures.
 
 ## Русский
 
-Патч по результатам реального тестирования GeniaClipboard 0.5.4: после множественной вставки приложение скрывалось в трей, но при следующем вызове выделяло прежние записи. Нажатие Enter без нового выбора повторяло прошлую вставку.
+Версия 0.5.6 исправляет один из главных сценариев: **«Вставить» должно работать одинаково независимо от того, открыта история горячей клавишей, через трей или вручную**.
 
-### Исправлено
+- Программа отслеживает недавно активное внешнее окно через события Windows.
+- Собственные окна GeniaClipboard, панель задач и системная оболочка Windows не считаются окнами назначения.
+- Перед Ctrl+V проверяются конкретное окно, его процесс и фактический фокус.
+- Если цель не определена надёжно, программа не отправляет клавиши в случайное окно, а предлагает «Копировать» + Ctrl+V.
+- Исправление 0.5.5 сохраняется: при новом открытии записи не выделены, пока пользователь не выберет их снова.
 
-- При скрытии в трей и каждом новом открытии очищается выделение, включая множественное Ctrl/Shift.
-- После обновления списка первая запись больше не выделяется автоматически.
-- Enter без выбранной записи не вставляет текст и не выбирает первую строку.
-- Для вставки откройте историю горячей клавишей, нажмите **↓** для выбора записи (или щёлкните её), затем **Enter** или «Вставить».
-- После успешной вставки окно по-прежнему уходит в трей.
+### Проверено на Windows
 
-### Без изменений
+Автор подтвердил на тестовой Windows-сборке сценарий: выделить запись → «Копировать» → переключиться в Блокнот → вернуться в GeniaClipboard → «Вставить». Текст успешно вставляется в Блокнот. Это ручная проверка конкретного сценария, а не обещание одинакового результата во всех программах.
 
-Зашифрованное хранилище и его формат, сохранение истории, схема настроек, глобальная комбинация клавиш и защита от вставки в чужое окно не менялись.
+### Открытое бета-тестирование
+
+GeniaClipboard — бесплатный менеджер истории текста для Windows с открытым исходным кодом под MIT License. История шифруется локально (Windows DPAPI или Portable Vault с мастер-паролем), есть Private Session только в RAM, поиск, редактор и исключения приложений.
+
+На текущем этапе поддерживается **только текст**. Распознавание секретов работает эвристически. TXT-журнал и TXT-экспорт не шифруются. Программа не защищает от malware, уже имеющего доступ к Windows-сессии и системному буферу.
+
+**Как помочь:** присылайте воспроизводимые ошибки через GitHub Issues с версией, Windows, шагами и ожидаемым/фактическим поведением. Не загружайте настоящие пароли, токены, файлы Vault или содержимое личного буфера.

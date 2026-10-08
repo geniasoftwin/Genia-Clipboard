@@ -63,12 +63,16 @@ jobs:
           Copy-Item "README_RU.md" "$package\README_RU.md" -Force
           Copy-Item "LICENSE" "$package\LICENSE" -Force
           Compress-Archive -Path "$package\*" -DestinationPath "dist\GeniaClipboard-win-x64.zip" -Force
-          $hash = (Get-FileHash "dist\GeniaClipboard-win-x64.zip" -Algorithm SHA256).Hash.ToLowerInvariant()
-          Set-Content -Path "dist\SHA256SUMS.txt" -Value "$hash  GeniaClipboard-win-x64.zip" -Encoding ascii
+          $zipHash = (Get-FileHash "dist\GeniaClipboard-win-x64.zip" -Algorithm SHA256).Hash.ToLowerInvariant()
+          $exeHash = (Get-FileHash "$package\GeniaClipboard.exe" -Algorithm SHA256).Hash.ToLowerInvariant()
+          @(
+            "$zipHash  GeniaClipboard-win-x64.zip"
+            "$exeHash  GeniaClipboard.exe"
+          ) | Set-Content -Path "dist\SHA256SUMS.txt" -Encoding ascii
 
       - name: Create GitHub Release
         if: steps.release_check.outputs.exists != 'true'
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "v$env:VERSION" "dist\GeniaClipboard-win-x64.zip" "dist\SHA256SUMS.txt" --repo "$env:GITHUB_REPOSITORY" --target "$env:GITHUB_SHA" --title "GeniaClipboard v$env:VERSION" --notes-file "RELEASE_NOTES.md"
+        run: gh release create "v$env:VERSION" "dist\GeniaClipboard-win-x64.zip" "dist\GeniaClipboard-win-x64\GeniaClipboard.exe" "dist\SHA256SUMS.txt" --repo "$env:GITHUB_REPOSITORY" --target "$env:GITHUB_SHA" --title "GeniaClipboard v$env:VERSION" --notes-file "RELEASE_NOTES.md"

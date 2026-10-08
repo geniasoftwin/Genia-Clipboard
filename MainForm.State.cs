@@ -39,6 +39,10 @@ internal sealed partial class MainForm
 
     public void PollClipboard()
     {
+        // Keep the active external target fresh even when the user spends a
+        // long time editing in the same application without changing focus.
+        _foregroundTracker.ObserveCurrentForeground();
+
         if (_store.RemoveExpired() > 0)
         {
             RefreshHistoryList();
@@ -52,88 +56,23 @@ internal sealed partial class MainForm
         RefreshHistoryList();
     }
 
-    public void ShowWindow(bool rememberForegroundWindow)
+    public void ShowWindow()
     {
-        // Only the global shortcut explicitly authorizes returning to an
-        // external window. Opening the UI from the tray never inherits a
-        // target captured by an earlier, unrelated interaction.
-        _openingFromShortcut = rememberForegroundWindow;
+        // Target discovery is independent of invocation method. In particular,
+        // opening from the tray must not discard the last external foreground
+        // application. The tracker ignores taskbar/shell windows.
+        _foregroundTracker.ObserveCurrentForeground();
 
-        if (rememberForegroundWindow)
-        {
-            RememberForegroundWindow();
-        }
-        else
-        {
-            ClearPasteTarget();
-        }
-
-        try
-        {
-            // A new invocation is a new paste decision. Never carry forward
-            // the rows selected for the previous paste (including multi-select).
-            ClearSelectedEntries();
-            _searchBox.Clear();
-            RefreshHistoryList();
-            ShowInTaskbar = true;
-            Show();
-            WindowState = FormWindowState.Normal;
-            Activate();
-            BringToFront();
-            _searchBox.Focus();
-        }
-        finally
-        {
-            _openingFromShortcut = false;
-        }
-    }
-
-    private void RememberForegroundWindow()
-    {
-        ClearPasteTarget();
-        var foreground = NativeMethods.GetForegroundWindow();
-
-        if (foreground == IntPtr.Zero ||
-            foreground == Handle ||
-            !NativeMethods.IsWindow(foreground) ||
-            NativeMethods.GetWindowThreadProcessId(foreground, out var processId) == 0 ||
-            processId == 0 ||
-            processId == (uint)Environment.ProcessId)
-        {
-            return;
-        }
-
-        _previousForegroundWindow = foreground;
-        _pasteTargetProcessId = processId;
-    }
-
-    private void ClearPasteTarget()
-    {
-        _previousForegroundWindow = IntPtr.Zero;
-        _pasteTargetProcessId = 0;
-    }
-
-    private bool IsValidPasteTarget(IntPtr target)
-    {
-        return target != IntPtr.Zero &&
-               target != Handle &&
-               NativeMethods.IsWindow(target) &&
-               NativeMethods.GetWindowThreadProcessId(target, out var processId) != 0 &&
-               processId != 0 &&
-               processId != (uint)Environment.ProcessId &&
-               processId == _pasteTargetProcessId;
-    }
-
-    protected override void OnActivated(EventArgs e)
-    {
-        base.OnActivated(e);
-
-        // Re-activating GeniaClipboard manually (taskbar, Alt+Tab, mouse)
-        // cancels an old shortcut target. Never paste into a stale window.
-        if (!_openingFromShortcut)
-        {
-            ClearPasteTarget();
-        }
+        // Reset selection on each invocation: Enter cannot repeat a prior paste.
+        ClearSelectedEntries();
+        _searchBox.Clear();
+        RefreshHistoryList();
+        ShowInTaskbar = true;
+        Show();
+        WindowState = FormWindowState.Normal;
+        Activate();
+        BringToFront();
+        _searchBox.Focus();
     }
 
     private void ClearSelectedEntries()
@@ -144,7 +83,9 @@ internal sealed partial class MainForm
 
     public void HideToTray()
     {
-        ClearPasteTarget();
+        // Invalidate the previous paste target on hide. It will be refreshed
+        // when another application receives foreground focus.
+        _foregroundTracker.Clear();
         ClearSelectedEntries();
         Hide();
         ShowInTaskbar = false;
@@ -195,6 +136,7 @@ internal sealed partial class MainForm
     {
         if (disposing)
         {
+            _foregroundTracker.Dispose();
             _clipboardClearTimer.Dispose();
             _toolTip.Dispose();
         }
