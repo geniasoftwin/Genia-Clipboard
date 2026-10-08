@@ -1,49 +1,43 @@
-# GeniaClipboard 0.5.0 — Privacy Core
+# GeniaClipboard 0.5.1 — UI & Usability
 
 [Русский ниже](#русский)
 
 ## English
 
-0.5.0 turns GeniaClipboard into a privacy-first clipboard vault rather than a plaintext clipboard archive.
+A focused usability update for the 0.5 Privacy Core.
 
-Highlights:
-- MIT licensed;
-- AES-256-GCM encrypted history;
-- Windows Vault protected by Windows DPAPI;
-- Portable Vault protected by a master-password-derived key;
-- safe verified migration from 0.4.x plaintext history;
-- memory-only Private Session;
-- configurable hotkey, history limit, retention, and Windows autostart;
-- application exclusions and Windows clipboard privacy markers;
-- source-process metadata;
-- sensitive-data detection and auto-expiry;
-- optional system-clipboard auto-clear;
-- F2 entry editing;
-- release ZIP accompanied by SHA-256 checksums.
+**What's improved**
+- Settings are organized into four tabs: Security, History, Hotkeys, and System (Russian labels in the current interface).
+- Save and Cancel stay visible in a fixed footer while the contents of each tab scroll independently.
+- Vault selection uses shorter, readable option names with explanations below.
+- The excluded-process list now uses the full available width.
+- The unencrypted TXT-journal warning is fully visible in the System tab.
+- Settings labels no longer overwrite the clipboard on double-click.
+- Invalid hotkey or vault-password inputs return you to the relevant tab.
+- Layout scales more predictably when Windows display scaling is increased.
 
-Security boundary: encryption protects persisted history at rest. It does not protect clipboard contents or process memory from malware already running with sufficient access in the same Windows session.
+**Compatibility**
 
-TXT exports and the optional TXT journal remain plaintext by design. Sensitive entries and Private Session are never written to the automatic journal.
+All existing 0.5.0 privacy and vault features remain available. The encrypted history format and saved settings schema are unchanged; version 0.5.1 is intended as an in-place upgrade.
+
+**Security reminder:** local encrypted history protects data at rest, not clipboard or process memory from malware already running as your user. TXT exports and the optional journal are still plaintext.
 
 ## Русский
 
-0.5.0 превращает GeniaClipboard из plaintext-архива буфера в privacy-first clipboard vault.
+Это обновление удобства для ветки Privacy Core 0.5.
 
-Главное:
-- лицензия MIT;
-- история зашифрована AES-256-GCM;
-- Windows Vault с ключом под защитой Windows DPAPI;
-- Portable Vault с ключом из мастер-пароля;
-- проверяемая миграция старого `history.json`;
-- Private Session только в оперативной памяти;
-- настраиваемый хоткей, лимит/срок истории и автозапуск Windows;
-- исключения приложений и privacy-маркеры Windows clipboard;
-- сохранение приложения-источника;
-- sensitive detector и автоудаление sensitive-записей;
-- опциональная автоочистка системного clipboard;
-- редактор записей по F2;
-- отдельный SHA-256 checksum релизного ZIP.
+**Что улучшено**
+- Настройки разделены на четыре вкладки: **Безопасность**, **История**, **Горячие клавиши**, **Система**.
+- Кнопки «Сохранить» и «Отмена» постоянно видны внизу; прокрутка выполняется внутри вкладок.
+- Варианты Vault больше не обрезаются: короткие названия и отдельные пояснения.
+- Поле исключённых процессов использует всю доступную ширину.
+- Предупреждение о незашифрованном TXT-журнале не скрывается под кнопками.
+- Двойной клик по подписям настроек не изменяет буфер обмена.
+- При ошибке в хоткее или мастер-пароле автоматически открывается нужная вкладка.
+- Улучшено поведение интерфейса при масштабировании Windows.
 
-Граница защиты: шифрование защищает сохранённую историю на диске, но не clipboard и память процесса от вредоносной программы, уже работающей с достаточными правами в той же Windows-сессии.
+**Совместимость**
 
-TXT-экспорт и опциональный TXT-журнал остаются plaintext. Sensitive-записи и Private Session в автоматический журнал не записываются.
+Все возможности Privacy Core из 0.5.0 сохраняются. Формат зашифрованной истории и структура сохранённых настроек не изменены. Версию 0.5.1 можно устанавливать поверх 0.5.0.
+
+**Напоминание:** encrypted vault защищает историю на диске, но не системный буфер и память от malware текущего пользователя. TXT-журналы и ручной экспорт по-прежнему не шифруются.
