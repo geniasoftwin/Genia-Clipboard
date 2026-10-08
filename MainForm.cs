@@ -106,7 +106,7 @@ internal sealed partial class MainForm : Form
         var searchHost = new Panel
         {
             Dock = DockStyle.Bottom,
-            Height = 34,
+            Height = 33,
             BackColor = Color.White
         };
         _searchBox = new TextBox
