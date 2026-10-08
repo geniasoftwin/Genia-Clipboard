@@ -32,19 +32,16 @@ internal sealed partial class MainForm
             return;
         }
 
-        var targetWindow = _previousForegroundWindow;
-
-        // A paste target belongs to a deliberate global-hotkey invocation.
-        // It must never be reused after the user manually returns to the app.
-        if (!IsValidPasteTarget(targetWindow))
+        // The same destination policy applies to hotkey, tray and manual
+        // reopening: use only the last recently focused external application.
+        if (!_foregroundTracker.TryGetTarget(out var targetWindow, out var targetProcessId))
         {
-            ClearPasteTarget();
             MessageBox.Show(
                 this,
-                "Чтобы вставить текст автоматически, поставьте курсор в нужном приложении " +
-                "и откройте GeniaClipboard глобальной горячей клавишей.\n\n" +
-                "Если окно истории открыто вручную, используйте «Копировать», " +
-                "а затем Ctrl+V в нужном приложении.",
+                "Не удалось определить недавнее активное окно для вставки.\n\n" +
+                "Перейдите в нужное приложение, установите курсор и вернитесь " +
+                "в GeniaClipboard любым способом — горячей клавишей или через трей.\n\n" +
+                "Для вставки вручную используйте «Копировать» и Ctrl+V.",
                 "GeniaClipboard — Вставить",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
@@ -57,33 +54,43 @@ internal sealed partial class MainForm
             return;
         }
 
-        // Focus changes are never assumed: Windows can refuse foreground
-        // activation. The target is validated immediately before Ctrl+V.
+        // The clipboard can be delayed by another application. Revalidate the
+        // exact window and process before switching focus and sending Ctrl+V.
+        if (!_foregroundTracker.IsSameWindow(targetWindow, targetProcessId))
+        {
+            ShowPasteFallback();
+            return;
+        }
+
         _ = NativeMethods.SetForegroundWindow(targetWindow);
         await Task.Delay(110);
 
-        if (!IsValidPasteTarget(targetWindow) ||
+        if (!_foregroundTracker.IsSameWindow(targetWindow, targetProcessId) ||
             NativeMethods.GetForegroundWindow() != targetWindow)
         {
-            ClearPasteTarget();
-            MessageBox.Show(
-                this,
-                "Windows не разрешила переключиться в целевое окно. " +
-                "Текст уже скопирован: перейдите в нужное приложение и нажмите Ctrl+V.",
-                "GeniaClipboard — Вставить",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+            ShowPasteFallback();
             return;
         }
 
         HideToTray();
         await Task.Delay(60);
 
-        if (NativeMethods.IsWindow(targetWindow) &&
+        if (_foregroundTracker.IsSameWindow(targetWindow, targetProcessId) &&
             NativeMethods.GetForegroundWindow() == targetWindow)
         {
             NativeMethods.SendCtrlV();
         }
+    }
+
+    private void ShowPasteFallback()
+    {
+        MessageBox.Show(
+            this,
+            "Windows не разрешила переключиться в целевое окно. " +
+            "Текст уже скопирован: перейдите в нужное приложение и нажмите Ctrl+V.",
+            "GeniaClipboard — Вставить",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Information);
     }
 
     private async Task<bool> TrySetClipboardTextAsync(string text)
