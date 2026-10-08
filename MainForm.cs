@@ -126,7 +126,7 @@ internal sealed partial class MainForm : Form
         headerPanel.Controls.Add(identityPanel);
         headerPanel.Paint += DrawBottomDivider;
 
-        _historyList = new ListView
+        _historyList = new SubtleRowListView
         {
             Dock = DockStyle.Fill,
             View = View.Details,
