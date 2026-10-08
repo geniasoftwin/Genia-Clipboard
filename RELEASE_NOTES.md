@@ -1,29 +1,35 @@
-# GeniaClipboard 0.5.4 — Search Alignment
+# GeniaClipboard 0.5.5 — Selection Safety
 
 [Русский ниже](#русский)
 
 ## English
 
-A small UI patch following Windows user testing of 0.5.3.
+This patch responds to a real Windows test of GeniaClipboard v0.5.4: after pasting multiple clips, the window returned to the tray but reselected the same clips when opened again. Pressing Enter without choosing anything repeated the last paste.
 
-- Restores the full-height search field.
-- Centers both placeholder and entered search text vertically in the search field.
-- Uses a native Windows panel border around a natural-height, borderless text input to avoid manually painted borders and their resize artifacts.
-- Preserves the reduced history marker column, branded editor icon, and guarded hotkey-based paste behavior of 0.5.3.
+### Fixed
 
-The encrypted vault format and settings schema are unchanged.
+- Selection (including Ctrl/Shift multi-selection) is cleared when hiding the window and upon every new opening.
+- List refresh no longer selects the first row automatically.
+- Pressing Enter in an empty-selection search field does not paste or implicitly choose the first clip.
+- To paste: open the app with the global hotkey, press **Down** to select a clip (or click a row), then **Enter** or **Paste**.
+- After a successful paste, the app still hides to the tray.
 
-**Paste behavior reminder:** open clipboard history with your global hotkey while the text cursor is in the target application. Then choose a clip and press Enter or Paste. Manually reactivating GeniaClipboard invalidates an old target by design.
+### Unchanged
+
+The authenticated encrypted vault, history persistence, settings schema, keyboard shortcut, and safe destination-window validation are unchanged.
 
 ## Русский
 
-Небольшое исправление интерфейса по итогам проверки версии 0.5.3 на Windows.
+Патч по результатам реального тестирования GeniaClipboard 0.5.4: после множественной вставки приложение скрывалось в трей, но при следующем вызове выделяло прежние записи. Нажатие Enter без нового выбора повторяло прошлую вставку.
 
-- Поисковое поле снова имеет полноценную высоту.
-- Текст и подсказка поиска центрируются **по вертикали** внутри поля.
-- Используется штатная рамка Windows вокруг внутреннего поля ввода естественной высоты, без ручной отрисовки границ и связанных с этим артефактов.
-- Сохранены компактная колонка маркеров, фирменная иконка редактора и защита автоматической вставки из 0.5.3.
+### Исправлено
 
-Формат зашифрованного Vault и структура настроек не изменялись.
+- При скрытии в трей и каждом новом открытии очищается выделение, включая множественное Ctrl/Shift.
+- После обновления списка первая запись больше не выделяется автоматически.
+- Enter без выбранной записи не вставляет текст и не выбирает первую строку.
+- Для вставки откройте историю горячей клавишей, нажмите **↓** для выбора записи (или щёлкните её), затем **Enter** или «Вставить».
+- После успешной вставки окно по-прежнему уходит в трей.
 
-**Напоминание про вставку:** находясь в нужном приложении, откройте историю глобальной горячей клавишей; затем выберите запись и нажмите Enter или «Вставить». При ручном повторном переводе фокуса в GeniaClipboard старая цель вставки сбрасывается намеренно.
+### Без изменений
+
+Зашифрованное хранилище и его формат, сохранение истории, схема настроек, глобальная комбинация клавиш и защита от вставки в чужое окно не менялись.
