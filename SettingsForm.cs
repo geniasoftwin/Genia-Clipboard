@@ -435,8 +435,8 @@ internal sealed class SettingsForm : Form
         _tabs.PerformLayout();
 
         var pageAreaHeight = Math.Max(
-            _securityLayout.GetPreferredSize(Size.Empty).Height,
-            _historyLayout.GetPreferredSize(Size.Empty).Height);
+            _securityLayout.GetPreferredSize(new Size(Math.Max(_securityLayout.Width, 1), 0)).Height,
+            _historyLayout.GetPreferredSize(new Size(Math.Max(_historyLayout.Width, 1), 0)).Height);
 
         var tabChrome = _tabs.Height - _tabs.DisplayRectangle.Height;
         var footerHeight = ClientSize.Height - _tabs.Height;
