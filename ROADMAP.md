@@ -2,112 +2,111 @@
 
 [Русский ниже](#русский)
 
-## Product direction
+## Positioning / Product direction
 
-GeniaClipboard is being developed as a **Clipboard Firewall + Encrypted Vault + Text Workbench**, not as a feature-for-feature clone of Ditto or CopyQ.
+**Clipboard Firewall + Encrypted Vault + Text Workbench** for Windows — a local-first, portable alternative for people who primarily work with text. GeniaClipboard is not a feature-for-feature Ditto or CopyQ clone.
 
-### 0.5.x — Privacy Core
+This roadmap contains **plans, not shipped features**. Items must be independently tested and checked off before they appear in README feature claims.
 
-Goal: make clipboard history safe enough to keep enabled every day.
+## Current 0.5.6 beta candidate
 
-- encrypted persistent history;
-- Windows Vault and Portable Vault;
-- Private Session;
-- configurable hotkey and retention;
-- application exclusions;
-- Windows clipboard privacy markers;
-- sensitive-data expiry;
-- clipboard auto-clear;
-- source-application metadata;
-- entry editing;
-- security documentation and checksummed releases.
+- Unified safe Paste when opening history by shortcut, tray or taskbar.
+- Recent eligible external window tracking, window/process validation and no-target fallback.
+- Selection reset on reopen from 0.5.5.
+- Bilingual open-source documentation and beta testing instructions.
+- Authentic sanitized screenshots for the public repository, pending image upload.
 
-### 0.5.5+ — Text Workbench
+## 0.5.7 — About & localization (first priority after beta)
 
-Goal: turn stored text into something immediately useful.
+- **About** dialog showing name, version, MIT license, supported Windows version, GitHub and Issues links, and a concise encryption/threat-model disclaimer.
+- RU/EN application UI via centralized localization resources (ideally .resx), with auto-detect and manual language selection in Settings → System.
+- All form labels, errors, menus, tooltips, accessibility text and system-tray messages localized.
+- Fall back to English for missing translations. Never alter saved entry text or encrypted vault contents.
+- Validate long translated strings at 100%, 125% and 150% display scaling.
 
-Planned:
-- paste as plain text;
-- trim whitespace;
-- UPPERCASE / lowercase / Sentence case / Title Case;
-- remove empty lines;
-- deduplicate and sort lines;
-- clean tracking parameters from URLs;
-- URL encode/decode;
-- JSON pretty/minify;
-- transformation preview without modifying the original clip.
+## 0.5.8 — Daily UX
 
-### 0.6.x — Rich Clipboard
+- Right-click context menu (Paste, Copy, Edit, Pin, Delete).
+- Simplified action bar: primary Paste/Copy remain visible, settings in header and export in an overflow menu.
+- Entry type badges for **text / URL / code / sensitive** using safe heuristics; this is presentation, not secret detection.
+- Optional Always on Top.
+- Inline preview editor (with explicit Save / Cancel and clear unsaved-change behavior).
+- Search match highlighting, if the chosen list control can support it accessibly without high rendering cost.
+- Date grouping (Today, Yesterday, Last week, Older) with pinned entries remaining discoverable.
 
-Goal: support the formats most Windows users actually copy.
+## 0.6.x — Rich Clipboard (high-priority new capability)
 
-Planned:
-- images with previews and dimensions;
-- file lists;
-- HTML;
-- RTF;
-- type filters;
-- storage quotas for binary clipboard content.
+- Images with preview, dimensions and size limits.
+- Explorer file lists with explicit formats and **no automatic opening/execution of copied files**.
+- HTML/RTF copy/paste with strict validation and plain-text fallback.
+- Distinct retention quota for binary data, encrypted-at-rest storage, defensive parsing and deletion.
+- Cross-format clipboard restoration and migration tests before enabling rich capture by default.
 
-### Later
+## 0.6.x+ — Trust and portability
 
-Only after clear user demand:
-- trusted-device LAN sync with authenticated pairing and end-to-end encryption;
-- team snippet packs;
-- additional automation and transformation workflows.
+- SHA-256 verification instructions and checksums for the ZIP and EXE in releases.
+- Portable Vault encrypted import/export with authenticated envelope and no accidental plaintext fallback.
+- Optional vault auto-lock after idle (5/15/30/60 min), including secure key disposal and safe unlock UI.
+- Optional clear system clipboard on exit (explicit opt-in, never silently clear someone else's newer clipboard state).
+- Vault corruption/tampering and failed-unlock tests; fail closed with clear recovery guidance.
+
+## Later / evaluate by feedback
+
+- Direct paste shortcuts for slots 1–9, subject to global hotkey conflicts and safety review.
+- Window opacity / blur. Cosmetic and optional.
+- Genia ecosystem landing page (GitHub Pages).
+- Updated icon/branding and visible version label.
+- AlternativeTo profile only after public release and authentic screenshots.
+- LAN sync and team snippets only after demand and security design.
+- Text Workbench: URL cleaning, casing, trim, JSON formatting, line transformations.
 
 ---
 
 ## Русский
 
-GeniaClipboard развивается как **Clipboard Firewall + Encrypted Vault + Text Workbench**, а не как попытка повторить Ditto или CopyQ функция-в-функцию.
+GeniaClipboard развивается как **Clipboard Firewall + Encrypted Vault + Text Workbench**: локальный portable-менеджер для тех, кто в первую очередь работает с текстом. Это не попытка заменить все возможности Ditto или CopyQ.
 
-### 0.5.x — Privacy Core
+**Пункты ниже — планы, а не готовые функции.**
 
-Цель: сделать историю clipboard достаточно безопасной для постоянной работы.
+### Сейчас — 0.5.6 beta
 
-- encrypted history;
-- Windows Vault и Portable Vault;
-- Private Session;
-- hotkey и retention;
-- исключения приложений;
-- privacy-маркеры Windows;
-- sensitive auto-expire;
-- автоочистка clipboard;
-- приложение-источник;
-- редактор записей;
-- security-документация и checksummed releases.
+- Одинаковая безопасная вставка из истории, открытой хоткеем, треем или вручную.
+- Отслеживание недавно активного внешнего окна, проверка окна и процесса, отказ от небезопасной вставки.
+- Сброс выделения после скрытия в трей.
+- Подготовка открытого тестирования, RU/EN документация, настоящие скриншоты.
 
-### 0.5.5+ — Text Workbench
+### 0.5.7 — «О программе» и RU/EN интерфейс
 
-Цель: превратить сохранённый текст в рабочий инструмент.
+- Раздел «О программе»: версия, лицензия MIT, GitHub, отчёты об ошибках, поддерживаемая Windows и честное описание ограничений защиты.
+- Локализация через единый набор ресурсов (предпочтительно .resx): русский и английский.
+- Автовыбор системного языка и ручной переключатель в «Настройки → Система».
+- Перевести окна, трей, подсказки, ошибки, кнопки и сообщения. Текст истории и Vault не преобразовывать.
 
-План:
-- Paste as plain text;
-- trim;
-- UPPER/lower/Sentence/Title Case;
-- удаление пустых строк;
-- дедупликация и сортировка строк;
-- очистка tracking-параметров URL;
-- URL encode/decode;
-- JSON pretty/minify;
-- preview преобразования без изменения оригинала.
+### 0.5.8 — удобство каждого дня
 
-### 0.6.x — Rich Clipboard
+- Контекстное меню по ПКМ.
+- Упрощённая нижняя панель.
+- Маленькие индикаторы типов текст/URL/код/секрет (с эвристикой).
+- Always on Top, редактор в панели предпросмотра.
+- Подсветка поиска и группы дат («Сегодня», «Вчера», «На прошлой неделе»).
 
-Цель: поддержать основные форматы Windows clipboard.
+### 0.6.x — изображения, файлы и HTML
 
-План:
-- изображения с preview;
-- списки файлов;
-- HTML;
-- RTF;
-- фильтры типов;
-- storage quota для бинарных данных.
+- Изображения с миниатюрами, ограничениями размера и зашифрованным хранением.
+- Файлы Проводника; никогда автоматически не запускать скопированные файлы.
+- HTML/RTF и fallback в обычный текст.
+- Отдельная квота для бинарных данных и тесты миграции Vault.
 
-### Позже
+### Безопасность и переносимость
 
-Только при подтверждённом спросе:
-- LAN sync с authenticated pairing и end-to-end encryption;
-- командные snippet packs;
-- дополнительные автоматизации.
+- SHA-256 для EXE и ZIP.
+- Импорт/экспорт зашифрованного Portable Vault.
+- Опциональная автоблокировка 5/15/30/60 минут и безопасное удаление ключей из памяти.
+- Опциональная очистка буфера при выходе с проверкой clipboard sequence number.
+- Проверка повреждений Vault и понятная инструкция восстановления.
+
+### Продвижение и экспериментальные функции
+
+- Иконка, отображение версии, GitHub Pages.
+- AlternativeTo и публикации на Хабре/Reddit после подтверждённого публичного релиза.
+- Прямые хоткеи для первых записей, прозрачность, расширенные обработки текста — после отзывов пользователей.
