@@ -15,7 +15,7 @@
   <a href="https://github.com/geniasoftwin/Genia-Clipboard/actions/workflows/build.yml"><img alt="Windows CI" src="https://github.com/geniasoftwin/Genia-Clipboard/actions/workflows/build.yml/badge.svg"></a>
   <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green">
   <img alt="Windows x64" src="https://img.shields.io/badge/Windows-10%2F11%20x64-0078D6">
-  <img alt="Version" src="https://img.shields.io/badge/next-0.5.6%20beta-2563EB">
+  <img alt="Version" src="https://img.shields.io/badge/version-0.5.6%20beta-2563EB">
 </p>
 
 <p align="center">
@@ -24,7 +24,7 @@
   <a href="https://github.com/geniasoftwin/Genia-Clipboard/issues/new/choose">Report a bug / Suggest a feature</a>
 </p>
 
-> **0.5.6 beta candidate:** unified Paste for hotkey and tray use is under testing in [PR #9](https://github.com/geniasoftwin/Genia-Clipboard/pull/9). The latest **public release** may still be 0.5.5. Please don't describe beta-only features as released until the PR is merged and tested on Windows.
+> **0.5.6 public beta:** the owner confirmed the Copy → Notepad focus switch → Paste workflow on Windows. Other applications and focus situations may behave differently. Please report reproducible issues. The source is MIT-licensed, and the release includes checksums.
 
 ## Why another clipboard manager?
 
