@@ -447,7 +447,7 @@ internal sealed class SettingsForm : Form
 
     private static void AddSection(TableLayoutPanel layout, string title)
     {
-        var heading = new Label
+        var heading = new NoCopyLabel
         {
             Text = title,
             Font = new Font("Segoe UI Semibold", 10.5F),
@@ -460,7 +460,7 @@ internal sealed class SettingsForm : Form
 
     private static Label AddNote(TableLayoutPanel layout, string message, Color? color = null)
     {
-        var note = new Label
+        var note = new NoCopyLabel
         {
             Text = message,
             AutoSize = true,
@@ -477,7 +477,7 @@ internal sealed class SettingsForm : Form
         var row = layout.RowCount++;
         layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
 
-        var label = new Label
+        var label = new NoCopyLabel
         {
             Text = caption,
             AutoSize = true,
