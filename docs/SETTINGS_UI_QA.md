@@ -1,29 +1,30 @@
-# GeniaClipboard 0.5.1 — settings UI manual QA
+# GeniaClipboard 0.5.2 — Windows UI regression checklist
 
-Windows x64 / WinForms. Automated CI verifies compilation and publish; visual layout needs interactive Windows validation.
+GitHub CI verifies compile and self-contained publish. Visual behavior must also be checked manually on Windows.
 
-## Layout / DPI
+## Main window
 
-- [ ] Open Settings at 100%, 125%, and 150% Windows display scaling.
-- [ ] Confirm four tabs: **Безопасность**, **История**, **Горячие клавиши**, **Система**.
-- [ ] At the minimum window size, verify text and labels remain readable or can be reached by vertical scrolling.
-- [ ] Verify **Сохранить** and **Отмена** stay visible while scrolling every tab.
-- [ ] Ensure there is no horizontal scroll bar in the normal layout and no content hidden behind the footer.
-- [ ] Vault selection values are readable; explanation appears below the selection.
-- [ ] The process-exclusion editor is wide and accepts multiple lines.
-- [ ] The red TXT-journal plaintext warning remains readable on the System tab.
+- [ ] Copy several lines as individual clips; each visible row has a very subtle horizontal separator and no vertical gridlines.
+- [ ] Selected, pinned and sensitive row backgrounds remain readable; scrolling does not leave separator traces.
+- [ ] **Вставить** is blue when enabled, muted when disabled, and has a distinguishable hover state.
+- [ ] **Очистить** is red; it still asks for confirmation before deleting history.
+- [ ] Copy/Edit/Delete/Export/Settings remain neutral.
+- [ ] Resize/restore at 100%, 125% and 150% DPI; the search border remains continuous without vertical colored ticks.
+- [ ] With a narrow main window, the Vault/status text is visible on its own row; button row can scroll horizontally if needed.
 
-## Interaction / compatibility
+## Settings
 
-- [ ] Open/cancel Settings: stored values are unchanged.
-- [ ] Change history limit, retention, sensitive expiry and clipboard clear; save/reopen and verify each value.
-- [ ] Change the global shortcut, verify registration; attempt an occupied shortcut and verify the old shortcut remains.
-- [ ] Toggle optional autostart and TXT journal.
-- [ ] Change vault selection from Windows to Portable and back; password fields enable/disable correctly.
-- [ ] For an invalid or mismatched Portable password, **Save** returns to the Security tab and does not apply changes.
-- [ ] With all hotkey modifiers unchecked, **Save** returns to the Hotkeys tab.
-- [ ] Verify upgrade from 0.5.0 preserves existing encrypted history and settings; back up the Data directory first.
-- [ ] Double-click on headings, field labels, and warning text: clipboard content must not change.
-- [ ] Verify main window, tray, capture rules, Private Session and TXT export remain operational.
+- [ ] On an ordinary desktop at default scale, Security and History open without a vertical scrollbar.
+- [ ] On small screens or at 150% DPI, controls can be reached via scrolling and do not overlap the fixed Save/Cancel footer.
+- [ ] The window remains within the current monitor's working area.
+- [ ] No active process exclusions are prepopulated; examples are visibly described as examples.
+- [ ] Vault, auto-start, hotkey and sensitive-data settings preserve their values after Save/Cancel.
 
-No change to the vault encryption format or clipboard-capture policy is intended in 0.5.1.
+## Safety
+
+- [ ] Upgrade from 0.5.1 with a backed-up Data directory; encrypted vault and settings load unchanged.
+- [ ] Double-clicking passive labels does not write to the clipboard.
+- [ ] A new clipboard entry is captured normally, while an internal GeniaClipboard copy is not duplicated.
+- [ ] Private Session and TXT export behavior remains unchanged.
+
+This is a UI-only release: the encrypted vault format and settings schema have not changed.
