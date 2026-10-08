@@ -11,6 +11,8 @@ internal sealed class EditEntryForm : Form
         ClientSize = new Size(680, 420);
         MinimumSize = new Size(520, 320);
         Font = new Font("Segoe UI", 9F);
+        Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath) ?? SystemIcons.Application;
+        ShowIcon = true;
 
         _editor = new TextBox
         {
