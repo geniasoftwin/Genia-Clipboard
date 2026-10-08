@@ -54,32 +54,88 @@ internal sealed partial class MainForm
 
     public void ShowWindow(bool rememberForegroundWindow)
     {
+        // Only the global shortcut explicitly authorizes returning to an
+        // external window. Opening the UI from the tray never inherits a
+        // target captured by an earlier, unrelated interaction.
+        _openingFromShortcut = rememberForegroundWindow;
+
         if (rememberForegroundWindow)
         {
             RememberForegroundWindow();
         }
+        else
+        {
+            ClearPasteTarget();
+        }
 
-        _searchBox.Clear();
-        RefreshHistoryList();
-        ShowInTaskbar = true;
-        Show();
-        WindowState = FormWindowState.Normal;
-        Activate();
-        BringToFront();
-        _searchBox.Focus();
+        try
+        {
+            _searchBox.Clear();
+            RefreshHistoryList();
+            ShowInTaskbar = true;
+            Show();
+            WindowState = FormWindowState.Normal;
+            Activate();
+            BringToFront();
+            _searchBox.Focus();
+        }
+        finally
+        {
+            _openingFromShortcut = false;
+        }
     }
 
-    public void RememberForegroundWindow()
+    private void RememberForegroundWindow()
     {
+        ClearPasteTarget();
         var foreground = NativeMethods.GetForegroundWindow();
-        if (foreground != IntPtr.Zero && foreground != Handle)
+
+        if (foreground == IntPtr.Zero ||
+            foreground == Handle ||
+            !NativeMethods.IsWindow(foreground) ||
+            NativeMethods.GetWindowThreadProcessId(foreground, out var processId) == 0 ||
+            processId == 0 ||
+            processId == (uint)Environment.ProcessId)
         {
-            _previousForegroundWindow = foreground;
+            return;
+        }
+
+        _previousForegroundWindow = foreground;
+        _pasteTargetProcessId = processId;
+    }
+
+    private void ClearPasteTarget()
+    {
+        _previousForegroundWindow = IntPtr.Zero;
+        _pasteTargetProcessId = 0;
+    }
+
+    private bool IsValidPasteTarget(IntPtr target)
+    {
+        return target != IntPtr.Zero &&
+               target != Handle &&
+               NativeMethods.IsWindow(target) &&
+               NativeMethods.GetWindowThreadProcessId(target, out var processId) != 0 &&
+               processId != 0 &&
+               processId != (uint)Environment.ProcessId &&
+               processId == _pasteTargetProcessId;
+    }
+
+    protected override void OnActivated(EventArgs e)
+    {
+        base.OnActivated(e);
+
+        // Re-activating GeniaClipboard manually (taskbar, Alt+Tab, mouse)
+        // cancels an old shortcut target. Never paste into a stale window.
+        if (!_openingFromShortcut)
+        {
+            ClearPasteTarget();
         }
     }
 
     public void HideToTray()
     {
+        ClearPasteTarget();
         Hide();
         ShowInTaskbar = false;
     }
