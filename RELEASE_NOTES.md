@@ -1,29 +1,29 @@
-# GeniaClipboard 0.5.2 — UI Polish & Responsive Layout
+# GeniaClipboard 0.5.3 — Safe Paste & UI Fixes
 
 [Русский ниже](#русский)
 
 ## English
 
-This release polishes the Windows interface without modifying Privacy Core encryption or data storage.
+This patch addresses three user-reported issues in 0.5.2:
 
-- **Paste** is now a blue primary action, **Clear** is a red destructive action, and the remaining buttons stay neutral.
-- Subtle light-gray horizontal separators between clipboard history items, without vertical gridlines.
-- Native Windows search border instead of nested custom border painting, addressing header redraw artifacts.
-- Two-row footer: action buttons on the upper row, full Vault/status text on a separate lower row.
-- Security and History settings use compact spacing and grow the dialog vertically within the available Windows work area to avoid scrollbars where practical.
-- Process exclusion examples are clearly labeled as examples, not enabled rules.
+- **Search alignment:** the native search text box is vertically centered in its row. It retains the native Windows border to avoid previous repaint artifacts.
+- **Paste target safety:** auto-paste only targets the application that was in the foreground when GeniaClipboard was opened with the global hotkey. Manually reactivating GeniaClipboard invalidates any previous target, preventing unexpected pastes into an old Notepad or browser window.
+- **Clear feedback:** when there is no authorized paste target, or Windows blocks foreground switching, the app explains what happened and how to use Copy + Ctrl+V.
+- **Branded icons:** the Edit Entry and Portable Vault password dialogs show the same GeniaClipboard icon as the main window.
 
-Small screens and higher display scaling may still require scrollbars. The encrypted history format, privacy rules and settings schema are unchanged.
+**Auto-paste:** position the caret in another application, press your GeniaClipboard global hotkey (default Ctrl+Shift+V), choose a clip and click Paste. If you opened GeniaClipboard manually, use Copy and Ctrl+V instead.
+
+The encrypted vault format, Privacy Core capture rules, and settings schema remain unchanged.
 
 ## Русский
 
-Обновление **GeniaClipboard 0.5.2** улучшает интерфейс без изменений логики Privacy Core.
+Исправлены три замечания по GeniaClipboard 0.5.2:
 
-- **«Вставить»** — синяя основная кнопка, **«Очистить»** — красная кнопка опасного действия. Остальные кнопки нейтральные.
-- Между записями истории появились тонкие, малозаметные светло-серые горизонтальные линии, без вертикальной сетки.
-- Поле поиска использует стандартную рамку Windows — больше нет вложенной нарисованной вручную рамки, вызывавшей артефакты.
-- Нижняя панель разделена на две строки: сверху кнопки, снизу статус Vault и число записей.
-- Вкладки настроек «Безопасность» и «История» компактнее; окно автоматически увеличивается по высоте в пределах доступного рабочего пространства экрана, чтобы по возможности открываться без полосы прокрутки.
-- Bitwarden и KeePassXC обозначены как **примеры** исключений, а не уже активные настройки.
+- **Поиск:** однострочное поле поиска теперь выровнено по вертикали; стандартная рамка Windows сохранена, чтобы не возвращались артефакты перерисовки.
+- **Безопасная вставка:** кнопка «Вставить» работает только с окном, из которого история была явно открыта глобальной горячей клавишей. При ручном возвращении в GeniaClipboard старая цель сбрасывается, чтобы текст неожиданно не вставился в ранее открытый Блокнот.
+- **Понятные сообщения:** если окно для автоматической вставки не определено или Windows запрещает переключение, программа объясняет причину и предлагает «Копировать» + Ctrl+V.
+- **Иконка:** редактор записи и окно разблокировки Portable Vault теперь используют фирменный значок GeniaClipboard.
 
-На небольших экранах и при высоком масштабе Windows вертикальная прокрутка остаётся резервным вариантом. Формат зашифрованного хранилища, правила защиты и структура настроек не менялись.
+**Как пользоваться вставкой:** поставьте курсор в нужном приложении, откройте GeniaClipboard горячей клавишей (по умолчанию Ctrl+Shift+V), выберите запись и нажмите «Вставить». Если открыли окно вручную, используйте «Копировать» и обычное Ctrl+V.
+
+Формат зашифрованной истории, правила захвата и схема настроек не менялись.
