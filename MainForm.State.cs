@@ -172,7 +172,14 @@ internal sealed partial class MainForm
         }
     }
 
-    private static Button CreateButton(string text, bool classic = false)
+    private enum ButtonTone
+    {
+        Neutral,
+        Primary,
+        Danger
+    }
+
+    private static Button CreateButton(string text, ButtonTone tone = ButtonTone.Neutral)
     {
         var button = new Button
         {
@@ -180,28 +187,54 @@ internal sealed partial class MainForm
             Height = 30,
             Text = text,
             FlatStyle = FlatStyle.Flat,
+            UseVisualStyleBackColor = false,
             Margin = new Padding(0, 0, 6, 0),
             Padding = new Padding(8, 0, 8, 0),
             Font = new Font("Segoe UI", 8.75F),
             Cursor = Cursors.Hand
         };
 
-        if (classic)
+        button.FlatAppearance.BorderSize = 1;
+        button.EnabledChanged += (_, _) => ApplyButtonTone(button, tone);
+        ApplyButtonTone(button, tone);
+        return button;
+    }
+
+    private static void ApplyButtonTone(Button button, ButtonTone tone)
+    {
+        if (!button.Enabled)
         {
-            button.FlatStyle = FlatStyle.Standard;
-            button.UseVisualStyleBackColor = true;
-            button.BackColor = SystemColors.Control;
-            button.ForeColor = SystemColors.ControlText;
-        }
-        else
-        {
-            button.BackColor = Color.White;
-            button.ForeColor = Color.FromArgb(31, 41, 55);
-            button.FlatAppearance.BorderColor = Color.FromArgb(209, 213, 219);
-            button.FlatAppearance.MouseOverBackColor = Color.FromArgb(248, 250, 252);
-            button.FlatAppearance.MouseDownBackColor = Color.FromArgb(241, 245, 249);
+            button.BackColor = Color.FromArgb(241, 245, 249);
+            button.ForeColor = Color.FromArgb(148, 163, 184);
+            button.FlatAppearance.BorderColor = Color.FromArgb(226, 232, 240);
+            return;
         }
 
-        return button;
+        switch (tone)
+        {
+            case ButtonTone.Primary:
+                button.BackColor = Color.FromArgb(37, 99, 235);
+                button.ForeColor = Color.White;
+                button.FlatAppearance.BorderColor = Color.FromArgb(37, 99, 235);
+                button.FlatAppearance.MouseOverBackColor = Color.FromArgb(29, 78, 216);
+                button.FlatAppearance.MouseDownBackColor = Color.FromArgb(30, 64, 175);
+                break;
+
+            case ButtonTone.Danger:
+                button.BackColor = Color.FromArgb(185, 28, 28);
+                button.ForeColor = Color.White;
+                button.FlatAppearance.BorderColor = Color.FromArgb(185, 28, 28);
+                button.FlatAppearance.MouseOverBackColor = Color.FromArgb(153, 27, 27);
+                button.FlatAppearance.MouseDownBackColor = Color.FromArgb(127, 29, 29);
+                break;
+
+            default:
+                button.BackColor = Color.White;
+                button.ForeColor = Color.FromArgb(31, 41, 55);
+                button.FlatAppearance.BorderColor = Color.FromArgb(209, 213, 219);
+                button.FlatAppearance.MouseOverBackColor = Color.FromArgb(248, 250, 252);
+                button.FlatAppearance.MouseDownBackColor = Color.FromArgb(241, 245, 249);
+                break;
+        }
     }
 }
