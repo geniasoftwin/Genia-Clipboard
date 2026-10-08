@@ -28,7 +28,7 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
         _mainForm.SettingsRequested += (_, _) => OpenSettings();
 
         var openMenuItem = new ToolStripMenuItem("Открыть");
-        openMenuItem.Click += (_, _) => _mainForm.ShowWindow(rememberForegroundWindow: false);
+        openMenuItem.Click += (_, _) => _mainForm.ShowWindow();
 
         _captureMenuItem = new ToolStripMenuItem("Сохранять скопированное")
         {
@@ -89,7 +89,7 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
 
         _monitorWindow = new ClipboardMonitorWindow();
         _monitorWindow.ClipboardUpdated += (_, _) => _mainForm.HandleClipboardUpdate();
-        _monitorWindow.HotKeyPressed += (_, _) => _mainForm.ShowWindow(rememberForegroundWindow: true);
+        _monitorWindow.HotKeyPressed += (_, _) => _mainForm.ShowWindow();
 
         var configuredHotKey = HotKeyDefinition.FromSettings(_settingsStore.Settings);
         _monitorWindow.Start(configuredHotKey);
@@ -101,8 +101,8 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
             Text = BuildTrayText(_monitorWindow.CurrentHotKey),
             ContextMenuStrip = menu
         };
-        _notifyIcon.DoubleClick += (_, _) => _mainForm.ShowWindow(rememberForegroundWindow: false);
-        _notifyIcon.BalloonTipTitle = "GeniaClipboard 0.5.5";
+        _notifyIcon.DoubleClick += (_, _) => _mainForm.ShowWindow();
+        _notifyIcon.BalloonTipTitle = "GeniaClipboard 0.5.6";
         _notifyIcon.BalloonTipText = "Clipboard Firewall работает локально. История хранится в зашифрованном vault.";
 
         _mainForm.SetMonitorStatus(
