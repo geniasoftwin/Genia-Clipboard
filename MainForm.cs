@@ -126,9 +126,9 @@ internal sealed partial class MainForm : Form
         {
             _searchBox.SetBounds(
                 0,
-                Math.Max(0, (searchHost.ClientSize.Height - _searchBox.PreferredHeight) / 2),
+                Math.Max(0, (searchHost.ClientSize.Height - _searchBox.PreferredSize.Height) / 2),
                 searchHost.ClientSize.Width,
-                _searchBox.PreferredHeight);
+                _searchBox.PreferredSize.Height);
         }
         searchHost.Resize += (_, _) => CenterSearchBox();
         CenterSearchBox();
