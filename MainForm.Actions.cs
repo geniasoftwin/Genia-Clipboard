@@ -334,12 +334,12 @@ internal sealed partial class MainForm
             return;
         }
 
-        _historyList.Columns[0].Width = 44;
+        _historyList.Columns[0].Width = MarkerColumnWidth;
         _historyList.Columns[2].Width = 140;
         _historyList.Columns[3].Width = 128;
         _historyList.Columns[1].Width = Math.Max(
             220,
-            _historyList.ClientSize.Width - 318);
+            _historyList.ClientSize.Width - (MarkerColumnWidth + 140 + 128 + 6));
     }
 
     private void UpdateStatus(int? visibleCount = null)
