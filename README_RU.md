@@ -1,4 +1,4 @@
-<p align="right"><strong>Русский</strong> · <a href="README.md">English</a></p>
+Current release: **0.5.6 — Unified Paste (public beta)**.<p align="right"><strong>Русский</strong> · <a href="README.md">English</a></p>
 
 <p align="center">
   <img src="Assets/GeniaClipboard.svg" alt="Логотип GeniaClipboard" width="96" height="96">
@@ -15,7 +15,7 @@
   <a href="https://github.com/geniasoftwin/Genia-Clipboard/actions/workflows/build.yml"><img alt="Windows CI" src="https://github.com/geniasoftwin/Genia-Clipboard/actions/workflows/build.yml/badge.svg"></a>
   <img alt="MIT License" src="https://img.shields.io/badge/license-MIT-green">
   <img alt="Windows x64" src="https://img.shields.io/badge/Windows-10%2F11%20x64-0078D6">
-  <img alt="Beta" src="https://img.shields.io/badge/next-0.5.6%20beta-2563EB">
+  <img alt="Beta" src="https://img.shields.io/badge/version-0.5.6%20beta-2563EB">
 </p>
 
 <p align="center">
@@ -24,7 +24,7 @@
   <a href="https://github.com/geniasoftwin/Genia-Clipboard/issues/new/choose">Сообщить об ошибке / Предложить функцию</a>
 </p>
 
-> **0.5.6 — кандидат в бета-релиз:** единая вставка при открытии через хоткей и трей проверяется в [PR #9](https://github.com/geniasoftwin/Genia-Clipboard/pull/9). Последним **публичным релизом** пока может оставаться 0.5.5. Функции из тестовой ветки не выдаём за выпущенные до ручной проверки Windows.
+> **0.5.6 — публичная бета:** автор проверил на Windows сценарий «Копировать» → перевод фокуса в Блокнот → возвращение в GeniaClipboard → «Вставить». В других приложениях или при иных переключениях окон поведение может отличаться. Сообщайте о воспроизводимых ошибках.
 
 ## Зачем ещё один менеджер буфера обмена?
 
