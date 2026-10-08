@@ -10,6 +10,7 @@ internal sealed partial class MainForm : Form
     private const string InternalClipboardFormat = "GeniaClipboard.Internal.v1";
     private const int MaxBatchClipboardLength = 16_000_000;
     private const int MaxMultiPreviewLength = 200_000;
+    private const int MarkerColumnWidth = 22;
     private readonly TextBox _searchBox;
     private readonly ListView _historyList;
     private readonly TextBox _previewBox;
@@ -157,7 +158,7 @@ internal sealed partial class MainForm : Form
             HeaderStyle = ColumnHeaderStyle.Nonclickable,
             UseCompatibleStateImageBehavior = false
         };
-        _historyList.Columns.Add("", 44);
+        _historyList.Columns.Add("", MarkerColumnWidth);
         _historyList.Columns.Add("Содержимое", 500);
         _historyList.Columns.Add("Источник", 150);
         _historyList.Columns.Add("Время", 128);
