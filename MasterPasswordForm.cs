@@ -14,6 +14,8 @@ internal sealed class MasterPasswordForm : Form
         ShowInTaskbar = true;
         ClientSize = new Size(430, 170);
         Font = new Font("Segoe UI", 9F);
+        Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath) ?? SystemIcons.Application;
+        ShowIcon = true;
 
         var title = new Label
         {
