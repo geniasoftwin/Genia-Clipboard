@@ -12,7 +12,7 @@
 
 <p align="center">
   <a href="https://github.com/geniasoftwin/Genia-Clipboard/actions/workflows/build.yml"><img alt="Build" src="https://github.com/geniasoftwin/Genia-Clipboard/actions/workflows/build.yml/badge.svg"></a>
-  <img alt="Version" src="https://img.shields.io/badge/version-0.5.5-blue">
+  <img alt="Version" src="https://img.shields.io/badge/version-0.5.6--beta-blue">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-green">
   <img alt="Platform" src="https://img.shields.io/badge/platform-Windows%2010%2F11-0078D6?logo=windows11&logoColor=white">
   <img alt=".NET" src="https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white">
@@ -21,6 +21,18 @@
 GeniaClipboard is a local-first clipboard history tool built around a simple idea: **clipboard history should be useful without becoming a plaintext archive of everything you copy**.
 
 Version 0.5.0 introduces the **Clipboard Firewall** privacy core: encrypted history, application exclusions, Windows clipboard privacy markers, sensitive-data expiry, clipboard auto-clear, a memory-only Private Session, and configurable behavior.
+
+## Public beta testing — 0.5.6
+
+**Open source:** [MIT License](LICENSE). Source is public, and contributions and issues are welcome.
+
+**Try it:** [Windows x64 releases](https://github.com/geniasoftwin/Genia-Clipboard/releases) · [beta guide](docs/PUBLIC_BETA_GUIDE.md) · [report a bug or request a feature](https://github.com/geniasoftwin/Genia-Clipboard/issues/new/choose).
+
+**Unified Paste:** the most recently focused eligible external window is tracked regardless of whether history is opened with the hotkey, tray or manually. Select a clip and press **Paste** to copy it and attempt to restore the external window before Ctrl+V. Without an explicit selection, Enter never pastes.
+
+**Safety limitation:** the app can track a recent external window but cannot guarantee where the user's text caret is. Confirm the intended destination before auto-pasting.
+
+**Screenshots:** authentic sanitized captures of the main window, settings and editor are being prepared. We will add those instead of mock screenshots.
 
 ## Why GeniaClipboard?
 
@@ -167,10 +179,6 @@ History rows have subtle horizontal separators; the search field uses native ren
 
 Version 0.5.3 also reduces the pinned/sensitive marker column from 44 to 22 pixels so history text begins closer to the left edge.
 
-## Automatic paste in 0.5.3
-
-To auto-paste into another app, place the cursor in that app and open GeniaClipboard using the global hotkey (by default `Ctrl+Shift+V`). Then select a clip and choose **Paste**. If you open GeniaClipboard manually (taskbar/tray), the previous paste target is discarded: use **Copy** and paste manually instead. This prevents paste into an unrelated old foreground window.
-
 ## Search-field refinement in 0.5.4
 
 The search row now keeps its full height, with the text and placeholder centered vertically inside a borderless edit control. A native Windows panel border replaces custom border painting. The Clipboard Firewall, vault format, hotkey paste behavior and settings schema are unchanged.
@@ -200,4 +208,4 @@ GeniaClipboard is released under the [MIT License](LICENSE).
 
 ## Version
 
-Current release: **0.5.5 — Selection Safety**. The Privacy Core was introduced in 0.5.0.
+Development branch: **0.5.6 — Unified Paste (beta)**. Published builds are available under Releases.
