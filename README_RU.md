@@ -12,7 +12,7 @@
 
 <p align="center">
   <a href="https://github.com/geniasoftwin/Genia-Clipboard/actions/workflows/build.yml"><img alt="Build" src="https://github.com/geniasoftwin/Genia-Clipboard/actions/workflows/build.yml/badge.svg"></a>
-  <img alt="Version" src="https://img.shields.io/badge/version-0.5.4-blue">
+  <img alt="Version" src="https://img.shields.io/badge/version-0.5.5-blue">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-green">
   <img alt="Platform" src="https://img.shields.io/badge/platform-Windows%2010%2F11-0078D6?logo=windows11&logoColor=white">
   <img alt=".NET" src="https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white">
@@ -151,6 +151,10 @@ Private Session временно скрывает постоянный vault и 
 
 Строка поиска снова имеет удобную полную высоту, а текст и подсказка выровнены по вертикали внутри поля. Рамка рисуется стандартным механизмом Windows, без самодельного обработчика Paint. Логика Vault, вставки горячими клавишами и структура настроек не менялись.
 
+## Защита от повторной вставки в 0.5.5
+
+После вставки GeniaClipboard по-прежнему скрывается в трей. При следующем открытии **ни одна запись не выделена**. Нажмите стрелку ↓, чтобы выбрать первую видимую запись, перейдите к нужной стрелками или щёлкните строку мышью. Enter и кнопка «Вставить» срабатывают только после явного выбора записи. Прежнее множественное выделение автоматически не восстанавливается.
+
 ## Ограничения
 
 - пока только текст: изображения, файлы, HTML и RTF запланированы на этап Rich Clipboard;
@@ -172,4 +176,4 @@ GeniaClipboard распространяется под [MIT License](LICENSE).
 
 ## Версия
 
-Текущий релиз: **0.5.4 — Search Alignment**. Основа Privacy Core появилась в 0.5.0.
+Текущий релиз: **0.5.5 — Selection Safety**. Основа Privacy Core появилась в 0.5.0.
