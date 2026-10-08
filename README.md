@@ -165,6 +165,8 @@ Settings now have four focused tabs: **Security**, **History**, **Hotkeys**, and
 
 History rows have subtle horizontal separators; the search field uses native rendering to avoid redraw artifacts, and the main status has its own row. Security and History settings pages adjust the dialog height to the available screen and aim to open without scrollbars at normal display scaling. Small screens and very high DPI may still need scrolling.
 
+Version 0.5.3 also reduces the pinned/sensitive marker column from 44 to 22 pixels so history text begins closer to the left edge.
+
 ## Automatic paste in 0.5.3
 
 To auto-paste into another app, place the cursor in that app and open GeniaClipboard using the global hotkey (by default `Ctrl+Shift+V`). Then select a clip and choose **Paste**. If you open GeniaClipboard manually (taskbar/tray), the previous paste target is discarded: use **Copy** and paste manually instead. This prevents paste into an unrelated old foreground window.
