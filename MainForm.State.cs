@@ -39,6 +39,10 @@ internal sealed partial class MainForm
 
     public void PollClipboard()
     {
+        // Keep the active external target fresh even when the user spends a
+        // long time editing in the same application without changing focus.
+        _foregroundTracker.ObserveCurrentForeground();
+
         if (_store.RemoveExpired() > 0)
         {
             RefreshHistoryList();
