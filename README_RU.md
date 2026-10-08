@@ -83,7 +83,7 @@ dotnet restore GeniaClipboard.csproj
 dotnet publish GeniaClipboard.csproj -c Release
 ```
 
-К релизному ZIP прилагается `SHA256SUMS.txt`. EXE автономный: отдельно устанавливать .NET runtime на целевой ПК не нужно.
+К релизу прилагаются portable ZIP, отдельный `GeniaClipboard.exe` и `SHA256SUMS.txt` с SHA-256 **обоих** файлов. Для проверки в PowerShell выполните `Get-FileHash .\GeniaClipboard.exe -Algorithm SHA256` (для архива подставьте имя ZIP) и сравните результат с соответствующей строкой в `SHA256SUMS.txt`. EXE автономный: отдельно устанавливать .NET runtime на целевой ПК не нужно.
 
 ## Обратная связь и участие
 
