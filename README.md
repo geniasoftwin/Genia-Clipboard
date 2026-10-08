@@ -12,7 +12,7 @@
 
 <p align="center">
   <a href="https://github.com/geniasoftwin/Genia-Clipboard/actions/workflows/build.yml"><img alt="Build" src="https://github.com/geniasoftwin/Genia-Clipboard/actions/workflows/build.yml/badge.svg"></a>
-  <img alt="Version" src="https://img.shields.io/badge/version-0.5.1-blue">
+  <img alt="Version" src="https://img.shields.io/badge/version-0.5.2-blue">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-green">
   <img alt="Platform" src="https://img.shields.io/badge/platform-Windows%2010%2F11-0078D6?logo=windows11&logoColor=white">
   <img alt=".NET" src="https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white">
@@ -161,6 +161,10 @@ GeniaClipboard warns before manual TXT export. Sensitive entries and Private Ses
 
 Settings now have four focused tabs: **Security**, **History**, **Hotkeys**, and **System** (tab names in the current UI are Russian). Save and Cancel remain visible in a fixed footer while each tab scrolls independently. Vault-mode descriptions, process exclusions, and plaintext journal warnings have more room, including at increased Windows display scaling.
 
+## UI polish in 0.5.2
+
+History rows have subtle horizontal separators; the search field uses native rendering to avoid redraw artifacts, and the main status has its own row. Security and History settings pages adjust the dialog height to the available screen and aim to open without scrollbars at normal display scaling. Small screens and very high DPI may still need scrolling.
+
 ## Current limitations
 
 - text only; images, copied file lists, HTML, and RTF are planned for the Rich Clipboard stage;
@@ -182,4 +186,4 @@ GeniaClipboard is released under the [MIT License](LICENSE).
 
 ## Version
 
-Current release: **0.5.1 — UI & Usability**. The Privacy Core was introduced in 0.5.0.
+Current release: **0.5.2 — UI Polish**. The Privacy Core was introduced in 0.5.0.

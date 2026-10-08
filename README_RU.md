@@ -12,7 +12,7 @@
 
 <p align="center">
   <a href="https://github.com/geniasoftwin/Genia-Clipboard/actions/workflows/build.yml"><img alt="Build" src="https://github.com/geniasoftwin/Genia-Clipboard/actions/workflows/build.yml/badge.svg"></a>
-  <img alt="Version" src="https://img.shields.io/badge/version-0.5.1-blue">
+  <img alt="Version" src="https://img.shields.io/badge/version-0.5.2-blue">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-green">
   <img alt="Platform" src="https://img.shields.io/badge/platform-Windows%2010%2F11-0078D6?logo=windows11&logoColor=white">
   <img alt=".NET" src="https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white">
@@ -137,6 +137,10 @@ Private Session временно скрывает постоянный vault и 
 
 Окно настроек разделено на четыре вкладки: **Безопасность**, **История**, **Горячие клавиши** и **Система**. Кнопки сохранения и отмены всегда остаются внизу, а содержимое каждой вкладки прокручивается независимо. Улучшены размеры полей и текст предупреждений для масштабирования Windows.
 
+## Улучшения интерфейса 0.5.2
+
+В истории появились тонкие светло-серые горизонтальные разделители записей. Поле поиска теперь использует стандартную рамку Windows без артефактов перерисовки, а строка состояния располагается отдельно от кнопок. Вкладки «Безопасность» и «История» компактнее и подстраивают высоту окна под доступный экран, чтобы при обычном масштабе открываться без полосы прокрутки. На небольших экранах и при крупном DPI прокрутка остаётся доступной.
+
 ## Ограничения
 
 - пока только текст: изображения, файлы, HTML и RTF запланированы на этап Rich Clipboard;
@@ -158,4 +162,4 @@ GeniaClipboard распространяется под [MIT License](LICENSE).
 
 ## Версия
 
-Текущий релиз: **0.5.1 — UI & Usability**. Основа Privacy Core появилась в 0.5.0.
+Текущий релиз: **0.5.2 — UI Polish**. Основа Privacy Core появилась в 0.5.0.

@@ -2,6 +2,17 @@
 
 All notable GeniaClipboard changes are documented in this file.
 
+## [0.5.2] - 2026-10-08
+
+### UI fixes
+
+- switched to a native Windows search-field border to avoid redraw artifacts near the header;
+- placed action buttons and vault/status text on separate footer rows to prevent clipping;
+- added very subtle horizontal separators between visible history entries, without vertical grid lines;
+- compacted Security and History settings and automatically grew the settings window within the working-screen bounds where possible;
+- clarified that example process names are not active exclusions;
+- kept the encrypted vault format and settings schema unchanged.
+
 ## [0.5.1] - 2026-10-08
 
 ### Improved

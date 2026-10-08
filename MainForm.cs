@@ -98,30 +98,22 @@ internal sealed partial class MainForm : Form
         identityPanel.Controls.Add(subtitleLabel);
         identityPanel.Controls.Add(_hotKeyLabel);
 
+        // Use the native Windows edit-control border instead of painting over
+        // a nested borderless TextBox. The former redraws reliably on resize,
+        // DPI changes and when the form returns from the system tray.
         _searchBox = new TextBox
         {
-            Dock = DockStyle.Fill,
+            Dock = DockStyle.Bottom,
+            Height = 32,
             AutoSize = false,
             PlaceholderText = "Поиск по истории…",
             Font = new Font("Segoe UI", 9.75F),
-            BorderStyle = BorderStyle.None,
+            BorderStyle = BorderStyle.FixedSingle,
             BackColor = Color.White,
             Margin = new Padding(0)
         };
         _searchBox.TextChanged += (_, _) => RefreshHistoryList();
         _searchBox.KeyDown += SearchBoxOnKeyDown;
-
-        var searchField = new Panel
-        {
-            Dock = DockStyle.Bottom,
-            Height = 32,
-            Padding = new Padding(5, 5, 5, 4),
-            BackColor = Color.White,
-            TabStop = false
-        };
-        searchField.Controls.Add(_searchBox);
-        searchField.Paint += DrawSearchBorder;
-        searchField.MouseDown += (_, _) => _searchBox.Focus();
 
         var headerPanel = new Panel
         {
@@ -130,11 +122,11 @@ internal sealed partial class MainForm : Form
             Padding = new Padding(12, 8, 12, 8),
             BackColor = Color.White
         };
-        headerPanel.Controls.Add(searchField);
+        headerPanel.Controls.Add(_searchBox);
         headerPanel.Controls.Add(identityPanel);
         headerPanel.Paint += DrawBottomDivider;
 
-        _historyList = new ListView
+        _historyList = new SubtleRowListView
         {
             Dock = DockStyle.Fill,
             View = View.Details,
@@ -227,7 +219,7 @@ internal sealed partial class MainForm : Form
         };
         contentPanel.Controls.Add(bodyCard);
 
-        _pasteButton = CreateButton("Вставить", classic: true);
+        _pasteButton = CreateButton("Вставить", ButtonTone.Primary);
         _pasteButton.Click += async (_, _) => await PasteSelectedAsync();
 
         _copyButton = CreateButton("Копировать");
@@ -248,16 +240,20 @@ internal sealed partial class MainForm : Form
         var settingsButton = CreateButton("Настройки");
         settingsButton.Click += (_, _) => SettingsRequested?.Invoke(this, EventArgs.Empty);
 
-        var clearButton = CreateButton("Очистить");
+        var clearButton = CreateButton("Очистить", ButtonTone.Danger);
         clearButton.Click += (_, _) => ClearHistoryWithConfirmation();
 
+        // A fixed two-row footer keeps the vault/status text visible even when
+        // eight action buttons exceed the available width at high display DPI.
+        // The action row scrolls horizontally rather than overlapping the status.
         var buttonPanel = new FlowLayoutPanel
         {
-            Dock = DockStyle.Left,
-            AutoSize = true,
+            Dock = DockStyle.Fill,
+            AutoSize = false,
+            AutoScroll = true,
             WrapContents = false,
             FlowDirection = FlowDirection.LeftToRight,
-            Padding = new Padding(10, 7, 0, 6),
+            Padding = new Padding(10, 7, 10, 1),
             BackColor = Color.White
         };
         buttonPanel.Controls.AddRange([
@@ -273,23 +269,30 @@ internal sealed partial class MainForm : Form
 
         _statusLabel = new NoCopyLabel
         {
-            Dock = DockStyle.Right,
+            Dock = DockStyle.Fill,
             AutoSize = false,
-            Width = 270,
+            AutoEllipsis = true,
             TextAlign = ContentAlignment.MiddleRight,
-            Padding = new Padding(0, 0, 10, 0),
+            Padding = new Padding(8, 0, 12, 0),
             ForeColor = Color.FromArgb(75, 85, 99),
             BackColor = Color.White
         };
+        var statusPanel = new Panel
+        {
+            Dock = DockStyle.Bottom,
+            Height = 24,
+            BackColor = Color.White
+        };
+        statusPanel.Controls.Add(_statusLabel);
 
         var footerPanel = new Panel
         {
             Dock = DockStyle.Bottom,
-            Height = 46,
+            Height = 84,
             BackColor = Color.White
         };
         footerPanel.Controls.Add(buttonPanel);
-        footerPanel.Controls.Add(_statusLabel);
+        footerPanel.Controls.Add(statusPanel);
         footerPanel.Paint += DrawTopDivider;
 
         Controls.Add(contentPanel);
