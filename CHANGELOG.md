@@ -2,6 +2,14 @@
 
 All notable GeniaClipboard changes are documented in this file.
 
+## [0.5.4] - 2026-10-08
+
+### Fixed
+
+- kept the search row at its full 34-pixel height while centering its placeholder and text in a natural-height borderless TextBox;
+- replaced the edit control border with the native Panel border, avoiding the previous resize paint artifacts;
+- preserved all vault, paste-target and settings behavior from 0.5.3.
+
 ## [0.5.3] - 2026-10-08
 
 ### Fixed
