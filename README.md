@@ -44,9 +44,32 @@ Windows Win+V, Ditto and CopyQ already exist. GeniaClipboard doesn't try to matc
 
 **Important:** the app cannot guarantee that the text cursor remains at the same location when focus changes. Always confirm the target before pasting sensitive content.
 
-## Screenshots
+## Screenshots — authentic Windows UI
 
-We are organizing [authentic Windows screenshots and bilingual captions](docs/SCREENSHOTS.md) for the project gallery. PNG assets will be embedded here **after** sanitized files are uploaded to the repository. The current project logo above is the actual GeniaClipboard SVG icon.
+<sub>GeniaClipboard 0.5.6 currently has a Russian-language interface. English UI localization is planned for [0.5.7](https://github.com/geniasoftwin/Genia-Clipboard/issues/10); the screenshots below are genuine, not mockups or translated overlays.</sub>
+
+<p align="center">
+  <img src="docs/screenshots/01-main-history.png" width="806" alt="GeniaClipboard clipboard history — genuine Windows screenshot in Russian">
+</p>
+
+<details>
+<summary><strong>View more: search, privacy settings and clipboard history</strong></summary>
+
+**Search / Поиск**
+
+![GeniaClipboard search and filtering](docs/screenshots/03-search-filter.png)
+
+**Encrypted vault and privacy controls / Безопасность**
+
+![GeniaClipboard security settings](docs/screenshots/04-settings-security.png)
+
+**Retention and process exclusions / История**
+
+![GeniaClipboard history settings](docs/screenshots/05-settings-history.png)
+
+</details>
+
+[Browse all 9 annotated screenshots / Полная галерея](docs/SCREENSHOTS.md).
 
 ## Clipboard Firewall & encrypted storage
 
