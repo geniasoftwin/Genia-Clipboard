@@ -30,6 +30,8 @@ internal sealed partial class MainForm : Form
     private uint _lastClipboardSequenceNumber;
     private uint _clipboardSequenceToClear;
     private IntPtr _previousForegroundWindow;
+    private uint _pasteTargetProcessId;
+    private bool _openingFromShortcut;
 
     public MainForm(HistoryStore store, TextJournalService journal, AppSettings settings)
     {
@@ -98,14 +100,19 @@ internal sealed partial class MainForm : Form
         identityPanel.Controls.Add(subtitleLabel);
         identityPanel.Controls.Add(_hotKeyLabel);
 
-        // Use the native Windows edit-control border instead of painting over
-        // a nested borderless TextBox. The former redraws reliably on resize,
-        // DPI changes and when the form returns from the system tray.
-        _searchBox = new TextBox
+        // A native single-line TextBox wants its natural height. Center that
+        // control vertically inside the search row instead of stretching it to
+        // 32 px (which makes both the placeholder and typed text appear too high).
+        var searchHost = new Panel
         {
             Dock = DockStyle.Bottom,
-            Height = 32,
-            AutoSize = false,
+            Height = 34,
+            BackColor = Color.White
+        };
+        _searchBox = new TextBox
+        {
+            AutoSize = true,
+            Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top,
             PlaceholderText = "Поиск по истории…",
             Font = new Font("Segoe UI", 9.75F),
             BorderStyle = BorderStyle.FixedSingle,
@@ -114,6 +121,17 @@ internal sealed partial class MainForm : Form
         };
         _searchBox.TextChanged += (_, _) => RefreshHistoryList();
         _searchBox.KeyDown += SearchBoxOnKeyDown;
+        searchHost.Controls.Add(_searchBox);
+        void CenterSearchBox()
+        {
+            _searchBox.SetBounds(
+                0,
+                Math.Max(0, (searchHost.ClientSize.Height - _searchBox.PreferredHeight) / 2),
+                searchHost.ClientSize.Width,
+                _searchBox.PreferredHeight);
+        }
+        searchHost.Resize += (_, _) => CenterSearchBox();
+        CenterSearchBox();
 
         var headerPanel = new Panel
         {
@@ -122,7 +140,7 @@ internal sealed partial class MainForm : Form
             Padding = new Padding(12, 8, 12, 8),
             BackColor = Color.White
         };
-        headerPanel.Controls.Add(_searchBox);
+        headerPanel.Controls.Add(searchHost);
         headerPanel.Controls.Add(identityPanel);
         headerPanel.Paint += DrawBottomDivider;
 
