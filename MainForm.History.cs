@@ -171,11 +171,9 @@ internal sealed partial class MainForm
 
         _historyList.EndUpdate();
 
-        if (_historyList.SelectedItems.Count == 0 && _historyList.Items.Count > 0)
-        {
-            _historyList.Items[0].Selected = true;
-        }
-
+        // An empty selection is intentional. Never implicitly select the first
+        // item after reopening or a refresh, since Enter must not repeat a
+        // previous paste or choose a clip without user action.
         UpdateSelection();
         UpdateStatus(items.Count);
     }
