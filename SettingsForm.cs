@@ -27,6 +27,8 @@ internal sealed class SettingsForm : Form
     private readonly CheckBox _hotkeyWin;
     private readonly ComboBox _hotkeyKey;
     private readonly TabControl _tabs;
+    private readonly TableLayoutPanel _securityLayout;
+    private readonly TableLayoutPanel _historyLayout;
 
     public SettingsForm(AppSettings settings, VaultMode currentVaultMode, HotKeyDefinition currentHotKey)
     {
@@ -34,8 +36,8 @@ internal sealed class SettingsForm : Form
 
         Text = "Настройки — GeniaClipboard";
         StartPosition = FormStartPosition.CenterParent;
-        ClientSize = new Size(760, 540);
-        MinimumSize = new Size(650, 450);
+        ClientSize = new Size(760, 600);
+        MinimumSize = new Size(650, 510);
         AutoScaleMode = AutoScaleMode.Dpi;
         Font = new Font("Segoe UI", 9F);
         BackColor = Color.White;
@@ -53,6 +55,8 @@ internal sealed class SettingsForm : Form
         var hotkeyPage = CreatePage("Горячие клавиши", out var hotkeys);
         var systemPage = CreatePage("Система", out var system);
         _tabs.TabPages.AddRange([securityPage, historyPage, hotkeyPage, systemPage]);
+        _securityLayout = security;
+        _historyLayout = history;
 
         // Security: vault and secret-handling controls.
         AddSection(security, "Зашифрованное хранилище");
@@ -147,17 +151,17 @@ internal sealed class SettingsForm : Form
             history,
             "Не сохранять содержимое буфера из указанных процессов. " +
             "Введите имена процессов без .exe, по одному на строку; " +
-            "например: Bitwarden или KeePassXC.");
+            "например: Bitwarden или KeePassXC. Примеры не являются активными исключениями.");
 
         _excludedProcesses = new TextBox
         {
             Multiline = true,
             AcceptsReturn = true,
             ScrollBars = ScrollBars.Vertical,
-            MinimumSize = new Size(0, 114),
-            Height = 114,
+            MinimumSize = new Size(0, 86),
+            Height = 86,
             Text = string.Join(Environment.NewLine, settings.ExcludedProcesses),
-            PlaceholderText = "Bitwarden" + Environment.NewLine + "KeePassXC"
+            PlaceholderText = "Введите имя процесса (например, Bitwarden)"
         };
         AddFullWidthControl(history, _excludedProcesses);
         AddNote(
@@ -290,6 +294,7 @@ internal sealed class SettingsForm : Form
         Controls.Add(_tabs);
         Controls.Add(footer);
         CancelButton = cancelButton;
+        Shown += (_, _) => FitHeightToSettingsPages();
     }
 
     public VaultMode RequestedVaultMode => _vaultMode.SelectedIndex == 1
@@ -419,6 +424,34 @@ internal sealed class SettingsForm : Form
             : "Windows Vault использует DPAPI текущей учётной записи Windows и не требует мастер-пароля.";
     }
 
+
+    private void FitHeightToSettingsPages()
+    {
+        // Use the actual scaled WinForms preferred heights after handles have
+        // been created. Prefer showing Security and History without a scrollbar
+        // instead of forcing everyone to use an oversized fixed window.
+        _securityLayout.PerformLayout();
+        _historyLayout.PerformLayout();
+        _tabs.PerformLayout();
+
+        var pageAreaHeight = Math.Max(
+            _securityLayout.GetPreferredSize(Size.Empty).Height,
+            _historyLayout.GetPreferredSize(Size.Empty).Height);
+
+        var tabChrome = _tabs.Height - _tabs.DisplayRectangle.Height;
+        var footerHeight = ClientSize.Height - _tabs.Height;
+        var formChrome = Height - ClientSize.Height;
+        var targetHeight = pageAreaHeight + tabChrome + footerHeight + formChrome + 12;
+
+        var workingArea = Screen.FromControl(this).WorkingArea;
+        var maximumHeight = Math.Max(MinimumSize.Height, workingArea.Height - 20);
+        Height = Math.Min(maximumHeight, Math.Max(Height, targetHeight));
+
+        // The WinForms tab header and client area resize together; re-center
+        // without placing any portion of the dialog behind the taskbar.
+        Top = Math.Max(workingArea.Top, workingArea.Top + (workingArea.Height - Height) / 2);
+    }
+
     private static TabPage CreatePage(string title, out TableLayoutPanel layout)
     {
         var page = new TabPage(title)
@@ -436,7 +469,7 @@ internal sealed class SettingsForm : Form
             AutoSizeMode = AutoSizeMode.GrowAndShrink,
             GrowStyle = TableLayoutPanelGrowStyle.AddRows,
             ColumnCount = 2,
-            Padding = new Padding(18, 12, 18, 22),
+            Padding = new Padding(18, 8, 18, 8),
             Margin = new Padding(0)
         };
         layout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 188));
@@ -454,7 +487,7 @@ internal sealed class SettingsForm : Form
             Font = new Font("Segoe UI Semibold", 10.5F),
             ForeColor = Color.FromArgb(31, 41, 55),
             AutoSize = true,
-            Margin = new Padding(0, 12, 0, 9)
+            Margin = new Padding(0, 7, 0, 5)
         };
         AddFullWidthControl(layout, heading);
     }
@@ -467,7 +500,7 @@ internal sealed class SettingsForm : Form
             AutoSize = true,
             MaximumSize = new Size(570, 0),
             ForeColor = color ?? Color.FromArgb(96, 106, 120),
-            Margin = new Padding(0, 4, 0, 12)
+            Margin = new Padding(0, 2, 0, 5)
         };
         AddFullWidthControl(layout, note);
         return note;
@@ -484,14 +517,14 @@ internal sealed class SettingsForm : Form
             AutoSize = true,
             MaximumSize = new Size(178, 0),
             ForeColor = Color.FromArgb(55, 65, 81),
-            Margin = new Padding(0, 9, 10, 9)
+            Margin = new Padding(0, 6, 10, 6)
         };
 
         if (control is TextBox or ComboBox or CheckBox)
         {
             control.Dock = DockStyle.Top;
         }
-        control.Margin = new Padding(0, 5, 0, 7);
+        control.Margin = new Padding(0, 3, 0, 4);
 
         layout.Controls.Add(label, 0, row);
         layout.Controls.Add(control, 1, row);
