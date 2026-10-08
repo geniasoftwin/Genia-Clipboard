@@ -101,13 +101,16 @@ internal sealed partial class MainForm : Form
         identityPanel.Controls.Add(subtitleLabel);
         identityPanel.Controls.Add(_hotKeyLabel);
 
-        // A native single-line TextBox wants its natural height. Center that
-        // control vertically inside the search row instead of stretching it to
-        // 32 px (which makes both the placeholder and typed text appear too high).
+        // WinForms does not vertically center text in an over-height native
+        // single-line TextBox. Give the whole row the native Panel border,
+        // and center a borderless, natural-height edit control inside it.
+        // This also avoids the custom Paint border that previously left
+        // rendering artifacts on window resize.
         var searchHost = new Panel
         {
             Dock = DockStyle.Bottom,
-            Height = 33,
+            Height = 34,
+            BorderStyle = BorderStyle.FixedSingle,
             BackColor = Color.White
         };
         _searchBox = new TextBox
@@ -116,22 +119,31 @@ internal sealed partial class MainForm : Form
             Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top,
             PlaceholderText = "Поиск по истории…",
             Font = new Font("Segoe UI", 9.75F),
-            BorderStyle = BorderStyle.FixedSingle,
+            BorderStyle = BorderStyle.None,
             BackColor = Color.White,
             Margin = new Padding(0)
         };
         _searchBox.TextChanged += (_, _) => RefreshHistoryList();
         _searchBox.KeyDown += SearchBoxOnKeyDown;
         searchHost.Controls.Add(_searchBox);
+
         void CenterSearchBox()
         {
+            if (searchHost.ClientSize.Width <= 0 || searchHost.ClientSize.Height <= 0)
+            {
+                return;
+            }
+
+            var editHeight = _searchBox.PreferredSize.Height;
             _searchBox.SetBounds(
-                0,
-                Math.Max(0, (searchHost.ClientSize.Height - _searchBox.PreferredSize.Height) / 2),
-                searchHost.ClientSize.Width,
-                _searchBox.PreferredSize.Height);
+                7,
+                Math.Max(1, (searchHost.ClientSize.Height - editHeight) / 2),
+                Math.Max(1, searchHost.ClientSize.Width - 14),
+                editHeight);
         }
+
         searchHost.Resize += (_, _) => CenterSearchBox();
+        _searchBox.FontChanged += (_, _) => CenterSearchBox();
         CenterSearchBox();
 
         var headerPanel = new Panel
