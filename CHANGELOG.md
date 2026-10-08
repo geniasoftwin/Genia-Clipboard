@@ -2,6 +2,20 @@
 
 All notable GeniaClipboard changes are documented in this file.
 
+## [0.5.3] - 2026-10-08
+
+### Fixed
+
+- search field uses its natural single-line height and is vertically centered in the search row;
+- automatic paste never reuses a stale foreground window after manual activation, Alt+Tab, or opening from the tray;
+- automatic paste checks the exact target window and its process, and offers a manual Ctrl+V fallback if Windows blocks foreground switching;
+- the Edit Entry and Portable Vault password dialogs use the application's branded icon;
+- reduced the leading history marker column from 44 to 22 pixels, using a single colored marker for pinned sensitive items.
+
+### Compatibility
+
+- clipboard history vault format, encryption, and settings schema remain unchanged.
+
 ## [0.5.2] - 2026-10-08
 
 ### UI fixes

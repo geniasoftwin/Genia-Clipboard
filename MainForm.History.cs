@@ -129,7 +129,7 @@ internal sealed partial class MainForm
         {
             var marker = entry switch
             {
-                { IsPinned: true, IsSensitive: true } => "● !",
+                { IsPinned: true, IsSensitive: true } => "●",
                 { IsPinned: true } => "●",
                 { IsSensitive: true } => "!",
                 _ => string.Empty

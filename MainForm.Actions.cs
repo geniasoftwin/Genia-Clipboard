@@ -27,33 +27,63 @@ internal sealed partial class MainForm
 
     private async Task PasteSelectedAsync()
     {
-        if (SelectedEntries.Count == 0 ||
-            !TryBuildSelectedText(out var text) ||
-            !await TrySetClipboardTextAsync(text))
+        if (SelectedEntries.Count == 0)
         {
             return;
         }
 
         var targetWindow = _previousForegroundWindow;
 
-        if (targetWindow == IntPtr.Zero || !NativeMethods.IsWindow(targetWindow))
+        // A paste target belongs to a deliberate global-hotkey invocation.
+        // It must never be reused after the user manually returns to the app.
+        if (!IsValidPasteTarget(targetWindow))
+        {
+            ClearPasteTarget();
+            MessageBox.Show(
+                this,
+                "Чтобы вставить текст автоматически, поставьте курсор в нужном приложении " +
+                "и откройте GeniaClipboard глобальной горячей клавишей.\n\n" +
+                "Если окно истории открыто вручную, используйте «Копировать», " +
+                "а затем Ctrl+V в нужном приложении.",
+                "GeniaClipboard — Вставить",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+            return;
+        }
+
+        if (!TryBuildSelectedText(out var text) ||
+            !await TrySetClipboardTextAsync(text))
         {
             return;
         }
 
-        await Task.Delay(120);
-        if (!NativeMethods.SetForegroundWindow(targetWindow))
+        // Focus changes are never assumed: Windows can refuse foreground
+        // activation. The target is validated immediately before Ctrl+V.
+        _ = NativeMethods.SetForegroundWindow(targetWindow);
+        await Task.Delay(110);
+
+        if (!IsValidPasteTarget(targetWindow) ||
+            NativeMethods.GetForegroundWindow() != targetWindow)
         {
+            ClearPasteTarget();
+            MessageBox.Show(
+                this,
+                "Windows не разрешила переключиться в целевое окно. " +
+                "Текст уже скопирован: перейдите в нужное приложение и нажмите Ctrl+V.",
+                "GeniaClipboard — Вставить",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
             return;
         }
 
-        await Task.Delay(80);
-        if (NativeMethods.GetForegroundWindow() != targetWindow)
-        {
-            return;
-        }
+        HideToTray();
+        await Task.Delay(60);
 
-        NativeMethods.SendCtrlV();
+        if (NativeMethods.IsWindow(targetWindow) &&
+            NativeMethods.GetForegroundWindow() == targetWindow)
+        {
+            NativeMethods.SendCtrlV();
+        }
     }
 
     private async Task<bool> TrySetClipboardTextAsync(string text)
@@ -304,12 +334,12 @@ internal sealed partial class MainForm
             return;
         }
 
-        _historyList.Columns[0].Width = 44;
+        _historyList.Columns[0].Width = MarkerColumnWidth;
         _historyList.Columns[2].Width = 140;
         _historyList.Columns[3].Width = 128;
         _historyList.Columns[1].Width = Math.Max(
             220,
-            _historyList.ClientSize.Width - 318);
+            _historyList.ClientSize.Width - (MarkerColumnWidth + 140 + 128 + 6));
     }
 
     private void UpdateStatus(int? visibleCount = null)

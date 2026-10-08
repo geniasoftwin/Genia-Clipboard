@@ -101,9 +101,8 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
             Text = BuildTrayText(_monitorWindow.CurrentHotKey),
             ContextMenuStrip = menu
         };
-        _notifyIcon.MouseDown += (_, _) => _mainForm.RememberForegroundWindow();
         _notifyIcon.DoubleClick += (_, _) => _mainForm.ShowWindow(rememberForegroundWindow: false);
-        _notifyIcon.BalloonTipTitle = "GeniaClipboard 0.5.2";
+        _notifyIcon.BalloonTipTitle = "GeniaClipboard 0.5.3";
         _notifyIcon.BalloonTipText = "Clipboard Firewall работает локально. История хранится в зашифрованном vault.";
 
         _mainForm.SetMonitorStatus(
