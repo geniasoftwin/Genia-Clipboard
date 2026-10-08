@@ -44,9 +44,32 @@ Current release: **0.5.6 — Unified Paste (public beta)**.<p align="right"><str
 
 **Важное ограничение:** программа не может гарантировать, что курсор ввода остался в прежнем месте после смены окон. Перед вставкой чувствительных данных проверьте целевое окно.
 
-## Скриншоты
+## Скриншоты — настоящий интерфейс Windows
 
-Готовим галерею из [реальных Windows-скриншотов с русскими и английскими подписями](docs/SCREENSHOTS.md). Изображения будут встроены сюда **после** загрузки проверенных PNG в репозиторий. Логотип выше — настоящая SVG-иконка GeniaClipboard.
+<sub>На скриншотах показана версия 0.5.6 с русским интерфейсом. Полноценный английский интерфейс запланирован для [0.5.7](https://github.com/geniasoftwin/Genia-Clipboard/issues/10); изображения настоящие, без наложенного перевода.</sub>
+
+<p align="center">
+  <img src="docs/screenshots/01-main-history.png" width="806" alt="GeniaClipboard — главное окно и история буфера обмена">
+</p>
+
+<details>
+<summary><strong>Показать ещё: поиск, безопасность и история</strong></summary>
+
+**Поиск и фильтрация записей**
+
+![Поиск по истории GeniaClipboard](docs/screenshots/03-search-filter.png)
+
+**Зашифрованный Vault и настройки защиты**
+
+![Настройки безопасности GeniaClipboard](docs/screenshots/04-settings-security.png)
+
+**Хранение истории и исключения приложений**
+
+![Настройки истории GeniaClipboard](docs/screenshots/05-settings-history.png)
+
+</details>
+
+[Посмотреть все 9 скриншотов с подписями](docs/SCREENSHOTS.md).
 
 ## Clipboard Firewall и зашифрованная история
 
