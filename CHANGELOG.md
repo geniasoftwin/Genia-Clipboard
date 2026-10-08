@@ -2,6 +2,27 @@
 
 All notable GeniaClipboard changes are documented in this file.
 
+## [0.5.6] - beta candidate, 2026-10-08
+
+### Changed
+
+- unified automatic Paste across global-hotkey, system-tray, and manual window activation;
+- track the most recently focused eligible external application using Windows foreground events;
+- ignore Windows taskbar, notification overflow, desktop shell and GeniaClipboard windows when selecting a target;
+- validate the destination window, process and actual foreground focus before sending Ctrl+V;
+- when no reliable destination is available, show a manual-copy fallback instead of inserting into a random window;
+- keep the safety fix from 0.5.5: no previously selected clips are restored after reopening from the tray.
+
+### Community
+
+- prepare bilingual beta release notes, setup guidance and feedback via GitHub Issues;
+- draft Reddit and Habr posts for review prior to publishing.
+
+### Compatibility
+
+- existing MIT license remains in place;
+- no change to encrypted vault format, master passwords, history migration or settings schema.
+
 ## [0.5.5] - 2026-10-08
 
 ### Fixed
