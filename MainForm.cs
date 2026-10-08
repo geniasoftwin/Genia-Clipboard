@@ -288,7 +288,7 @@ internal sealed partial class MainForm : Form
         var footerPanel = new Panel
         {
             Dock = DockStyle.Bottom,
-            Height = 71,
+            Height = 84,
             BackColor = Color.White
         };
         footerPanel.Controls.Add(buttonPanel);
