@@ -2,6 +2,22 @@
 
 All notable GeniaClipboard changes are documented in this file.
 
+## [0.5.1] - 2026-10-08
+
+### Improved
+
+- replaced the long, scroll-heavy settings dialog with four focused tabs: Security, History, Hotkeys and System;
+- made each settings tab scroll independently, with Save/Cancel permanently visible;
+- shortened Vault selection labels and moved explanations into dedicated help text;
+- made process exclusions a full-width multiline editor;
+- kept the plaintext TXT journal warning visible within the System tab;
+- improved layout behavior for Windows display scaling and narrower windows;
+- validation returns to the relevant settings tab when a hotkey or master password is invalid.
+
+### Compatibility
+
+- no changes to the encrypted vault format, clipboard capture rules, or existing settings fields.
+
 ## [0.5.0] - 2026-10-07
 
 ### Added

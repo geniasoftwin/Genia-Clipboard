@@ -1,11 +1,16 @@
 namespace GeniaClipboard;
 
+/// <summary>
+/// Four focused settings pages. Each page scrolls independently while the
+/// Save/Cancel footer remains visible, including at increased Windows DPI.
+/// </summary>
 internal sealed class SettingsForm : Form
 {
     private readonly VaultMode _currentVaultMode;
     private readonly ComboBox _vaultMode;
     private readonly TextBox _portablePassword;
     private readonly TextBox _portablePasswordConfirm;
+    private readonly Label _vaultHint;
     private readonly NumericUpDown _historyLimit;
     private readonly NumericUpDown _retentionDays;
     private readonly NumericUpDown _sensitiveExpire;
@@ -21,6 +26,7 @@ internal sealed class SettingsForm : Form
     private readonly CheckBox _hotkeyShift;
     private readonly CheckBox _hotkeyWin;
     private readonly ComboBox _hotkeyKey;
+    private readonly TabControl _tabs;
 
     public SettingsForm(AppSettings settings, VaultMode currentVaultMode, HotKeyDefinition currentHotKey)
     {
@@ -28,100 +34,150 @@ internal sealed class SettingsForm : Form
 
         Text = "Настройки — GeniaClipboard";
         StartPosition = FormStartPosition.CenterParent;
-        ClientSize = new Size(650, 700);
-        MinimumSize = new Size(610, 620);
+        ClientSize = new Size(760, 540);
+        MinimumSize = new Size(650, 450);
+        AutoScaleMode = AutoScaleMode.Dpi;
         Font = new Font("Segoe UI", 9F);
+        BackColor = Color.White;
+        Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath) ?? SystemIcons.Application;
 
-        var layout = new TableLayoutPanel
+        _tabs = new TabControl
         {
             Dock = DockStyle.Fill,
-            AutoScroll = true,
-            Padding = new Padding(14),
-            ColumnCount = 2,
-            RowCount = 0
+            Padding = new Point(16, 8),
+            Margin = new Padding(0)
         };
-        layout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 220));
-        layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
 
-        AddSection(layout, "Хранилище");
+        var securityPage = CreatePage("Безопасность", out var security);
+        var historyPage = CreatePage("История", out var history);
+        var hotkeyPage = CreatePage("Горячие клавиши", out var hotkeys);
+        var systemPage = CreatePage("Система", out var system);
+        _tabs.TabPages.AddRange([securityPage, historyPage, hotkeyPage, systemPage]);
 
-        _vaultMode = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Width = 340 };
+        // Security: vault and secret-handling controls.
+        AddSection(security, "Зашифрованное хранилище");
+
+        _vaultMode = new ComboBox
+        {
+            DropDownStyle = ComboBoxStyle.DropDownList,
+            DropDownWidth = 390
+        };
         _vaultMode.Items.AddRange([
-            "Windows Vault — без пароля, привязан к Windows-пользователю",
-            "Portable Vault — мастер-пароль, перенос между ПК"
+            "Windows Vault (DPAPI)",
+            "Portable Vault (мастер-пароль)"
         ]);
         _vaultMode.SelectedIndex = currentVaultMode == VaultMode.Portable ? 1 : 0;
-        AddRow(layout, "Режим vault", _vaultMode);
+        AddRow(security, "Режим Vault", _vaultMode);
 
-        _portablePassword = new TextBox { UseSystemPasswordChar = true, Width = 300 };
-        _portablePasswordConfirm = new TextBox { UseSystemPasswordChar = true, Width = 300 };
-        AddRow(layout, "Новый мастер-пароль", _portablePassword);
-        AddRow(layout, "Повтор пароля", _portablePasswordConfirm);
+        _vaultHint = AddNote(
+            security,
+            "Windows Vault привязан к текущей учётной записи Windows. " +
+            "Portable Vault можно переносить между компьютерами вместе с зашифрованной историей.");
 
-        var passwordHint = new Label
-        {
-            AutoSize = true,
-            MaximumSize = new Size(360, 0),
-            Text = "Оставьте поля пустыми, чтобы сохранить текущий пароль Portable Vault. При переходе с Windows Vault требуется новый пароль (минимум 10 символов).",
-            ForeColor = Color.DimGray
-        };
-        AddRow(layout, "", passwordHint);
+        _portablePassword = new TextBox { UseSystemPasswordChar = true };
+        _portablePasswordConfirm = new TextBox { UseSystemPasswordChar = true };
+        AddRow(security, "Новый мастер-пароль", _portablePassword);
+        AddRow(security, "Повтор пароля", _portablePasswordConfirm);
+        AddNote(
+            security,
+            "Чтобы оставить существующий пароль Portable Vault, не заполняйте поля. " +
+            "При переходе в Portable Vault задайте новый пароль минимум из 10 символов.");
 
         _privateOnStart = new CheckBox
         {
-            Text = "Запускать в Private Session (история только в памяти)",
+            Text = "Запускать в Private Session",
             Checked = settings.PrivateSessionOnStart,
             AutoSize = true
         };
-        AddRow(layout, "Private Session", _privateOnStart);
+        AddRow(security, "Приватный запуск", _privateOnStart);
+        AddNote(
+            security,
+            "Private Session сохраняет временные записи только в памяти и не записывает их в TXT-журнал.");
 
-        AddSection(layout, "История и конфиденциальность");
-
-        _historyLimit = Number(settings.HistoryLimit, 20, 100_000);
-        AddRow(layout, "Лимит записей", _historyLimit);
-
-        _retentionDays = Number(settings.RetentionDays, 0, 3650);
-        AddRow(layout, "Удалять через, дней", _retentionDays);
+        AddSection(security, "Защита конфиденциальных данных");
 
         _privacyMarkers = new CheckBox
         {
-            Text = "Уважать privacy-маркеры Windows clipboard",
+            Text = "Уважать privacy-маркеры Windows",
             Checked = settings.RespectWindowsPrivacyMarkers,
             AutoSize = true
         };
-        AddRow(layout, "Windows privacy", _privacyMarkers);
+        AddRow(security, "Маркеры Windows", _privacyMarkers);
 
         _detectSensitive = new CheckBox
         {
-            Text = "Распознавать токены, ключи и секреты",
+            Text = "Распознавать токены и секреты",
             Checked = settings.DetectSensitiveText,
             AutoSize = true
         };
-        AddRow(layout, "Sensitive detector", _detectSensitive);
+        AddRow(security, "Sensitive detector", _detectSensitive);
 
         _sensitiveExpire = Number(settings.SensitiveExpireSeconds, 0, 86_400);
-        AddRow(layout, "Sensitive auto-expire, сек.", _sensitiveExpire);
+        AddRow(security, "Удаление секретов, сек.", _sensitiveExpire);
+        AddNote(
+            security,
+            "0 = не удалять автоматически. Распознавание секретов эвристическое " +
+            "и не гарантирует обнаружение каждого пароля или токена.");
+
+        // History: limits, clipboard cleanup and process exclusions.
+        AddSection(history, "Хранение истории");
+
+        _historyLimit = Number(settings.HistoryLimit, 20, 100_000);
+        AddRow(history, "Лимит записей", _historyLimit);
+
+        _retentionDays = Number(settings.RetentionDays, 0, 3650);
+        AddRow(history, "Удалять через, дней", _retentionDays);
+        AddNote(
+            history,
+            "0 = хранить без ограничения по времени. Закреплённые записи " +
+            "не удаляются по общему лимиту и сроку хранения.");
+
+        AddSection(history, "Системный буфер обмена");
 
         _clipboardClear = Number(settings.ClipboardAutoClearSeconds, 0, 86_400);
-        AddRow(layout, "Очистить clipboard через, сек.", _clipboardClear);
+        AddRow(history, "Автоочистка, сек.", _clipboardClear);
+        AddNote(
+            history,
+            "0 = выключено. Автоочистка удалит содержимое буфера, только если оно " +
+            "не изменилось с момента копирования.");
+
+        AddSection(history, "Исключения приложений");
+
+        AddNote(
+            history,
+            "Не сохранять содержимое буфера из указанных процессов. " +
+            "Введите имена процессов без .exe, по одному на строку; " +
+            "например: Bitwarden или KeePassXC.");
 
         _excludedProcesses = new TextBox
         {
             Multiline = true,
-            Height = 70,
+            AcceptsReturn = true,
             ScrollBars = ScrollBars.Vertical,
-            Text = string.Join("; ", settings.ExcludedProcesses)
+            MinimumSize = new Size(0, 114),
+            Height = 114,
+            Text = string.Join(Environment.NewLine, settings.ExcludedProcesses),
+            PlaceholderText = "Bitwarden" + Environment.NewLine + "KeePassXC"
         };
-        AddRow(layout, "Не сохранять из процессов", _excludedProcesses);
+        AddFullWidthControl(history, _excludedProcesses);
+        AddNote(
+            history,
+            "Имя процесса помогает фильтровать приложения, но не является " +
+            "надёжным подтверждением происхождения данных.");
 
-        AddSection(layout, "Горячая клавиша");
+        // Hotkey: separate page for an uncluttered combination picker.
+        AddSection(hotkeys, "Открытие истории");
 
-        var hotkeyPanel = new FlowLayoutPanel { AutoSize = true, WrapContents = false };
         _hotkeyCtrl = Modifier("Ctrl", currentHotKey, NativeMethods.ModControl);
         _hotkeyAlt = Modifier("Alt", currentHotKey, NativeMethods.ModAlt);
         _hotkeyShift = Modifier("Shift", currentHotKey, NativeMethods.ModShift);
         _hotkeyWin = Modifier("Win", currentHotKey, NativeMethods.ModWin);
-        _hotkeyKey = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Width = 90 };
+
+        _hotkeyKey = new ComboBox
+        {
+            DropDownStyle = ComboBoxStyle.DropDownList,
+            Width = 95
+        };
 
         var availableKeys = Enumerable.Range('A', 26)
             .Select(code => (Keys)code)
@@ -136,66 +192,103 @@ internal sealed class SettingsForm : Form
         }
 
         var selectedKeyIndex = availableKeys.IndexOf(currentHotKey.Key);
-        _hotkeyKey.SelectedIndex = selectedKeyIndex >= 0 ? selectedKeyIndex : availableKeys.IndexOf(Keys.V);
+        _hotkeyKey.SelectedIndex = selectedKeyIndex >= 0
+            ? selectedKeyIndex
+            : availableKeys.IndexOf(Keys.V);
 
-        hotkeyPanel.Controls.AddRange([_hotkeyCtrl, _hotkeyAlt, _hotkeyShift, _hotkeyWin, _hotkeyKey]);
-        AddRow(layout, "Открыть историю", hotkeyPanel);
+        var hotkeyPanel = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Top,
+            AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            WrapContents = true,
+            Margin = new Padding(0)
+        };
+        hotkeyPanel.Controls.AddRange([
+            _hotkeyCtrl, _hotkeyAlt, _hotkeyShift, _hotkeyWin, _hotkeyKey
+        ]);
+        AddFullWidthControl(hotkeys, hotkeyPanel);
 
-        AddSection(layout, "Система");
+        AddNote(
+            hotkeys,
+            "Для глобального сочетания выберите хотя бы один модификатор. " +
+            "Если комбинация уже занята другим приложением, текущая будет сохранена.");
+
+        // System: only optional Windows integrations and plaintext journal.
+        AddSection(system, "Запуск программы");
 
         _autoStart = new CheckBox
         {
-            Text = "Запускать вместе с Windows (текущий пользователь)",
+            Text = "Запускать вместе с Windows",
             Checked = settings.AutoStartEnabled,
             AutoSize = true
         };
-        AddRow(layout, "Автозапуск", _autoStart);
+        AddRow(system, "Автозапуск", _autoStart);
+        AddNote(
+            system,
+            "Используется автозапуск только для текущего пользователя Windows. " +
+            "Права администратора не требуются.");
+
+        AddSection(system, "Экспорт и журнал");
 
         _autoJournal = new CheckBox
         {
-            Text = "Вести TXT-журнал",
+            Text = "Вести ежедневный TXT-журнал",
             Checked = settings.AutoJournalEnabled,
             AutoSize = true
         };
-        AddRow(layout, "TXT-журнал", _autoJournal);
+        AddRow(system, "TXT-журнал", _autoJournal);
+        AddNote(
+            system,
+            "Внимание: TXT-журнал не шифруется. Sensitive-записи и записи " +
+            "Private Session в него не добавляются.",
+            Color.DarkRed);
 
-        var journalWarning = new Label
-        {
-            AutoSize = true,
-            MaximumSize = new Size(360, 0),
-            Text = "Внимание: TXT-журнал остаётся незашифрованным. Sensitive-записи и Private Session в него не записываются.",
-            ForeColor = Color.DarkRed
-        };
-        AddRow(layout, "", journalWarning);
+        _vaultMode.SelectedIndexChanged += (_, _) => UpdateVaultFields();
+        UpdateVaultFields();
 
         var saveButton = new Button
         {
             Text = "Сохранить",
-            Width = 110,
-            Height = 32
+            Width = 114,
+            Height = 33
         };
         saveButton.Click += SaveButtonOnClick;
 
         var cancelButton = new Button
         {
             Text = "Отмена",
-            Width = 90,
-            Height = 32,
+            Width = 100,
+            Height = 33,
             DialogResult = DialogResult.Cancel
         };
 
-        var buttons = new FlowLayoutPanel
+        var footerButtons = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Right,
+            FlowDirection = FlowDirection.RightToLeft,
+            WrapContents = false,
+            Width = 245,
+            Padding = new Padding(0, 10, 14, 0)
+        };
+        footerButtons.Controls.Add(saveButton);
+        footerButtons.Controls.Add(cancelButton);
+
+        var footer = new Panel
         {
             Dock = DockStyle.Bottom,
-            Height = 52,
-            Padding = new Padding(0, 10, 14, 8),
-            FlowDirection = FlowDirection.RightToLeft
+            Height = 56,
+            BackColor = Color.FromArgb(248, 250, 252)
         };
-        buttons.Controls.Add(saveButton);
-        buttons.Controls.Add(cancelButton);
+        footer.Controls.Add(footerButtons);
+        footer.Paint += (_, e) =>
+        {
+            using var pen = new Pen(Color.FromArgb(222, 226, 231));
+            e.Graphics.DrawLine(pen, 0, 0, footer.ClientSize.Width, 0);
+        };
 
-        Controls.Add(layout);
-        Controls.Add(buttons);
+        Controls.Add(_tabs);
+        Controls.Add(footer);
         CancelButton = cancelButton;
     }
 
@@ -204,7 +297,9 @@ internal sealed class SettingsForm : Form
         : VaultMode.Windows;
 
     public string? NewPortablePassword =>
-        string.IsNullOrEmpty(_portablePassword.Text) ? null : _portablePassword.Text;
+        RequestedVaultMode == VaultMode.Portable && !string.IsNullOrEmpty(_portablePassword.Text)
+            ? _portablePassword.Text
+            : null;
 
     public int HistoryLimit => decimal.ToInt32(_historyLimit.Value);
 
@@ -247,17 +342,30 @@ internal sealed class SettingsForm : Form
     {
         if (HotKey.Modifiers == 0)
         {
-            MessageBox.Show(this, "Для глобального хоткея выберите хотя бы один модификатор.", "GeniaClipboard");
+            _tabs.SelectedIndex = 2;
+            MessageBox.Show(
+                this,
+                "Для глобального хоткея выберите хотя бы один модификатор.",
+                "GeniaClipboard",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
             return;
         }
 
-        var passwordWasEntered = !string.IsNullOrEmpty(_portablePassword.Text);
+        var passwordWasEntered = NewPortablePassword is not null;
         var passwordRequired = RequestedVaultMode == VaultMode.Portable &&
                                _currentVaultMode != VaultMode.Portable;
 
         if (passwordRequired && !passwordWasEntered)
         {
-            MessageBox.Show(this, "Для перехода в Portable Vault задайте мастер-пароль.", "GeniaClipboard");
+            _tabs.SelectedIndex = 0;
+            MessageBox.Show(
+                this,
+                "Для перехода в Portable Vault задайте мастер-пароль.",
+                "GeniaClipboard",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+            _portablePassword.Focus();
             return;
         }
 
@@ -265,19 +373,140 @@ internal sealed class SettingsForm : Form
         {
             if (_portablePassword.Text.Length < 10)
             {
-                MessageBox.Show(this, "Мастер-пароль должен содержать минимум 10 символов.", "GeniaClipboard");
+                _tabs.SelectedIndex = 0;
+                MessageBox.Show(
+                    this,
+                    "Мастер-пароль должен содержать минимум 10 символов.",
+                    "GeniaClipboard",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                _portablePassword.Focus();
                 return;
             }
 
             if (!string.Equals(_portablePassword.Text, _portablePasswordConfirm.Text, StringComparison.Ordinal))
             {
-                MessageBox.Show(this, "Мастер-пароли не совпадают.", "GeniaClipboard");
+                _tabs.SelectedIndex = 0;
+                MessageBox.Show(
+                    this,
+                    "Мастер-пароли не совпадают.",
+                    "GeniaClipboard",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                _portablePasswordConfirm.Focus();
                 return;
             }
         }
 
         DialogResult = DialogResult.OK;
         Close();
+    }
+
+    private void UpdateVaultFields()
+    {
+        var portable = RequestedVaultMode == VaultMode.Portable;
+        _portablePassword.Enabled = portable;
+        _portablePasswordConfirm.Enabled = portable;
+
+        if (!portable)
+        {
+            _portablePassword.Clear();
+            _portablePasswordConfirm.Clear();
+        }
+
+        _vaultHint.Text = portable
+            ? "Portable Vault переносится между компьютерами. Не потеряйте мастер-пароль: без него историю нельзя восстановить."
+            : "Windows Vault использует DPAPI текущей учётной записи Windows и не требует мастер-пароля.";
+    }
+
+    private static TabPage CreatePage(string title, out TableLayoutPanel layout)
+    {
+        var page = new TabPage(title)
+        {
+            AutoScroll = true,
+            BackColor = Color.White,
+            Padding = new Padding(0),
+            UseVisualStyleBackColor = false
+        };
+
+        layout = new TableLayoutPanel
+        {
+            Dock = DockStyle.Top,
+            AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            GrowStyle = TableLayoutPanelGrowStyle.AddRows,
+            ColumnCount = 2,
+            Padding = new Padding(18, 12, 18, 22),
+            Margin = new Padding(0)
+        };
+        layout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 188));
+        layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+
+        page.Controls.Add(layout);
+        return page;
+    }
+
+    private static void AddSection(TableLayoutPanel layout, string title)
+    {
+        var heading = new NoCopyLabel
+        {
+            Text = title,
+            Font = new Font("Segoe UI Semibold", 10.5F),
+            ForeColor = Color.FromArgb(31, 41, 55),
+            AutoSize = true,
+            Margin = new Padding(0, 12, 0, 9)
+        };
+        AddFullWidthControl(layout, heading);
+    }
+
+    private static Label AddNote(TableLayoutPanel layout, string message, Color? color = null)
+    {
+        var note = new NoCopyLabel
+        {
+            Text = message,
+            AutoSize = true,
+            MaximumSize = new Size(570, 0),
+            ForeColor = color ?? Color.FromArgb(96, 106, 120),
+            Margin = new Padding(0, 4, 0, 12)
+        };
+        AddFullWidthControl(layout, note);
+        return note;
+    }
+
+    private static void AddRow(TableLayoutPanel layout, string caption, Control control)
+    {
+        var row = layout.RowCount++;
+        layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+
+        var label = new NoCopyLabel
+        {
+            Text = caption,
+            AutoSize = true,
+            MaximumSize = new Size(178, 0),
+            ForeColor = Color.FromArgb(55, 65, 81),
+            Margin = new Padding(0, 9, 10, 9)
+        };
+
+        if (control is TextBox or ComboBox or CheckBox)
+        {
+            control.Dock = DockStyle.Top;
+        }
+        control.Margin = new Padding(0, 5, 0, 7);
+
+        layout.Controls.Add(label, 0, row);
+        layout.Controls.Add(control, 1, row);
+    }
+
+    private static void AddFullWidthControl(TableLayoutPanel layout, Control control)
+    {
+        var row = layout.RowCount++;
+        layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+        if (control is TextBox or FlowLayoutPanel)
+        {
+            control.Dock = DockStyle.Top;
+        }
+        layout.Controls.Add(control, 0, row);
+        layout.SetColumnSpan(control, 2);
     }
 
     private static NumericUpDown Number(int value, int minimum, int maximum)
@@ -288,7 +517,7 @@ internal sealed class SettingsForm : Form
             Maximum = maximum,
             Value = Math.Clamp(value, minimum, maximum),
             ThousandsSeparator = true,
-            Width = 140
+            Width = 155
         };
     }
 
@@ -299,41 +528,7 @@ internal sealed class SettingsForm : Form
             Text = text,
             AutoSize = true,
             Checked = (hotKey.Modifiers & flag) != 0,
-            Margin = new Padding(0, 4, 10, 0)
+            Margin = new Padding(0, 4, 16, 4)
         };
-    }
-
-    private static void AddSection(TableLayoutPanel layout, string title)
-    {
-        var label = new Label
-        {
-            Text = title,
-            Font = new Font("Segoe UI Semibold", 10.5F),
-            AutoSize = true,
-            Padding = new Padding(0, 12, 0, 5)
-        };
-
-        var row = layout.RowCount++;
-        layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-        layout.Controls.Add(label, 0, row);
-        layout.SetColumnSpan(label, 2);
-    }
-
-    private static void AddRow(TableLayoutPanel layout, string caption, Control control)
-    {
-        var row = layout.RowCount++;
-        layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-
-        var label = new Label
-        {
-            Text = caption,
-            AutoSize = true,
-            Padding = new Padding(0, 7, 8, 7),
-            ForeColor = Color.FromArgb(55, 65, 81)
-        };
-
-        control.Margin = new Padding(0, 4, 0, 4);
-        layout.Controls.Add(label, 0, row);
-        layout.Controls.Add(control, 1, row);
     }
 }

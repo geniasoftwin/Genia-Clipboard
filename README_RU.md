@@ -12,7 +12,7 @@
 
 <p align="center">
   <a href="https://github.com/geniasoftwin/Genia-Clipboard/actions/workflows/build.yml"><img alt="Build" src="https://github.com/geniasoftwin/Genia-Clipboard/actions/workflows/build.yml/badge.svg"></a>
-  <img alt="Version" src="https://img.shields.io/badge/version-0.5.0-blue">
+  <img alt="Version" src="https://img.shields.io/badge/version-0.5.1-blue">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-green">
   <img alt="Platform" src="https://img.shields.io/badge/platform-Windows%2010%2F11-0078D6?logo=windows11&logoColor=white">
   <img alt=".NET" src="https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white">
@@ -133,6 +133,10 @@ Private Session временно скрывает постоянный vault и 
 
 Перед ручным экспортом программа показывает предупреждение. Sensitive-записи и Private Session автоматически в TXT-журнал не попадают.
 
+## Настройки в 0.5.1
+
+Окно настроек разделено на четыре вкладки: **Безопасность**, **История**, **Горячие клавиши** и **Система**. Кнопки сохранения и отмены всегда остаются внизу, а содержимое каждой вкладки прокручивается независимо. Улучшены размеры полей и текст предупреждений для масштабирования Windows.
+
 ## Ограничения
 
 - пока только текст: изображения, файлы, HTML и RTF запланированы на этап Rich Clipboard;
@@ -154,4 +158,4 @@ GeniaClipboard распространяется под [MIT License](LICENSE).
 
 ## Версия
 
-Текущая ветка релиза: **0.5.0 — Privacy Core**.
+Текущий релиз: **0.5.1 — UI & Usability**. Основа Privacy Core появилась в 0.5.0.
