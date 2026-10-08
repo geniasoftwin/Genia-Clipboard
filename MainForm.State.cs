@@ -70,6 +70,9 @@ internal sealed partial class MainForm
 
         try
         {
+            // A new invocation is a new paste decision. Never carry forward
+            // the rows selected for the previous paste (including multi-select).
+            ClearSelectedEntries();
             _searchBox.Clear();
             RefreshHistoryList();
             ShowInTaskbar = true;
@@ -133,9 +136,16 @@ internal sealed partial class MainForm
         }
     }
 
+    private void ClearSelectedEntries()
+    {
+        _historyList.SelectedIndices.Clear();
+        UpdateSelection();
+    }
+
     public void HideToTray()
     {
         ClearPasteTarget();
+        ClearSelectedEntries();
         Hide();
         ShowInTaskbar = false;
     }

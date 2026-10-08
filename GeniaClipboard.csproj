@@ -8,7 +8,7 @@
     <Nullable>enable</Nullable>
     <AssemblyName>GeniaClipboard</AssemblyName>
     <RootNamespace>GeniaClipboard</RootNamespace>
-    <Version>0.5.4</Version>
+    <Version>0.5.5</Version>
     <Authors>GeniaSoftWin</Authors>
     <Description>Privacy-first portable clipboard manager for Windows.</Description>
     <ApplicationIcon>Assets\GeniaClipboard.ico</ApplicationIcon>

@@ -12,7 +12,7 @@
 
 <p align="center">
   <a href="https://github.com/geniasoftwin/Genia-Clipboard/actions/workflows/build.yml"><img alt="Build" src="https://github.com/geniasoftwin/Genia-Clipboard/actions/workflows/build.yml/badge.svg"></a>
-  <img alt="Version" src="https://img.shields.io/badge/version-0.5.4-blue">
+  <img alt="Version" src="https://img.shields.io/badge/version-0.5.5-blue">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-green">
   <img alt="Platform" src="https://img.shields.io/badge/platform-Windows%2010%2F11-0078D6?logo=windows11&logoColor=white">
   <img alt=".NET" src="https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white">
@@ -175,6 +175,10 @@ To auto-paste into another app, place the cursor in that app and open GeniaClipb
 
 The search row now keeps its full height, with the text and placeholder centered vertically inside a borderless edit control. A native Windows panel border replaces custom border painting. The Clipboard Firewall, vault format, hotkey paste behavior and settings schema are unchanged.
 
+## Selection safety in 0.5.5
+
+After a paste, GeniaClipboard still returns to the system tray. On the next hotkey invocation, **no clip is selected**: press the Down Arrow to choose the first visible entry, navigate with the arrows, or click entries with the mouse. Enter and Paste operate only on a deliberately selected clip. The old multi-selection is never reused automatically.
+
 ## Current limitations
 
 - text only; images, copied file lists, HTML, and RTF are planned for the Rich Clipboard stage;
@@ -196,4 +200,4 @@ GeniaClipboard is released under the [MIT License](LICENSE).
 
 ## Version
 
-Current release: **0.5.4 — Search Alignment**. The Privacy Core was introduced in 0.5.0.
+Current release: **0.5.5 — Selection Safety**. The Privacy Core was introduced in 0.5.0.

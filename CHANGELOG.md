@@ -2,6 +2,19 @@
 
 All notable GeniaClipboard changes are documented in this file.
 
+## [0.5.5] - 2026-10-08
+
+### Fixed
+
+- clear previous single- and multi-selection when GeniaClipboard hides to tray and on every new invocation;
+- do not automatically select the first clip after rebuilding the history list;
+- Enter in the search field pastes only an explicitly selected clip; Down Arrow selects the first visible match if desired;
+- prevent accidentally repeating a previous batch paste after reopening the window.
+
+### Compatibility
+
+- encrypted history, Portable Vault password, capture rules, clipboard paste destination validation and settings schema are unchanged.
+
 ## [0.5.4] - 2026-10-08
 
 ### Fixed

@@ -271,10 +271,15 @@ internal sealed partial class MainForm
             _historyList.Items[0].Selected = true;
             e.SuppressKeyPress = true;
         }
-        else if (e.KeyCode == Keys.Enter && _historyList.Items.Count > 0)
+        else if (e.KeyCode == Keys.Enter)
         {
-            _historyList.Items[0].Selected = true;
-            _ = PasteSelectedAsync();
+            // Enter in Search must never select an item implicitly. First use
+            // Down (or click a row) to make an explicit paste selection.
+            if (_historyList.SelectedItems.Count > 0)
+            {
+                _ = PasteSelectedAsync();
+            }
+
             e.SuppressKeyPress = true;
         }
     }
