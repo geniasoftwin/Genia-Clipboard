@@ -6,20 +6,20 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thank you for the report. Please do not include real passwords, tokens, personal data, or sensitive clipboard contents.
-        Спасибо за отчёт. Не прикладывайте реальные пароли, токены, персональные данные или чувствимое содержимое буфера обмена.
+        Thank you for the report. Never include real passwords, tokens, personal data, sensitive clipboard content or files from the Data folder.
+        Спасибо за отчёт. Не прикладывайте реальные пароли, токены, персональные данные, содержимое буфера или файлы из папки Data.
   - type: input
     id: version
     attributes:
       label: GeniaClipboard version / Версия
-      placeholder: "0.4.4"
+      placeholder: "0.5.6"
     validations:
       required: true
   - type: input
     id: windows
     attributes:
       label: Windows version / Версия Windows
-      placeholder: "Windows 11 24H2 x64"
+      placeholder: "Windows 11 x64, 125% scaling"
     validations:
       required: true
   - type: textarea
@@ -48,4 +48,4 @@ body:
     id: notes
     attributes:
       label: Additional information / Дополнительная информация
-      description: Remove sensitive data from screenshots and logs before attaching them. / Удалите чувствительные данные из скриншотов и логов.
+      description: Use dummy test text only. Never upload history.gch, history.key, or password screenshots. / Используйте тестовый текст; не загружайте файлы Vault или скриншоты с паролями.
