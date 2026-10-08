@@ -1,4 +1,4 @@
-# GeniaClipboard 0.5.6 — Unified Paste (Public Beta Candidate)
+# GeniaClipboard 0.5.6 — Unified Paste (Public Beta)
 
 [Русский ниже](#русский)
 
@@ -11,6 +11,10 @@ This update focuses on one important real-world behavior: **Paste must work cons
 - Validates the destination window, owning process and current foreground focus immediately before Ctrl+V.
 - If a trustworthy destination is unavailable, does not send keystrokes into an unrelated program; offers Copy + manual Ctrl+V.
 - Keeps the 0.5.5 fix: opening the history does not restore a previous single/multiple selection. Select a clip for each new paste.
+
+### Tested on Windows
+
+The project owner confirmed that a real Windows beta build can **Copy** a selected clip, switch focus to Notepad, return to GeniaClipboard and use **Paste** to insert the text into Notepad. This is a manual workflow check, not an automated guarantee for all applications and focus combinations.
 
 ### Community preview
 
@@ -29,6 +33,10 @@ This is **text-only** software. Sensitive-text recognition is heuristic, not a s
 - Перед Ctrl+V проверяются конкретное окно, его процесс и фактический фокус.
 - Если цель не определена надёжно, программа не отправляет клавиши в случайное окно, а предлагает «Копировать» + Ctrl+V.
 - Исправление 0.5.5 сохраняется: при новом открытии записи не выделены, пока пользователь не выберет их снова.
+
+### Проверено на Windows
+
+Автор подтвердил на тестовой Windows-сборке сценарий: выделить запись → «Копировать» → переключиться в Блокнот → вернуться в GeniaClipboard → «Вставить». Текст успешно вставляется в Блокнот. Это ручная проверка конкретного сценария, а не обещание одинакового результата во всех программах.
 
 ### Открытое бета-тестирование
 
