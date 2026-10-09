@@ -63,7 +63,7 @@ internal static class Program
                 if (!HistoryStore.TryOpen(settings, unlock.Password, out store, out error))
                 {
                     MessageBox.Show(
-                        error ?? UiText.T("Не удалось разблокировать Portable Vault."),
+                        error is null ? UiText.T("Не удалось разблокировать Portable Vault.") : UiText.Error(error),
                         "GeniaClipboard",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
@@ -73,7 +73,7 @@ internal static class Program
         else if (!HistoryStore.TryOpen(settings, null, out store, out error))
         {
             MessageBox.Show(
-                error ?? UiText.T("Не удалось открыть Windows Vault."),
+                error is null ? UiText.T("Не удалось открыть Windows Vault.") : UiText.Error(error),
                 "GeniaClipboard",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
@@ -94,7 +94,7 @@ internal static class Program
             if (store.MigrationWarning is not null)
             {
                 MessageBox.Show(
-                    store.MigrationWarning,
+                    UiText.Error(store.MigrationWarning),
                     UiText.T("GeniaClipboard — миграция"),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
