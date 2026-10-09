@@ -162,7 +162,10 @@ internal static class UiText
     public static void Localize(Control root)
     {
         if (!_english) return;
-        root.Text = T(root.Text);
+        // Do not touch TextBox.Text (clipboard data, passwords and user-entered
+        // process names) or user-defined content in other editable controls.
+        if (root is Form or Label or Button or CheckBox or TabPage or GroupBox)
+            root.Text = T(root.Text);
         if (root is TextBox box) box.PlaceholderText = T(box.PlaceholderText);
         if (root is ListView list)
         {
