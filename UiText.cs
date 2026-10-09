@@ -159,6 +159,81 @@ internal static class UiText
     public static string T(string russian) =>
         _english && English.TryGetValue(russian, out var translated) ? translated : russian;
 
+    // Translate storage-layer errors only when they are displayed. Exception
+    // messages or vault contents themselves are never changed.
+    private static readonly Dictionary<string, string> VaultErrors = new(StringComparer.Ordinal)
+    {
+        ["Не удалось расшифровать историю. Проверьте мастер-пароль или Windows-профиль."] =
+            "Could not decrypt history. Check the master password or Windows user profile.",
+        ["Режим хранилища нельзя менять во время Private Session."] =
+            "The vault mode cannot be changed during Private Session.",
+        ["Неизвестный режим хранилища."] = "Unknown vault mode.",
+        ["Для Portable Vault задайте мастер-пароль не короче 10 символов."] =
+            "Portable Vault requires a master password of at least 10 characters.",
+        ["Постоянный vault не разблокирован. Перезапустите GeniaClipboard и разблокируйте vault мастер-паролем."] =
+            "The persistent vault is locked. Restart GeniaClipboard and unlock it with your master password.",
+        ["Не удалось создать зашифрованное хранилище."] = "Could not create encrypted vault.",
+        ["Файл ключа Windows Vault отсутствует."] = "Windows Vault key file is missing.",
+        ["Файл ключа Windows Vault повреждён."] = "Windows Vault key file is damaged.",
+        ["Windows Vault вернул ключ неверного размера."] = "Windows Vault returned a key of incorrect size.",
+        ["Portable Vault заблокирован."] = "Portable Vault is locked.",
+        ["Хранилище не разблокировано."] = "The vault is locked.",
+        ["Режим хранилища изменён без корректной миграции."] =
+            "The vault mode changed without a valid migration.",
+        ["Параметры Portable Vault не совпадают."] = "Portable Vault parameters do not match.",
+        ["Старый history.json слишком большой для безопасной миграции."] =
+            "The old history.json is too large for safe migration.",
+        ["Хранилище не разблокировано; запись отменена."] =
+            "The vault is locked; saving was cancelled.",
+        ["Повреждён заголовок зашифрованной истории."] =
+            "The encrypted history header is corrupted.",
+        ["Некорректная соль зашифрованной истории."] =
+            "The encrypted history salt is invalid.",
+        ["Некорректная соль Portable Vault."] =
+            "The Portable Vault salt is invalid.",
+        ["Windows Vault содержит неожиданные параметры ключа."] =
+            "Windows Vault contains unexpected key parameters.",
+        ["Мастер-пароль не задан."] = "The master password was not provided.",
+        ["Некорректный размер зашифрованной истории."] =
+            "Encrypted history has an invalid length.",
+        ["Размер зашифрованной истории не совпадает с заголовком."] =
+            "The encrypted history size does not match its header.",
+        ["Файл зашифрованной истории не найден."] = "Encrypted history file was not found.",
+        ["Неизвестный формат зашифрованной истории."] =
+            "Unknown encrypted history format.",
+        ["Некорректный ключ хранилища."] = "Invalid vault key.",
+        ["Зашифрованная история неожиданно обрывается."] =
+            "The encrypted history is unexpectedly truncated."
+    };
+
+    private static readonly (string Russian, string English)[] ErrorPrefixes =
+    [
+        ("Не удалось открыть хранилище GeniaClipboard: ", "Could not open GeniaClipboard vault: "),
+        ("Не удалось изменить режим хранилища: ", "Could not change vault mode: "),
+        ("Не удалось вернуться к постоянной истории: ", "Could not return to persistent history: "),
+        ("История не сохранена: ", "History was not saved: "),
+        ("История уже зашифрована, но старый незашифрованный history.json не удалось удалить: ",
+         "History was encrypted, but the old plaintext history.json could not be deleted: "),
+        ("TXT-журнал не записан: ", "TXT journal could not be written: "),
+        ("Не удалось изменить автозапуск: ", "Could not change autostart: "),
+        ("Не удалось открыть раздел автозапуска текущего пользователя.",
+         "Could not open the current user's autostart registry key.")
+    ];
+
+    public static string Error(string? message)
+    {
+        if (string.IsNullOrEmpty(message)) return string.Empty;
+        if (!_english) return message;
+        if (VaultErrors.TryGetValue(message, out var translated)) return translated;
+
+        foreach (var (russian, english) in ErrorPrefixes)
+        {
+            if (message.StartsWith(russian, StringComparison.Ordinal))
+                return english + message[russian.Length..];
+        }
+        return T(message);
+    }
+
     public static void Localize(Control root)
     {
         if (!_english) return;
