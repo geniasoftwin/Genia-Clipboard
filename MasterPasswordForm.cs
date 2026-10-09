@@ -68,6 +68,7 @@ internal sealed class MasterPasswordForm : Form
         Controls.AddRange([title, hint, _passwordBox, cancelButton, privateButton, unlockButton]);
         AcceptButton = unlockButton;
         CancelButton = cancelButton;
+        UiText.Localize(this);
         Shown += (_, _) => _passwordBox.Focus();
     }
 
@@ -79,7 +80,7 @@ internal sealed class MasterPasswordForm : Form
         {
             MessageBox.Show(
                 this,
-                "Введите мастер-пароль.",
+                UiText.T("Введите мастер-пароль."),
                 "GeniaClipboard",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
