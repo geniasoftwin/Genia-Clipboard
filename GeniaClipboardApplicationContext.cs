@@ -168,7 +168,7 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
         {
             MessageBox.Show(
                 _mainForm,
-                $"Хоткей {dialog.HotKey.ToDisplayString()} уже занят другой программой.",
+                UiText.IsEnglish ? $"Hotkey {dialog.HotKey.ToDisplayString()} is already in use by another application." : $"Хоткей {dialog.HotKey.ToDisplayString()} уже занят другой программой.",
                 "GeniaClipboard",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
@@ -199,7 +199,7 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
             AutoStartService.SetEnabled(oldAutoStart, out _);
             MessageBox.Show(
                 _mainForm,
-                _store.LastError ?? UiText.T("Не удалось изменить режим vault."),
+                _store.LastError is null ? UiText.T("Не удалось изменить режим vault.") : UiText.Error(_store.LastError),
                 "GeniaClipboard",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
@@ -296,7 +296,7 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
         {
             MessageBox.Show(
                 _mainForm,
-                _store.LastError ?? UiText.T("Не удалось открыть постоянную историю."),
+                _store.LastError is null ? UiText.T("Не удалось открыть постоянную историю.") : UiText.Error(_store.LastError),
                 "GeniaClipboard",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
