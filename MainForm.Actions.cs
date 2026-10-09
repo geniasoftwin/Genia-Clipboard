@@ -365,7 +365,7 @@ internal sealed partial class MainForm
     {
         if (_store.LastError is not null || _journal.LastError is not null)
         {
-            _statusLabel.Text = _store.LastError ?? _journal.LastError;
+            _statusLabel.Text = UiText.Error(_store.LastError ?? _journal.LastError);
             _statusLabel.ForeColor = Color.Firebrick;
             return;
         }
