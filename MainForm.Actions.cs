@@ -20,8 +20,8 @@ internal sealed partial class MainForm
         if (await TrySetClipboardTextAsync(text))
         {
             _statusLabel.Text = selected.Count == 1
-                ? "Скопировано"
-                : $"Скопировано элементов: {selected.Count}";
+                ? UiText.T("Скопировано")
+                : UiText.IsEnglish ? $"Copied entries: {selected.Count}" : $"Скопировано элементов: {selected.Count}";
         }
     }
 
@@ -38,11 +38,15 @@ internal sealed partial class MainForm
         {
             MessageBox.Show(
                 this,
-                "Не удалось определить недавнее активное окно для вставки.\n\n" +
-                "Перейдите в нужное приложение, установите курсор и вернитесь " +
-                "в GeniaClipboard любым способом — горячей клавишей или через трей.\n\n" +
-                "Для вставки вручную используйте «Копировать» и Ctrl+V.",
-                "GeniaClipboard — Вставить",
+                UiText.IsEnglish
+                    ? "Could not identify a recent target window for pasting.\n\n" +
+                      "Place your cursor in the target app, then return to GeniaClipboard " +
+                      "using the shortcut or tray.\n\nTo paste manually, use Copy and Ctrl+V."
+                    : "Не удалось определить недавнее активное окно для вставки.\n\n" +
+                      "Перейдите в нужное приложение, установите курсор и вернитесь " +
+                      "в GeniaClipboard любым способом — горячей клавишей или через трей.\n\n" +
+                      "Для вставки вручную используйте «Копировать» и Ctrl+V.",
+                UiText.T("GeniaClipboard — Вставить"),
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
             return;
@@ -86,8 +90,11 @@ internal sealed partial class MainForm
     {
         MessageBox.Show(
             this,
-            "Windows не разрешила переключиться в целевое окно. " +
-            "Текст уже скопирован: перейдите в нужное приложение и нажмите Ctrl+V.",
+            UiText.IsEnglish
+                ? "Windows could not activate the target window. The text is on your clipboard; " +
+                  "switch to the target app and press Ctrl+V."
+                : "Windows не разрешила переключиться в целевое окно. " +
+                  "Текст уже скопирован: перейдите в нужное приложение и нажмите Ctrl+V.",
             "GeniaClipboard — Вставить",
             MessageBoxButtons.OK,
             MessageBoxIcon.Information);
@@ -122,7 +129,7 @@ internal sealed partial class MainForm
         }
 
         MessageBox.Show(
-            "Буфер обмена сейчас занят другой программой. Попробуйте ещё раз.",
+            UiText.T("Буфер обмена сейчас занят другой программой. Попробуйте ещё раз."),
             "GeniaClipboard",
             MessageBoxButtons.OK,
             MessageBoxIcon.Information);
@@ -162,7 +169,7 @@ internal sealed partial class MainForm
         {
             MessageBox.Show(
                 this,
-                "Не удалось сохранить изменённую запись.",
+                UiText.T("Не удалось сохранить изменённую запись."),
                 "GeniaClipboard",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
@@ -214,9 +221,9 @@ internal sealed partial class MainForm
         using var dialog = new SaveFileDialog
         {
             Title = selected.Count >= 2
-                ? $"Экспортировать выбранные записи ({selected.Count})"
-                : "Экспортировать всю историю",
-            Filter = "Текстовый файл (*.txt)|*.txt",
+                ? (UiText.IsEnglish ? $"Export selected entries ({selected.Count})" : $"Экспортировать выбранные записи ({selected.Count})")
+                : UiText.T("Экспортировать всю историю"),
+            Filter = UiText.T("Текстовый файл (*.txt)|*.txt"),
             DefaultExt = "txt",
             AddExtension = true,
             FileName = $"GeniaClipboard_{DateTime.Now:yyyy-MM-dd_HH-mm}.txt",
@@ -231,7 +238,7 @@ internal sealed partial class MainForm
 
         var warning = MessageBox.Show(
             this,
-            "TXT-файл будет незашифрованным. Продолжить экспорт?",
+            UiText.T("TXT-файл будет незашифрованным. Продолжить экспорт?"),
             "GeniaClipboard",
             MessageBoxButtons.YesNo,
             MessageBoxIcon.Warning,
@@ -258,12 +265,12 @@ internal sealed partial class MainForm
                 }
             }
 
-            _statusLabel.Text = $"Экспортировано: {entries.Count}";
+            _statusLabel.Text = UiText.IsEnglish ? $"Exported: {entries.Count}" : $"Экспортировано: {entries.Count}";
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or NotSupportedException)
         {
             MessageBox.Show(
-                $"Не удалось сохранить TXT-файл.\n\n{ex.Message}",
+                UiText.IsEnglish ? $"Failed to save TXT file.\n\n{ex.Message}" : $"Не удалось сохранить TXT-файл.\n\n{ex.Message}",
                 "GeniaClipboard",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
@@ -367,19 +374,19 @@ internal sealed partial class MainForm
 
         if (!_clipboardListenerRegistered)
         {
-            _statusLabel.Text = "Резервное слежение за буфером";
+            _statusLabel.Text = UiText.T("Резервное слежение за буфером");
             return;
         }
 
         if (!_hotKeyRegistered)
         {
-            _statusLabel.Text = "Глобальный хоткей уже занят";
+            _statusLabel.Text = UiText.T("Глобальный хоткей уже занят");
             return;
         }
 
         var count = visibleCount ?? _store.Items.Count;
         var selectedCount = _historyList.SelectedItems.Count;
-        var selectionSuffix = selectedCount > 1 ? $" · Выбрано: {selectedCount}" : string.Empty;
+        var selectionSuffix = selectedCount > 1 ? (UiText.IsEnglish ? $" · Selected: {selectedCount}" : $" · Выбрано: {selectedCount}") : string.Empty;
         var journalSuffix = _journal.Enabled && !_store.IsPrivateSession ? " · TXT" : string.Empty;
         var vault = _store.IsPrivateSession
             ? "Private Session"
@@ -388,8 +395,12 @@ internal sealed partial class MainForm
                 : "Windows Vault";
 
         _statusLabel.Text = CaptureEnabled
-            ? $"{vault} · Записей: {count}{selectionSuffix}{journalSuffix}"
-            : $"{vault} · Сбор приостановлен · {count}{selectionSuffix}";
+            ? UiText.IsEnglish
+                ? $"{vault} · Entries: {count}{selectionSuffix}{journalSuffix}"
+                : $"{vault} · Записей: {count}{selectionSuffix}{journalSuffix}"
+            : UiText.IsEnglish
+                ? $"{vault} · Capture paused · {count}{selectionSuffix}"
+                : $"{vault} · Сбор приостановлен · {count}{selectionSuffix}";
     }
 
     private static void DrawSearchBorder(object? sender, PaintEventArgs e)
@@ -421,7 +432,7 @@ internal sealed partial class MainForm
     {
         var local = value.LocalDateTime;
         return local.Date == DateTime.Today
-            ? $"Сегодня, {local:HH:mm}"
+            ? (UiText.IsEnglish ? $"Today, {local:HH:mm}" : $"Сегодня, {local:HH:mm}")
             : local.ToString("dd.MM.yyyy HH:mm");
     }
 
