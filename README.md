@@ -44,32 +44,36 @@ Windows Win+V, Ditto and CopyQ already exist. GeniaClipboard doesn't try to matc
 
 **Important:** the app cannot guarantee that the text cursor remains at the same location when focus changes. Always confirm the target before pasting sensitive content.
 
-## Screenshots — authentic Windows UI
+## Screenshots — real English UI preview (v0.5.7 beta)
 
-<sub>GeniaClipboard 0.5.6 currently has a Russian-language interface. English UI localization is planned for [0.5.7](https://github.com/geniasoftwin/Genia-Clipboard/issues/10); the screenshots below are genuine, not mockups or translated overlays.</sub>
+> **Version notice:** These are genuine screenshots of the **unreleased 0.5.7 English-language beta**, being tested in [PR #16](https://github.com/geniasoftwin/Genia-Clipboard/pull/16). The [latest published release (v0.5.6)](https://github.com/geniasoftwin/Genia-Clipboard/releases/tag/v0.5.6) still has a Russian-language interface. The images are unedited application captures, not translated mockups.
 
 <p align="center">
-  <img src="docs/screenshots/01-main-history.png" width="806" alt="GeniaClipboard clipboard history — genuine Windows screenshot in Russian">
+  <img src="docs/screenshots/en/01-main-history-en.png" width="806" alt="GeniaClipboard 0.5.7 beta: real English clipboard history window with demo entries">
 </p>
 
 <details>
-<summary><strong>View more: search, privacy settings and clipboard history</strong></summary>
+<summary><strong>See English screenshots of Security, History, Hotkeys and System settings</strong></summary>
 
-**Search / Поиск**
+**Security: Windows Vault / Portable Vault**
 
-![GeniaClipboard search and filtering](docs/screenshots/03-search-filter.png)
+![GeniaClipboard 0.5.7 English beta — encrypted vault and privacy settings](docs/screenshots/en/02-settings-security-en.png)
 
-**Encrypted vault and privacy controls / Безопасность**
+**History: retention and excluded applications**
 
-![GeniaClipboard security settings](docs/screenshots/04-settings-security.png)
+![GeniaClipboard 0.5.7 English beta — history retention settings](docs/screenshots/en/03-settings-history-en.png)
 
-**Retention and process exclusions / История**
+**Hotkeys: configure the shortcut**
 
-![GeniaClipboard history settings](docs/screenshots/05-settings-history.png)
+![GeniaClipboard 0.5.7 English beta — global hotkey settings](docs/screenshots/en/04-settings-hotkeys-en.png)
+
+**System: autostart, journal and language selector**
+
+![GeniaClipboard 0.5.7 English beta — System tab with Auto, Russian and English language choices](docs/screenshots/en/05-settings-system-language-en.png)
 
 </details>
 
-[Browse all 9 annotated screenshots / Полная галерея](docs/SCREENSHOTS.md).
+[Full bilingual gallery — English beta + Russian v0.5.6](docs/SCREENSHOTS.md).
 
 ## Clipboard Firewall & encrypted storage
 
