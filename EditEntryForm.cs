@@ -63,6 +63,7 @@ internal sealed class EditEntryForm : Form
         Controls.Add(buttons);
         AcceptButton = saveButton;
         CancelButton = cancelButton;
+        UiText.Localize(this);
         Shown += (_, _) =>
         {
             _editor.Focus();
@@ -78,7 +79,7 @@ internal sealed class EditEntryForm : Form
         {
             MessageBox.Show(
                 this,
-                "Запись не может быть пустой.",
+                UiText.T("Запись не может быть пустой."),
                 "GeniaClipboard",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);

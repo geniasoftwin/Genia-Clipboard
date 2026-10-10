@@ -2,6 +2,21 @@
 
 All notable GeniaClipboard changes are documented in this file.
 
+## [0.5.7] - beta candidate, 2026-10-09
+
+### Added
+
+- First-run language selection follows Windows UI language: Russian for `ru`, English for every other system language.
+- Settings → System → Language: Auto (Windows), Русский and English; preference saved in settings.json.
+- Added bilingual About dialog with the actual assembly version, MIT License, official GitHub source and issue links and an explicit privacy disclaimer.
+- Localized main history, search, captions, settings, vault unlock and editing dialogs, tray menu, core notifications and errors into English.
+- Changing UI language requires an application restart; saved clipboard content, Portable Vault keys and encrypted history are never translated or converted.
+
+### Compatibility
+
+- Encrypted vault format and user history remain unchanged.
+- Windows hotkey, tray paste safety and selection-reset behavior from 0.5.6 are preserved.
+
 ## [0.5.6] - public beta, 2026-10-08
 
 ### Changed
