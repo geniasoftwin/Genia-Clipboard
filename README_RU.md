@@ -1,4 +1,4 @@
-Current release: **0.5.6 — Unified Paste (public beta)**.<p align="right"><strong>Русский</strong> · <a href="README.md">English</a></p>
+<p align="right"><strong>Русский</strong> · <a href="README.md">English</a></p>
 
 <p align="center">
   <img src="Assets/GeniaClipboard.svg" alt="Логотип GeniaClipboard" width="96" height="96">
@@ -15,7 +15,7 @@ Current release: **0.5.6 — Unified Paste (public beta)**.<p align="right"><str
   <a href="https://github.com/geniasoftwin/Genia-Clipboard/actions/workflows/build.yml"><img alt="Windows CI" src="https://github.com/geniasoftwin/Genia-Clipboard/actions/workflows/build.yml/badge.svg"></a>
   <img alt="MIT License" src="https://img.shields.io/badge/license-MIT-green">
   <img alt="Windows x64" src="https://img.shields.io/badge/Windows-10%2F11%20x64-0078D6">
-  <img alt="Beta" src="https://img.shields.io/badge/version-0.5.6%20beta-2563EB">
+  <img alt="Beta" src="https://img.shields.io/badge/version-0.5.7-2563EB">
 </p>
 
 <p align="center">
@@ -24,7 +24,7 @@ Current release: **0.5.6 — Unified Paste (public beta)**.<p align="right"><str
   <a href="https://github.com/geniasoftwin/Genia-Clipboard/issues/new/choose">Сообщить об ошибке / Предложить функцию</a>
 </p>
 
-> **0.5.6 — публичная бета:** автор проверил на Windows сценарий «Копировать» → перевод фокуса в Блокнот → возвращение в GeniaClipboard → «Вставить». В других приложениях или при иных переключениях окон поведение может отличаться. Сообщайте о воспроизводимых ошибках.
+> **Выпущена GeniaClipboard v0.5.7** — русский и английский интерфейс с автоматическим определением языка Windows либо ручным выбором в «Настройки → Система». Зашифрованная история и защищённая вставка из 0.5.6 сохранены. [Скачать 0.5.7](https://github.com/geniasoftwin/Genia-Clipboard/releases/tag/v0.5.7).
 
 ## Зачем ещё один менеджер буфера обмена?
 
@@ -46,7 +46,7 @@ Current release: **0.5.6 — Unified Paste (public beta)**.<p align="right"><str
 
 ## Скриншоты — настоящий интерфейс Windows
 
-<sub>На скриншотах показана версия 0.5.6 с русским интерфейсом. Полноценный английский интерфейс запланирован для [0.5.7](https://github.com/geniasoftwin/Genia-Clipboard/issues/10); изображения настоящие, без наложенного перевода.</sub>
+<sub>Ниже сохранены реальные скриншоты **0.5.6 на русском**; новые [английские скриншоты выпущенной версии 0.5.7](docs/SCREENSHOTS.md#english-v057--english-interface) доступны в общей галерее. Русский и английский интерфейс входят в 0.5.7. Все снимки сделаны в настоящем приложении, без наложенного перевода.</sub>
 
 <p align="center">
   <img src="docs/screenshots/01-main-history.png" width="806" alt="GeniaClipboard — главное окно и история буфера обмена">
@@ -69,7 +69,7 @@ Current release: **0.5.6 — Unified Paste (public beta)**.<p align="right"><str
 
 </details>
 
-[Посмотреть все 9 скриншотов с подписями](docs/SCREENSHOTS.md).
+[Полная галерея: английская 0.5.7 и русская 0.5.6](docs/SCREENSHOTS.md).
 
 ## Clipboard Firewall и зашифрованная история
 
