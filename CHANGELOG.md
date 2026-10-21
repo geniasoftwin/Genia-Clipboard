@@ -2,7 +2,7 @@
 
 All notable GeniaClipboard changes are documented in this file.
 
-## [0.5.7] - beta candidate, 2026-10-09
+## [0.5.7] - 2026-10-21
 
 ### Added
 
@@ -11,6 +11,11 @@ All notable GeniaClipboard changes are documented in this file.
 - Added bilingual About dialog with the actual assembly version, MIT License, official GitHub source and issue links and an explicit privacy disclaimer.
 - Localized main history, search, captions, settings, vault unlock and editing dialogs, tray menu, core notifications and errors into English.
 - Changing UI language requires an application restart; saved clipboard content, Portable Vault keys and encrypted history are never translated or converted.
+
+### Validation
+
+- Windows x64 CI build passed.
+- The project owner confirmed the five beta scenarios on Windows: Auto Russian, manual English after restart, About links/version, Portable Vault history/unlock, and paste into Notepad.
 
 ### Compatibility
 
