@@ -27,10 +27,10 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
         _mainForm = new MainForm(_store, _journal, _settingsStore.Settings);
         _mainForm.SettingsRequested += (_, _) => OpenSettings();
 
-        var openMenuItem = new ToolStripMenuItem("Открыть");
+        var openMenuItem = new ToolStripMenuItem(UiText.T("Открыть"));
         openMenuItem.Click += (_, _) => _mainForm.ShowWindow();
 
-        _captureMenuItem = new ToolStripMenuItem("Сохранять скопированное")
+        _captureMenuItem = new ToolStripMenuItem(UiText.T("Сохранять скопированное"))
         {
             Checked = true,
             CheckOnClick = true
@@ -38,13 +38,13 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
         _captureMenuItem.CheckedChanged += (_, _) =>
             _mainForm.SetCaptureEnabled(_captureMenuItem.Checked);
 
-        _privateSessionMenuItem = new ToolStripMenuItem("Private Session — только память")
+        _privateSessionMenuItem = new ToolStripMenuItem(UiText.T("Private Session — только память"))
         {
             Checked = _store.IsPrivateSession
         };
         _privateSessionMenuItem.Click += (_, _) => TogglePrivateSession();
 
-        _autoJournalMenuItem = new ToolStripMenuItem("Автожурнал TXT")
+        _autoJournalMenuItem = new ToolStripMenuItem(UiText.T("Автожурнал TXT"))
         {
             Checked = _journal.Enabled,
             CheckOnClick = true
@@ -65,19 +65,27 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
             }
         };
 
-        var settingsMenuItem = new ToolStripMenuItem("Настройки…");
+        var settingsMenuItem = new ToolStripMenuItem(UiText.T("Настройки…"));
         settingsMenuItem.Click += (_, _) => OpenSettings();
 
-        var clearMenuItem = new ToolStripMenuItem("Очистить историю");
+        var aboutMenuItem = new ToolStripMenuItem(UiText.T("О программе"));
+        aboutMenuItem.Click += (_, _) =>
+        {
+            using var about = new AboutForm();
+            about.ShowDialog(_mainForm);
+        };
+
+        var clearMenuItem = new ToolStripMenuItem(UiText.T("Очистить историю"));
         clearMenuItem.Click += (_, _) => _mainForm.ClearHistoryWithConfirmation();
 
-        var exitMenuItem = new ToolStripMenuItem("Выход");
+        var exitMenuItem = new ToolStripMenuItem(UiText.T("Выход"));
         exitMenuItem.Click += (_, _) => ExitApplication();
 
         var menu = new ContextMenuStrip();
         menu.Items.AddRange([
             openMenuItem,
             settingsMenuItem,
+            aboutMenuItem,
             new ToolStripSeparator(),
             _captureMenuItem,
             _privateSessionMenuItem,
@@ -102,8 +110,8 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
             ContextMenuStrip = menu
         };
         _notifyIcon.DoubleClick += (_, _) => _mainForm.ShowWindow();
-        _notifyIcon.BalloonTipTitle = "GeniaClipboard 0.5.6";
-        _notifyIcon.BalloonTipText = "Clipboard Firewall работает локально. История хранится в зашифрованном vault.";
+        _notifyIcon.BalloonTipTitle = "GeniaClipboard 0.5.7";
+        _notifyIcon.BalloonTipText = UiText.T("Clipboard Firewall работает локально. История хранится в зашифрованном vault.");
 
         _mainForm.SetMonitorStatus(
             _monitorWindow.ClipboardListenerRegistered,
@@ -152,6 +160,7 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
             return;
         }
 
+        var oldLanguage = _settingsStore.Settings.Language;
         var oldHotKey = _monitorWindow.CurrentHotKey;
         var oldAutoStart = _settingsStore.Settings.AutoStartEnabled;
 
@@ -159,7 +168,7 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
         {
             MessageBox.Show(
                 _mainForm,
-                $"Хоткей {dialog.HotKey.ToDisplayString()} уже занят другой программой.",
+                UiText.IsEnglish ? $"Hotkey {dialog.HotKey.ToDisplayString()} is already in use by another application." : $"Хоткей {dialog.HotKey.ToDisplayString()} уже занят другой программой.",
                 "GeniaClipboard",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
@@ -171,7 +180,7 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
             _monitorWindow.TrySetHotKey(oldHotKey);
             MessageBox.Show(
                 _mainForm,
-                autoStartError ?? "Не удалось изменить автозапуск.",
+                autoStartError ?? UiText.T("Не удалось изменить автозапуск."),
                 "GeniaClipboard",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
@@ -190,7 +199,7 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
             AutoStartService.SetEnabled(oldAutoStart, out _);
             MessageBox.Show(
                 _mainForm,
-                _store.LastError ?? "Не удалось изменить режим vault.",
+                _store.LastError is null ? UiText.T("Не удалось изменить режим vault.") : UiText.Error(_store.LastError),
                 "GeniaClipboard",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
@@ -210,6 +219,7 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
         settings.ClipboardAutoClearSeconds = dialog.ClipboardAutoClearSeconds;
         settings.PrivateSessionOnStart = dialog.PrivateSessionOnStart;
         settings.PreferredVaultMode = dialog.RequestedVaultMode;
+        settings.Language = dialog.SelectedLanguage;
         settings.ExcludedProcesses = dialog.ExcludedProcesses.ToList();
         settings.Normalize();
 
@@ -234,6 +244,16 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
         }
+
+        if (settings.Language != oldLanguage && _settingsStore.LastError is null)
+        {
+            MessageBox.Show(
+                _mainForm,
+                UiText.T("Язык интерфейса изменится после перезапуска GeniaClipboard. Для сохранения зашифрованной истории выйдите через трей и запустите приложение снова."),
+                "GeniaClipboard",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        }
     }
 
     private void TogglePrivateSession()
@@ -242,7 +262,7 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
         {
             var result = MessageBox.Show(
                 _mainForm,
-                "В Private Session постоянная зашифрованная история будет временно скрыта. Новые записи останутся только в памяти и исчезнут при выходе. Продолжить?",
+                UiText.T("В Private Session постоянная зашифрованная история будет временно скрыта. Новые записи останутся только в памяти и исчезнут при выходе. Продолжить?"),
                 "GeniaClipboard — Private Session",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Information,
@@ -261,7 +281,7 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
 
         var exitResult = MessageBox.Show(
             _mainForm,
-            "Завершить Private Session? Вся временная история этой сессии будет удалена без сохранения.",
+            UiText.T("Завершить Private Session? Вся временная история этой сессии будет удалена без сохранения."),
             "GeniaClipboard — Private Session",
             MessageBoxButtons.YesNo,
             MessageBoxIcon.Warning,
@@ -276,7 +296,7 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
         {
             MessageBox.Show(
                 _mainForm,
-                _store.LastError ?? "Не удалось открыть постоянную историю.",
+                _store.LastError is null ? UiText.T("Не удалось открыть постоянную историю.") : UiText.Error(_store.LastError),
                 "GeniaClipboard",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);

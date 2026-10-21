@@ -347,6 +347,17 @@ internal sealed partial class MainForm : Form
         _toolTip.SetToolTip(settingsButton, "Privacy, vault, hotkey и автозапуск");
         _toolTip.SetToolTip(clearButton, "Удалить всю текущую историю");
 
+        UiText.Localize(this);
+        // Tooltips aren't Control.Text, so translate them separately.
+        _toolTip.SetToolTip(_pasteButton, UiText.T("Вставить выбранный фрагмент — Enter"));
+        _toolTip.SetToolTip(_copyButton, UiText.T("Скопировать выбранные записи, по одной на строку"));
+        _toolTip.SetToolTip(_editButton, UiText.T("Изменить одну выбранную запись — F2"));
+        _toolTip.SetToolTip(_pinButton, UiText.T("Закрепить одну выбранную запись вверху списка"));
+        _toolTip.SetToolTip(_deleteButton, UiText.T("Удалить выбранные записи — Delete"));
+        _toolTip.SetToolTip(exportButton, UiText.T("Экспорт: несколько выделенных записей или вся история"));
+        _toolTip.SetToolTip(settingsButton, UiText.T("Privacy, vault, hotkey и автозапуск"));
+        _toolTip.SetToolTip(clearButton, UiText.T("Удалить всю текущую историю"));
+
         KeyDown += OnWindowKeyDown;
         RefreshHistoryList();
     }

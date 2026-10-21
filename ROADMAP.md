@@ -8,21 +8,12 @@
 
 This roadmap contains **plans, not shipped features**. Items must be independently tested and checked off before they appear in README feature claims.
 
-## Current 0.5.6 beta candidate
+## Shipped — 0.5.6 / 0.5.7
 
-- Unified safe Paste when opening history by shortcut, tray or taskbar.
-- Recent eligible external window tracking, window/process validation and no-target fallback.
-- Selection reset on reopen from 0.5.5.
-- Bilingual open-source documentation and beta testing instructions.
-- Authentic sanitized screenshots for the public repository, pending image upload.
-
-## 0.5.7 — About & localization (first priority after beta)
-
-- **About** dialog showing name, version, MIT license, supported Windows version, GitHub and Issues links, and a concise encryption/threat-model disclaimer.
-- RU/EN application UI via centralized localization resources (ideally .resx), with auto-detect and manual language selection in Settings → System.
-- All form labels, errors, menus, tooltips, accessibility text and system-tray messages localized.
-- Fall back to English for missing translations. Never alter saved entry text or encrypted vault contents.
-- Validate long translated strings at 100%, 125% and 150% display scaling.
+- v0.5.6: guarded Paste for hotkey, tray and manual focus switching, window/process validation, no-target fallback, and selection reset.
+- v0.5.7: real Russian/English UI, auto language selection (ru → Russian, otherwise English), manual override after restart, and About with MIT/source/feedback links.
+- Genuine English and Russian screenshots are published in [the gallery](docs/SCREENSHOTS.md). SHA-256 for both EXE and ZIP is part of release assets.
+- Both releases have passed Windows CI; v0.5.7 passed the owner's five Windows beta checks.
 
 ## 0.5.8 — Daily UX
 
@@ -68,19 +59,11 @@ GeniaClipboard развивается как **Clipboard Firewall + Encrypted Va
 
 **Пункты ниже — планы, а не готовые функции.**
 
-### Сейчас — 0.5.6 beta
+### Уже реализовано — 0.5.6 / 0.5.7
 
-- Одинаковая безопасная вставка из истории, открытой хоткеем, треем или вручную.
-- Отслеживание недавно активного внешнего окна, проверка окна и процесса, отказ от небезопасной вставки.
-- Сброс выделения после скрытия в трей.
-- Подготовка открытого тестирования, RU/EN документация, настоящие скриншоты.
-
-### 0.5.7 — «О программе» и RU/EN интерфейс
-
-- Раздел «О программе»: версия, лицензия MIT, GitHub, отчёты об ошибках, поддерживаемая Windows и честное описание ограничений защиты.
-- Локализация через единый набор ресурсов (предпочтительно .resx): русский и английский.
-- Автовыбор системного языка и ручной переключатель в «Настройки → Система».
-- Перевести окна, трей, подсказки, ошибки, кнопки и сообщения. Текст истории и Vault не преобразовывать.
+- **0.5.6:** защищённая вставка через хоткей, трей и вручную, проверка целевого окна/процесса, сброс выделения после скрытия.
+- **0.5.7:** «О программе», RU/EN интерфейс, автоматический выбор языка Windows (русский для ru, английский для остальных), ручной выбор с применением после перезапуска.
+- Настоящие скриншоты на русском и английском, публичная документация и SHA-256 для EXE и ZIP. Windows CI и пять ручных тестов 0.5.7 пройдены.
 
 ### 0.5.8 — удобство каждого дня
 

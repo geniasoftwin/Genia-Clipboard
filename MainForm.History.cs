@@ -205,7 +205,7 @@ internal sealed partial class MainForm
             {
                 text = string.Empty;
                 MessageBox.Show(
-                    "Выбранные записи слишком велики для одного пакетного копирования. Уменьшите выбор или используйте экспорт в TXT.",
+                    UiText.T("Выбранные записи слишком велики для одного пакетного копирования. Уменьшите выбор или используйте экспорт в TXT."),
                     "GeniaClipboard",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
@@ -239,7 +239,7 @@ internal sealed partial class MainForm
 
         if (builder.Length >= MaxMultiPreviewLength)
         {
-            builder.AppendLine().Append("… предпросмотр сокращён …");
+            builder.AppendLine().Append(UiText.T("… предпросмотр сокращён …"));
         }
 
         return builder.ToString();
@@ -262,7 +262,7 @@ internal sealed partial class MainForm
         _editButton.Enabled = selected.Count == 1;
         _pinButton.Enabled = selected.Count == 1;
         _deleteButton.Enabled = hasSelection;
-        _pinButton.Text = entry?.IsPinned == true ? "Открепить" : "Закрепить";
+        _pinButton.Text = UiText.T(entry?.IsPinned == true ? "Открепить" : "Закрепить");
         UpdateStatus();
     }
 }

@@ -15,7 +15,7 @@
   <a href="https://github.com/geniasoftwin/Genia-Clipboard/actions/workflows/build.yml"><img alt="Windows CI" src="https://github.com/geniasoftwin/Genia-Clipboard/actions/workflows/build.yml/badge.svg"></a>
   <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green">
   <img alt="Windows x64" src="https://img.shields.io/badge/Windows-10%2F11%20x64-0078D6">
-  <img alt="Version" src="https://img.shields.io/badge/version-0.5.6%20beta-2563EB">
+  <img alt="Version" src="https://img.shields.io/badge/version-0.5.7-2563EB">
 </p>
 
 <p align="center">
@@ -24,7 +24,7 @@
   <a href="https://github.com/geniasoftwin/Genia-Clipboard/issues/new/choose">Report a bug / Suggest a feature</a>
 </p>
 
-> **0.5.6 public beta:** the owner confirmed the Copy → Notepad focus switch → Paste workflow on Windows. Other applications and focus situations may behave differently. Please report reproducible issues. The source is MIT-licensed, and the release includes checksums.
+> **Now available: v0.5.7** with Russian and English UI (automatic Windows language detection or manual choice under Settings → System). Existing encrypted history and the v0.5.6 guarded Paste workflow are preserved. [Download v0.5.7](https://github.com/geniasoftwin/Genia-Clipboard/releases/tag/v0.5.7).
 
 ## Why another clipboard manager?
 
@@ -44,12 +44,12 @@ Windows Win+V, Ditto and CopyQ already exist. GeniaClipboard doesn't try to matc
 
 **Important:** the app cannot guarantee that the text cursor remains at the same location when focus changes. Always confirm the target before pasting sensitive content.
 
-## Screenshots — real English UI preview (v0.5.7 beta)
+## Screenshots — real English UI (v0.5.7)
 
-> **Version notice:** These are genuine screenshots of the **unreleased 0.5.7 English-language beta**, being tested in [PR #16](https://github.com/geniasoftwin/Genia-Clipboard/pull/16). The [latest published release (v0.5.6)](https://github.com/geniasoftwin/Genia-Clipboard/releases/tag/v0.5.6) still has a Russian-language interface. The images are unedited application captures, not translated mockups.
+> **Actual Windows screenshots** of GeniaClipboard v0.5.7 with English selected. The current public release supports Russian and English UI. Images show genuine application screens, not mockups or translated overlays.
 
 <p align="center">
-  <img src="docs/screenshots/en/01-main-history-en.png" width="806" alt="GeniaClipboard 0.5.7 beta: real English clipboard history window with demo entries">
+  <img src="docs/screenshots/en/01-main-history-en.png" width="806" alt="GeniaClipboard 0.5.7: real English clipboard history window with demo entries">
 </p>
 
 <details>
@@ -57,23 +57,23 @@ Windows Win+V, Ditto and CopyQ already exist. GeniaClipboard doesn't try to matc
 
 **Security: Windows Vault / Portable Vault**
 
-![GeniaClipboard 0.5.7 English beta — encrypted vault and privacy settings](docs/screenshots/en/02-settings-security-en.png)
+![GeniaClipboard 0.5.7 English UI — encrypted vault and privacy settings](docs/screenshots/en/02-settings-security-en.png)
 
 **History: retention and excluded applications**
 
-![GeniaClipboard 0.5.7 English beta — history retention settings](docs/screenshots/en/03-settings-history-en.png)
+![GeniaClipboard 0.5.7 English UI — history retention settings](docs/screenshots/en/03-settings-history-en.png)
 
 **Hotkeys: configure the shortcut**
 
-![GeniaClipboard 0.5.7 English beta — global hotkey settings](docs/screenshots/en/04-settings-hotkeys-en.png)
+![GeniaClipboard 0.5.7 English UI — global hotkey settings](docs/screenshots/en/04-settings-hotkeys-en.png)
 
 **System: autostart, journal and language selector**
 
-![GeniaClipboard 0.5.7 English beta — System tab with Auto, Russian and English language choices](docs/screenshots/en/05-settings-system-language-en.png)
+![GeniaClipboard 0.5.7 English UI — System tab with Auto, Russian and English language choices](docs/screenshots/en/05-settings-system-language-en.png)
 
 </details>
 
-[Full bilingual gallery — English beta + Russian v0.5.6](docs/SCREENSHOTS.md).
+[Full bilingual screenshot gallery — English v0.5.7 and Russian v0.5.6](docs/SCREENSHOTS.md).
 
 ## Clipboard Firewall & encrypted storage
 

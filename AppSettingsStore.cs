@@ -33,7 +33,7 @@ internal sealed class AppSettingsStore
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException or NotSupportedException)
         {
-            LastError = $"Настройки не сохранены: {ex.Message}";
+            LastError = $"{UiText.T("Настройки не сохранены: ")}{ex.Message}";
         }
     }
 
@@ -57,7 +57,7 @@ internal sealed class AppSettingsStore
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException or InvalidDataException or NotSupportedException)
         {
-            LastError = $"Настройки не прочитаны: {ex.Message}";
+            LastError = $"{UiText.T("Настройки не прочитаны: ")}{ex.Message}";
             return new AppSettings();
         }
     }
@@ -68,6 +68,8 @@ internal sealed class AppSettings
     public bool AutoJournalEnabled { get; set; }
 
     public bool AutoStartEnabled { get; set; }
+
+    public string Language { get; set; } = "auto";
 
     public int HistoryLimit { get; set; } = 500;
 
@@ -93,6 +95,7 @@ internal sealed class AppSettings
 
     public void Normalize()
     {
+        if (Language is not ("auto" or "ru" or "en")) Language = "auto";
         HistoryLimit = Math.Clamp(HistoryLimit, 20, 100_000);
         RetentionDays = Math.Clamp(RetentionDays, 0, 3650);
         SensitiveExpireSeconds = Math.Clamp(SensitiveExpireSeconds, 0, 86_400);

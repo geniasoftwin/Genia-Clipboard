@@ -27,6 +27,7 @@ internal sealed class SettingsForm : Form
     private readonly CheckBox _hotkeyWin;
     private readonly ComboBox _hotkeyKey;
     private readonly TabControl _tabs;
+    private readonly ComboBox _languageCombo;
     private readonly TableLayoutPanel _securityLayout;
     private readonly TableLayoutPanel _historyLayout;
 
@@ -248,6 +249,33 @@ internal sealed class SettingsForm : Form
             "Private Session в него не добавляются.",
             Color.DarkRed);
 
+        AddSection(system, "Язык интерфейса");
+
+        _languageCombo = new ComboBox
+        {
+            DropDownStyle = ComboBoxStyle.DropDownList,
+            Width = 235
+        };
+        _languageCombo.Items.AddRange(["Автоматически (Windows)", "Русский", "English"]);
+        _languageCombo.SelectedIndex = settings.Language switch
+        {
+            "ru" => 1,
+            "en" => 2,
+            _ => 0
+        };
+        AddRow(system, "Язык", _languageCombo);
+        AddNote(system,
+            "Язык интерфейса изменится после перезапуска GeniaClipboard. Для сохранения зашифрованной истории выйдите через трей и запустите приложение снова.");
+
+        AddSection(system, "О приложении");
+        var aboutButton = new Button { Text = "О программе", Width = 148, Height = 30 };
+        aboutButton.Click += (_, _) =>
+        {
+            using var about = new AboutForm();
+            about.ShowDialog(this);
+        };
+        AddRow(system, "Ссылки и обратная связь", aboutButton);
+
         _vaultMode.SelectedIndexChanged += (_, _) => UpdateVaultFields();
         UpdateVaultFields();
 
@@ -294,8 +322,16 @@ internal sealed class SettingsForm : Form
         Controls.Add(_tabs);
         Controls.Add(footer);
         CancelButton = cancelButton;
+        UiText.Localize(this);
         Shown += (_, _) => FitHeightToSettingsPages();
     }
+
+    public string SelectedLanguage => _languageCombo.SelectedIndex switch
+    {
+        1 => "ru",
+        2 => "en",
+        _ => "auto"
+    };
 
     public VaultMode RequestedVaultMode => _vaultMode.SelectedIndex == 1
         ? VaultMode.Portable
@@ -350,7 +386,7 @@ internal sealed class SettingsForm : Form
             _tabs.SelectedIndex = 2;
             MessageBox.Show(
                 this,
-                "Для глобального хоткея выберите хотя бы один модификатор.",
+                UiText.T("Для глобального хоткея выберите хотя бы один модификатор."),
                 "GeniaClipboard",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
@@ -366,7 +402,7 @@ internal sealed class SettingsForm : Form
             _tabs.SelectedIndex = 0;
             MessageBox.Show(
                 this,
-                "Для перехода в Portable Vault задайте мастер-пароль.",
+                UiText.T("Для перехода в Portable Vault задайте мастер-пароль."),
                 "GeniaClipboard",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
@@ -381,7 +417,7 @@ internal sealed class SettingsForm : Form
                 _tabs.SelectedIndex = 0;
                 MessageBox.Show(
                     this,
-                    "Мастер-пароль должен содержать минимум 10 символов.",
+                    UiText.T("Мастер-пароль должен содержать минимум 10 символов."),
                     "GeniaClipboard",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
@@ -394,7 +430,7 @@ internal sealed class SettingsForm : Form
                 _tabs.SelectedIndex = 0;
                 MessageBox.Show(
                     this,
-                    "Мастер-пароли не совпадают.",
+                    UiText.T("Мастер-пароли не совпадают."),
                     "GeniaClipboard",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
@@ -420,8 +456,8 @@ internal sealed class SettingsForm : Form
         }
 
         _vaultHint.Text = portable
-            ? "Portable Vault переносится между компьютерами. Не потеряйте мастер-пароль: без него историю нельзя восстановить."
-            : "Windows Vault использует DPAPI текущей учётной записи Windows и не требует мастер-пароля.";
+            ? UiText.T("Portable Vault переносится между компьютерами. Не потеряйте мастер-пароль: без него историю нельзя восстановить.")
+            : UiText.T("Windows Vault использует DPAPI текущей учётной записи Windows и не требует мастер-пароля.");
     }
 
 

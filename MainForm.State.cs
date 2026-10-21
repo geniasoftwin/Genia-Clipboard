@@ -100,9 +100,9 @@ internal sealed partial class MainForm
             return;
         }
 
-        var message = _store.IsPrivateSession
+        var message = UiText.T(_store.IsPrivateSession
             ? "Удалить всю временную историю Private Session?"
-            : "Удалить всю зашифрованную историю, включая закреплённые записи?";
+            : "Удалить всю зашифрованную историю, включая закреплённые записи?");
 
         var result = MessageBox.Show(
             message,

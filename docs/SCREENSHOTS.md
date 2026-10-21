@@ -4,10 +4,10 @@ All screenshots are **real, unedited Windows application captures**, not rendere
 
 There are two different versions here:
 
-- **English 0.5.7 beta:** localization is being tested in [PR #16](https://github.com/geniasoftwin/Genia-Clipboard/pull/16), **not yet a public release**.
-- **Russian 0.5.6:** screenshots from the [latest published beta](https://github.com/geniasoftwin/Genia-Clipboard/releases/tag/v0.5.6).
+- **English 0.5.7:** screenshots of the [published bilingual version](https://github.com/geniasoftwin/Genia-Clipboard/releases/tag/v0.5.7).
+- **Russian 0.5.6:** preserved screenshots from the [previous release](https://github.com/geniasoftwin/Genia-Clipboard/releases/tag/v0.5.6).
 
-## English v0.5.7 beta — English interface
+## English v0.5.7 — English interface
 
 ### Main window — clipboard history
 
@@ -40,9 +40,9 @@ Windows Vault / Portable Vault selector, memory-only Private Session, Windows pr
 
 The System screenshot shows **English selected** and the option to follow Windows language automatically. Automatic language behavior: Russian for the Windows `ru` UI locale, English for all other system UI languages. The setting takes effect after a restart.
 
-## Russian v0.5.6 — published interface
+## Russian v0.5.6 — historical interface
 
-These screenshots were captured during public-beta preparation. The current public EXE is still v0.5.6 with a Russian UI.
+These screenshots were captured during preparation of the previous v0.5.6 release. The current v0.5.7 EXE supports both Russian and English.
 
 ### Clipboard history
 
@@ -87,9 +87,9 @@ These screenshots were captured during public-beta preparation. The current publ
 
 ## Русский
 
-Здесь представлены **две настоящие версии интерфейса**: русская публичная бета 0.5.6 и англоязычная тестовая сборка 0.5.7. Версия 0.5.7 ещё находится в [черновом PR #16](https://github.com/geniasoftwin/Genia-Clipboard/pull/16), поэтому на странице релизов пока предлагается 0.5.6.
+Здесь представлены **две настоящие версии интерфейса**: русская 0.5.6 и английская 0.5.7. Версия [0.5.7 официально опубликована](https://github.com/geniasoftwin/Genia-Clipboard/releases/tag/v0.5.7) и поддерживает оба языка.
 
-| Скриншот английской беты 0.5.7 | Описание |
+| Скриншот английского интерфейса 0.5.7 | Описание |
 |---|---|
 | [Главное окно](screenshots/en/01-main-history-en.png) | Десять тестовых записей, предпросмотр, вставка |
 | [Безопасность](screenshots/en/02-settings-security-en.png) | Portable Vault, Private Session, детектор секретов |
@@ -97,7 +97,7 @@ These screenshots were captured during public-beta preparation. The current publ
 | [Горячие клавиши](screenshots/en/04-settings-hotkeys-en.png) | Настройка глобального сочетания |
 | [Система и язык](screenshots/en/05-settings-system-language-en.png) | Auto, Русский, English, кнопка About |
 
-Русские снимки 0.5.6 сохранены выше; при выходе официальной 0.5.7 галерею можно обновить, не меняя настоящие оригиналы.
+Русские снимки 0.5.6 сохранены выше; скриншоты оригинальные и не изменялись.
 
 **Приватность:** в снимках использованы демонстрационные тексты (в том числе `support@example.com` как вымышленный пример). Скриншот редактора с отдельными контактными данными по-прежнему не публикуется.
 

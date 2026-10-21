@@ -1,47 +1,57 @@
-# GeniaClipboard 0.5.6 — Unified Paste (Public Beta)
+# GeniaClipboard v0.5.7 — Russian & English UI
 
-[Русский ниже](#русский)
+[Русская версия ниже](#русский)
 
 ## English
 
-This update focuses on one important real-world behavior: **Paste must work consistently whether clipboard history is opened with the global shortcut, from the tray, or manually**.
+GeniaClipboard is a free, MIT-licensed, portable **text-only** clipboard history manager for Windows 10/11 x64. Version 0.5.7 adds bilingual UI while preserving the encrypted history and guarded Paste workflow of v0.5.6.
 
-- Tracks the most recently focused external application using Windows foreground notifications.
-- Excludes GeniaClipboard windows and the Windows taskbar/shell as destinations.
-- Validates the destination window, owning process and current foreground focus immediately before Ctrl+V.
-- If a trustworthy destination is unavailable, does not send keystrokes into an unrelated program; offers Copy + manual Ctrl+V.
-- Keeps the 0.5.5 fix: opening the history does not restore a previous single/multiple selection. Select a clip for each new paste.
+### What's new
 
-### Tested on Windows
+- **Automatic UI language:** Windows interface language **Russian (ru) → Russian**; any other Windows UI language → **English**.
+- **Manual language override:** Settings → System → Language: Automatic (Windows), Русский, English. Your choice is saved locally and takes effect **after a restart**.
+- **About** dialog with the running version, MIT license, GitHub source and feedback links, and a concise security disclaimer.
+- English translation of main history, search, preview, Settings tabs, tray menu, Portable Vault unlock, editor, and key messages.
 
-The project owner confirmed that a real Windows beta build can **Copy** a selected clip, switch focus to Notepad, return to GeniaClipboard and use **Paste** to insert the text into Notepad. This is a manual workflow check, not an automated guarantee for all applications and focus combinations.
+### Compatibility and privacy
 
-### Community preview
+- No changes to the encrypted Vault format, master password, or saved clips. UI localization **never translates or modifies clipboard history content**.
+- Local encrypted history uses Windows DPAPI or Portable Vault with a master password. Private Session keeps new entries only in memory.
+- Clipboard secret detection is heuristic, not infallible; TXT exports and optional TXT journals are **not encrypted**. Encryption at rest does not protect against software already reading clipboard contents or process memory in your Windows session.
+- The EXE is **not Authenticode-signed**. Release assets include a self-contained EXE, portable ZIP and `SHA256SUMS.txt` for verifying both downloads.
 
-GeniaClipboard is a free, open-source Windows clipboard manager, MIT-licensed, with an encrypted local history (Windows DPAPI or a portable master-password vault), a memory-only Private Session, optional per-process exclusions, search and entry editing.
+### Testing and feedback
 
-This is **text-only** software. Sensitive-text recognition is heuristic, not a security guarantee. Optional TXT journals and exports are **not encrypted**. The app cannot protect against malware with access to your Windows session or clipboard.
+Windows CI restored and built the application. The project owner manually verified the five beta checks: Russian UI in Auto mode, persistent manual English selection after restart, About links/version, Portable Vault history/unlock, and paste into Notepad. This does not establish universal compatibility with every application or scaling configuration.
 
-**Help test this beta:** Please report reproducible issues via GitHub Issues and include the version, Windows build, steps and expected vs actual behavior. Never upload real secrets, passwords, vault files or private clipboard captures.
+View [authentic English beta screenshots](https://github.com/geniasoftwin/Genia-Clipboard/blob/main/docs/SCREENSHOTS.md) and report reproducible issues via [GitHub Issues](https://github.com/geniasoftwin/Genia-Clipboard/issues/new/choose). Never post real passwords, private clipboard history or vault files.
+
+**Updating:** Exit GeniaClipboard from the tray, back up the complete `Data` directory, then replace the EXE. Keep your Portable Vault master password.
+
+---
 
 ## Русский
 
-Версия 0.5.6 исправляет один из главных сценариев: **«Вставить» должно работать одинаково независимо от того, открыта история горячей клавишей, через трей или вручную**.
+GeniaClipboard — бесплатный портативный менеджер **текстовой** истории буфера обмена для Windows 10/11 x64 под лицензией MIT. В версии 0.5.7 добавлен двуязычный интерфейс; защищённая вставка из 0.5.6 и существующий Vault сохранены.
 
-- Программа отслеживает недавно активное внешнее окно через события Windows.
-- Собственные окна GeniaClipboard, панель задач и системная оболочка Windows не считаются окнами назначения.
-- Перед Ctrl+V проверяются конкретное окно, его процесс и фактический фокус.
-- Если цель не определена надёжно, программа не отправляет клавиши в случайное окно, а предлагает «Копировать» + Ctrl+V.
-- Исправление 0.5.5 сохраняется: при новом открытии записи не выделены, пока пользователь не выберет их снова.
+### Что нового
 
-### Проверено на Windows
+- **Автовыбор языка:** русский язык интерфейса Windows (`ru`) → **русский**; любой другой язык Windows → **английский**.
+- **Ручной выбор:** Настройки → Система → Язык: Автоматически (Windows), Русский, English. Выбор сохраняется и применяется **после перезапуска**.
+- Окно **«О программе / About»** с версией, MIT License, ссылками на исходники и Issues, пояснением границ защиты.
+- Английский перевод истории, поиска, просмотра, вкладок настроек, трея, разблокировки Portable Vault, редактора и основных сообщений.
 
-Автор подтвердил на тестовой Windows-сборке сценарий: выделить запись → «Копировать» → переключиться в Блокнот → вернуться в GeniaClipboard → «Вставить». Текст успешно вставляется в Блокнот. Это ручная проверка конкретного сценария, а не обещание одинакового результата во всех программах.
+### Совместимость и безопасность
 
-### Открытое бета-тестирование
+- Формат Vault, мастер-пароль и сохранённые записи **не изменяются**. Текст буфера обмена не переводится автоматически.
+- История шифруется локально через Windows DPAPI или Portable Vault. Private Session держит временные записи только в памяти.
+- Sensitive detector может не распознать секрет; TXT-экспорт и опциональный TXT-журнал **не шифруются**. Шифрование на диске не защищает от вредоносного ПО, имеющего доступ к буферу обмена или памяти в текущей сессии Windows.
+- EXE пока **без цифровой подписи Authenticode**. В релизе доступны отдельный EXE, portable ZIP и `SHA256SUMS.txt` для обоих файлов.
 
-GeniaClipboard — бесплатный менеджер истории текста для Windows с открытым исходным кодом под MIT License. История шифруется локально (Windows DPAPI или Portable Vault с мастер-паролем), есть Private Session только в RAM, поиск, редактор и исключения приложений.
+### Проверка и обратная связь
 
-На текущем этапе поддерживается **только текст**. Распознавание секретов работает эвристически. TXT-журнал и TXT-экспорт не шифруются. Программа не защищает от malware, уже имеющего доступ к Windows-сессии и системному буферу.
+Windows CI прошёл успешно. Автор вручную проверил пять сценариев: русский Auto, сохранение выбора English после перезапуска, версию и ссылки About, Portable Vault и историю, вставку в Блокнот. Это не гарантия идентичной работы во всех приложениях и масштабах экрана.
 
-**Как помочь:** присылайте воспроизводимые ошибки через GitHub Issues с версией, Windows, шагами и ожидаемым/фактическим поведением. Не загружайте настоящие пароли, токены, файлы Vault или содержимое личного буфера.
+[Настоящие скриншоты](https://github.com/geniasoftwin/Genia-Clipboard/blob/main/docs/SCREENSHOTS.md) · [Сообщить об ошибке](https://github.com/geniasoftwin/Genia-Clipboard/issues/new/choose). Не публикуйте реальные пароли, записи истории или файлы Vault.
+
+**Обновление:** закройте приложение через трей, сохраните резервную копию всей папки `Data`, затем замените EXE. Не теряйте мастер-пароль Portable Vault.
