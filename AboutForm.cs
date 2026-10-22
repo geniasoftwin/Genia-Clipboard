@@ -20,7 +20,9 @@ internal sealed class AboutForm : Form
         BackColor = Color.White;
         Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath) ?? SystemIcons.Application;
 
-        var version = typeof(AboutForm).Assembly.GetName().Version?.ToString(3) ?? "0.5.7";
+        var assemblyVersion = typeof(AboutForm).Assembly.GetName().Version;
+        var version = assemblyVersion is null ? "0.5.7.1" :
+            assemblyVersion.Revision > 0 ? assemblyVersion.ToString(4) : assemblyVersion.ToString(3);
 
         var content = new TableLayoutPanel
         {
