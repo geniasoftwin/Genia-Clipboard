@@ -1,57 +1,44 @@
-# GeniaClipboard v0.5.7 — Russian & English UI
+# GeniaClipboard v0.5.7.1 — Window activation hotfix (test candidate)
 
-[Русская версия ниже](#русский)
+[Русский ниже](#русский)
 
 ## English
 
-GeniaClipboard is a free, MIT-licensed, portable **text-only** clipboard history manager for Windows 10/11 x64. Version 0.5.7 adds bilingual UI while preserving the encrypted history and guarded Paste workflow of v0.5.6.
+This is a small reliability fix on top of v0.5.7 (RU/EN UI). It does not change encrypted history, existing vault passwords, clipboard content, or the guarded Paste target validation.
 
-### What's new
+- **Manual launch:** Open the main clipboard history window immediately after unlocking the Vault, instead of silently launching into the tray.
+- **Windows autostart:** The Run registry entry uses `--minimized` so signing in starts quietly in the system tray as before.
+- **Second EXE launch:** Signals the existing running instance to show its main window, even if the first instance is hidden in the tray.
+- **About:** Displays the full hotfix version `0.5.7.1`.
 
-- **Automatic UI language:** Windows interface language **Russian (ru) → Russian**; any other Windows UI language → **English**.
-- **Manual language override:** Settings → System → Language: Automatic (Windows), Русский, English. Your choice is saved locally and takes effect **after a restart**.
-- **About** dialog with the running version, MIT license, GitHub source and feedback links, and a concise security disclaimer.
-- English translation of main history, search, preview, Settings tabs, tray menu, Portable Vault unlock, editor, and key messages.
+### Feedback and testing required
 
-### Compatibility and privacy
+Before release, test:
+1. Exit the application via the tray; run the EXE manually. The window should appear.
+2. Close the window using X: the application should remain available in the tray.
+3. Double-click the EXE again while GeniaClipboard is already running: the existing window should reappear and no duplicate process should run.
+4. Open it using Ctrl+Shift+V and the tray; the guarded Paste into Notepad must continue working.
+5. When Windows autostart is enabled, sign in again and confirm it starts in the tray without opening the window. (After installation or first launch, the autostart entry is refreshed to pass `--minimized`.)
+6. Verify the previously encrypted Vault unlocks, and Settings → System → About shows `0.5.7.1`.
 
-- No changes to the encrypted Vault format, master password, or saved clips. UI localization **never translates or modifies clipboard history content**.
-- Local encrypted history uses Windows DPAPI or Portable Vault with a master password. Private Session keeps new entries only in memory.
-- Clipboard secret detection is heuristic, not infallible; TXT exports and optional TXT journals are **not encrypted**. Encryption at rest does not protect against software already reading clipboard contents or process memory in your Windows session.
-- The EXE is **not Authenticode-signed**. Release assets include a self-contained EXE, portable ZIP and `SHA256SUMS.txt` for verifying both downloads.
-
-### Testing and feedback
-
-Windows CI restored and built the application. The project owner manually verified the five beta checks: Russian UI in Auto mode, persistent manual English selection after restart, About links/version, Portable Vault history/unlock, and paste into Notepad. This does not establish universal compatibility with every application or scaling configuration.
-
-View [authentic English beta screenshots](https://github.com/geniasoftwin/Genia-Clipboard/blob/main/docs/SCREENSHOTS.md) and report reproducible issues via [GitHub Issues](https://github.com/geniasoftwin/Genia-Clipboard/issues/new/choose). Never post real passwords, private clipboard history or vault files.
-
-**Updating:** Exit GeniaClipboard from the tray, back up the complete `Data` directory, then replace the EXE. Keep your Portable Vault master password.
-
----
+The EXE is not Authenticode-signed. Prior to upgrading, exit through the tray and **back up the entire `Data` directory**. Portable Vault users must preserve their master password.
 
 ## Русский
 
-GeniaClipboard — бесплатный портативный менеджер **текстовой** истории буфера обмена для Windows 10/11 x64 под лицензией MIT. В версии 0.5.7 добавлен двуязычный интерфейс; защищённая вставка из 0.5.6 и существующий Vault сохранены.
+Небольшое исправление запуска поверх v0.5.7 (RU/EN интерфейс). **История, шифрование Vault, мастер-пароли, содержимое буфера и защищённая вставка не изменены.**
 
-### Что нового
+- **Обычный запуск EXE:** после разблокировки Vault сразу показывается главное окно вместо незаметного запуска в трей.
+- **Автозапуск Windows:** в записи автозапуска используется `--minimized` — при входе Windows программа по-прежнему тихо запускается в трее.
+- **Повторный запуск EXE:** уже работающая копия получает сигнал и раскрывает главное окно из трея; второй экземпляр не запускается.
+- **«О программе»:** показывает точную версию `0.5.7.1`.
 
-- **Автовыбор языка:** русский язык интерфейса Windows (`ru`) → **русский**; любой другой язык Windows → **английский**.
-- **Ручной выбор:** Настройки → Система → Язык: Автоматически (Windows), Русский, English. Выбор сохраняется и применяется **после перезапуска**.
-- Окно **«О программе / About»** с версией, MIT License, ссылками на исходники и Issues, пояснением границ защиты.
-- Английский перевод истории, поиска, просмотра, вкладок настроек, трея, разблокировки Portable Vault, редактора и основных сообщений.
+### Что проверить перед выпуском
 
-### Совместимость и безопасность
+1. Выйти через трей и запустить EXE: главное окно должно появиться.
+2. Нажать X: окно скрывается в трей, программа продолжает работу.
+3. Повторно запустить EXE: открывается окно существующей копии без второго процесса.
+4. Проверить Ctrl+Shift+V, трей и вставку из истории в Блокнот.
+5. С включённым автозапуском проверить следующий вход в Windows: старт только в трее.
+6. Убедиться, что Portable Vault/Windows Vault и вся история не изменились, а в About указано `0.5.7.1`.
 
-- Формат Vault, мастер-пароль и сохранённые записи **не изменяются**. Текст буфера обмена не переводится автоматически.
-- История шифруется локально через Windows DPAPI или Portable Vault. Private Session держит временные записи только в памяти.
-- Sensitive detector может не распознать секрет; TXT-экспорт и опциональный TXT-журнал **не шифруются**. Шифрование на диске не защищает от вредоносного ПО, имеющего доступ к буферу обмена или памяти в текущей сессии Windows.
-- EXE пока **без цифровой подписи Authenticode**. В релизе доступны отдельный EXE, portable ZIP и `SHA256SUMS.txt` для обоих файлов.
-
-### Проверка и обратная связь
-
-Windows CI прошёл успешно. Автор вручную проверил пять сценариев: русский Auto, сохранение выбора English после перезапуска, версию и ссылки About, Portable Vault и историю, вставку в Блокнот. Это не гарантия идентичной работы во всех приложениях и масштабах экрана.
-
-[Настоящие скриншоты](https://github.com/geniasoftwin/Genia-Clipboard/blob/main/docs/SCREENSHOTS.md) · [Сообщить об ошибке](https://github.com/geniasoftwin/Genia-Clipboard/issues/new/choose). Не публикуйте реальные пароли, записи истории или файлы Vault.
-
-**Обновление:** закройте приложение через трей, сохраните резервную копию всей папки `Data`, затем замените EXE. Не теряйте мастер-пароль Portable Vault.
+EXE не подписан Authenticode. **Перед заменой EXE выйдите через трей и сохраните копию всей папки `Data`.** Не теряйте пароль Portable Vault.
