@@ -3,6 +3,7 @@ namespace GeniaClipboard;
 internal sealed class GeniaClipboardApplicationContext : ApplicationContext
 {
     private readonly HistoryStore _store;
+    private readonly EventWaitHandle _activationRequest;
     private readonly AppSettingsStore _settingsStore;
     private readonly TextJournalService _journal;
     private readonly MainForm _mainForm;
@@ -16,8 +17,11 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
 
     public GeniaClipboardApplicationContext(
         AppSettingsStore settingsStore,
-        HistoryStore store)
+        HistoryStore store,
+        EventWaitHandle activationRequest,
+        bool startMinimized)
     {
+        _activationRequest = activationRequest;
         _store = store;
         _settingsStore = settingsStore;
         _journal = new TextJournalService
@@ -130,9 +134,27 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
             Interval = 700,
             Enabled = true
         };
-        _clipboardPollTimer.Tick += (_, _) => _mainForm.PollClipboard();
+        _clipboardPollTimer.Tick += (_, _) =>
+        {
+            // All WinForms windows must be activated on the UI thread.
+            // The event is set by later EXE launches, not by clipboard copies.
+            if (_activationRequest.WaitOne(0))
+            {
+                _mainForm.ShowWindow();
+            }
+
+            _mainForm.PollClipboard();
+        };
         _mainForm.PollClipboard();
-        _notifyIcon.ShowBalloonTip(2500);
+
+        if (startMinimized)
+        {
+            _notifyIcon.ShowBalloonTip(2500);
+        }
+        else
+        {
+            _mainForm.ShowWindow();
+        }
     }
 
     protected override void Dispose(bool disposing)

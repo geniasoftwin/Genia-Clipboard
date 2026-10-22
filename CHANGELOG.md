@@ -2,6 +2,21 @@
 
 All notable GeniaClipboard changes are documented in this file.
 
+## [0.5.7.1] - hotfix candidate, pending Windows verification
+
+### Fixed
+
+- Show the main window for a manual EXE launch after the vault unlock stage.
+- Reactivate the existing window when the EXE is launched a second time while a copy is running.
+- Preserve tray-only autostart by explicitly passing `--minimized` from the current-user Windows Run entry.
+- Show four-part hotfix version in About.
+
+### Compatibility
+
+- No changes to encrypted Vault format, master password, history records or guarded Paste.
+- User Windows tests required before merging and publishing.
+
+
 ## [0.5.7] - 2026-10-21
 
 ### Added

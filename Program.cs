@@ -17,15 +17,23 @@ internal static class Program
             name: @"Local\GeniaClipboard.SingleInstance",
             createdNew: out var isFirstInstance);
 
+        // A named, session-local activation signal lets a second EXE launch
+        // bring the existing clipboard window back instead of just exiting.
+        // AutoReset coalesces overlapping requests until the UI is ready.
+        using var activateExisting = new EventWaitHandle(
+            false, EventResetMode.AutoReset, @"Local\GeniaClipboard.ActivateExisting");
+
         if (!isFirstInstance)
         {
-            MessageBox.Show(
-                UiText.T("GeniaClipboard уже запущен. Найдите его значок в системном трее."),
-                "GeniaClipboard",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+            activateExisting.Set();
             return;
         }
+
+        // Manual launches show the window; the Windows autostart registry entry
+        // explicitly passes --minimized so login starts quietly in the tray.
+        var startMinimized = Environment.GetCommandLineArgs()
+            .Skip(1).Any(arg => string.Equals(
+                arg, "--minimized", StringComparison.OrdinalIgnoreCase));
 
         var settingsStore = new AppSettingsStore();
         var settings = settingsStore.Settings;
@@ -100,7 +108,8 @@ internal static class Program
                     MessageBoxIcon.Warning);
             }
 
-            using var context = new GeniaClipboardApplicationContext(settingsStore, store);
+            using var context = new GeniaClipboardApplicationContext(
+                settingsStore, store, activateExisting, startMinimized);
             Application.Run(context);
         }
 

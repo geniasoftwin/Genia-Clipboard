@@ -25,7 +25,7 @@ internal static class AutoStartService
             if (enabled)
             {
                 var executable = Application.ExecutablePath;
-                key.SetValue(ValueName, $"\"{executable}\"", RegistryValueKind.String);
+                key.SetValue(ValueName, $"\"{executable}\" --minimized", RegistryValueKind.String);
             }
             else
             {
