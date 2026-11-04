@@ -1,8 +1,11 @@
+using System.Threading;
+
 namespace GeniaClipboard;
 
 internal sealed class GeniaClipboardApplicationContext : ApplicationContext
 {
     private readonly HistoryStore _store;
+    private readonly EventWaitHandle _activationEvent;
     private readonly AppSettingsStore _settingsStore;
     private readonly TextJournalService _journal;
     private readonly MainForm _mainForm;
@@ -16,9 +19,12 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
 
     public GeniaClipboardApplicationContext(
         AppSettingsStore settingsStore,
-        HistoryStore store)
+        HistoryStore store,
+        EventWaitHandle activationEvent,
+        bool startInTray)
     {
         _store = store;
+        _activationEvent = activationEvent;
         _settingsStore = settingsStore;
         _journal = new TextJournalService
         {
@@ -71,12 +77,17 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
         var aboutMenuItem = new ToolStripMenuItem(UiText.T("О программе"));
         aboutMenuItem.Click += (_, _) =>
         {
+            if (!_mainForm.Visible) _mainForm.ShowWindow();
             using var about = new AboutForm();
             about.ShowDialog(_mainForm);
         };
 
         var clearMenuItem = new ToolStripMenuItem(UiText.T("Очистить историю"));
-        clearMenuItem.Click += (_, _) => _mainForm.ClearHistoryWithConfirmation();
+        clearMenuItem.Click += (_, _) =>
+        {
+            if (!_mainForm.Visible) _mainForm.ShowWindow();
+            _mainForm.ClearHistoryWithConfirmation();
+        };
 
         var exitMenuItem = new ToolStripMenuItem(UiText.T("Выход"));
         exitMenuItem.Click += (_, _) => ExitApplication();
@@ -110,7 +121,7 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
             ContextMenuStrip = menu
         };
         _notifyIcon.DoubleClick += (_, _) => _mainForm.ShowWindow();
-        _notifyIcon.BalloonTipTitle = "GeniaClipboard 0.5.7";
+        _notifyIcon.BalloonTipTitle = $"GeniaClipboard {Application.ProductVersion.Split('+', 2)[0]}";
         _notifyIcon.BalloonTipText = UiText.T("Clipboard Firewall работает локально. История хранится в зашифрованном vault.");
 
         _mainForm.SetMonitorStatus(
@@ -130,15 +141,34 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
             Interval = 700,
             Enabled = true
         };
-        _clipboardPollTimer.Tick += (_, _) => _mainForm.PollClipboard();
+        _clipboardPollTimer.Tick += (_, _) =>
+        {
+            // The activation event is auto-reset and checked without blocking the UI.
+            // This works even when the main form is currently hidden in the tray.
+            if (_activationEvent.WaitOne(0) && !_isExiting)
+            {
+                _mainForm.ShowWindow();
+            }
+
+            _mainForm.PollClipboard();
+        };
         _mainForm.PollClipboard();
         _notifyIcon.ShowBalloonTip(2500);
+
+        // The native message window and tray remain alive whether or not the
+        // main form is visible. Manual launches show the window on first idle;
+        // --tray is reserved for Windows autostart.
+        if (!startInTray)
+        {
+            Application.Idle += ShowMainWindowOnFirstIdle;
+        }
     }
 
     protected override void Dispose(bool disposing)
     {
         if (disposing)
         {
+            Application.Idle -= ShowMainWindowOnFirstIdle;
             _clipboardPollTimer.Dispose();
             _monitorWindow.Dispose();
             _notifyIcon.Dispose();
@@ -148,8 +178,19 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
         base.Dispose(disposing);
     }
 
+    private void ShowMainWindowOnFirstIdle(object? sender, EventArgs e)
+    {
+        Application.Idle -= ShowMainWindowOnFirstIdle;
+        if (!_isExiting)
+        {
+            _mainForm.ShowWindow();
+        }
+    }
+
     private void OpenSettings()
     {
+        if (!_mainForm.Visible) _mainForm.ShowWindow();
+
         using var dialog = new SettingsForm(
             _settingsStore.Settings,
             _store.VaultMode,
@@ -258,6 +299,8 @@ internal sealed class GeniaClipboardApplicationContext : ApplicationContext
 
     private void TogglePrivateSession()
     {
+        if (!_mainForm.Visible) _mainForm.ShowWindow();
+
         if (!_store.IsPrivateSession)
         {
             var result = MessageBox.Show(

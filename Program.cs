@@ -5,12 +5,19 @@ namespace GeniaClipboard;
 internal static class Program
 {
     [STAThread]
-    private static void Main()
+    private static void Main(string[] args)
     {
         ApplicationConfiguration.Initialize();
         UiText.Configure("auto");
         Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
         Application.ThreadException += OnThreadException;
+
+        // An auto-reset activation request survives the startup/unlock phase.
+        // A second launch signals the running UI instead of opening a dead-end dialog.
+        using var activationEvent = new EventWaitHandle(
+            initialState: false,
+            mode: EventResetMode.AutoReset,
+            name: @"Local\GeniaClipboard.Activate");
 
         using var singleInstanceMutex = new Mutex(
             initiallyOwned: true,
@@ -19,11 +26,7 @@ internal static class Program
 
         if (!isFirstInstance)
         {
-            MessageBox.Show(
-                UiText.T("GeniaClipboard уже запущен. Найдите его значок в системном трее."),
-                "GeniaClipboard",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+            activationEvent.Set();
             return;
         }
 
@@ -100,7 +103,9 @@ internal static class Program
                     MessageBoxIcon.Warning);
             }
 
-            using var context = new GeniaClipboardApplicationContext(settingsStore, store);
+            var startInTray = args.Any(arg => string.Equals(arg, "--tray", StringComparison.OrdinalIgnoreCase));
+            using var context = new GeniaClipboardApplicationContext(
+                settingsStore, store, activationEvent, startInTray);
             Application.Run(context);
         }
 

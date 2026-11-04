@@ -25,7 +25,8 @@ internal static class AutoStartService
             if (enabled)
             {
                 var executable = Application.ExecutablePath;
-                key.SetValue(ValueName, $"\"{executable}\"", RegistryValueKind.String);
+                // Keep login startup silent. Interactive EXE launches open the main form.
+                key.SetValue(ValueName, $"\"{executable}\" --tray", RegistryValueKind.String);
             }
             else
             {
